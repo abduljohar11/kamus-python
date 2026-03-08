@@ -1,0 +1,28 @@
+# === SECURITY: Personal Data ===
+# Abaikan folder storage karena berisi user_stats.json (favorit & hits pribadi)
+storage/
+
+# Abaikan file environment jika nanti kamu menyimpan API keys GitHub
+.env
+.env.local
+
+# === PYTHON: Clean Repo ===
+# Abaikan cache Python agar folder tidak berantakan
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Abaikan folder virtual environment (jika kamu pakai)
+venv/
+env/
+ENV/
+
+# === OS SPECIFIC ===
+# Abaikan file sampah dari sistem operasi
+.DS_Store
+Thumbs.db
+
+# === LOGS ===
+# Jika aplikasi kamu nantinya menghasilkan log error
+*.log

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "LV-MIG-001",
+    "title": "Create Basic Table",
+    "description": "Template standar migration untuk tabel baru.",
+    "categories": ["migration", "table", "schema"],
+    "code": "Schema::create('table_name', function (Blueprint $table) {\n    $table->id();\n    $table->timestamps();\n});",
+    "link": "https://laravel.com/docs/migrations"
+  },
+  {
+    "id": "LV-MIG-002",
+    "title": "Soft Deletes Column",
+    "description": "Menambahkan kolom deleted_at untuk fitur soft delete.",
+    "categories": ["migration", "delete", "soft-delete"],
+    "code": "$table->softDeletes();",
+    "link": "https://laravel.com/docs/migrations#column-method-softDeletes"
+  }
+]
