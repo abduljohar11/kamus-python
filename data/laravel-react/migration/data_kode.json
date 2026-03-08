@@ -1,82 +1,122 @@
 [
   {
-    "id": "Migratiion-001",
-    "title": "Create Basic Table",
-    "description": "Template standar migration untuk tabel baru.",
-    "categories": ["migration", "table", "schema"],
-    "code": "Schema::create('table_name', function (Blueprint $table) {\n    $table->id();\n    $table->timestamps();\n});",
-    "link": "https://laravel.com/docs/migrations"
+    "id": "Migration-001",
+    "title": "Create Students Table",
+    "description": "Analogi: Membangun ruang kelas baru untuk siswa. Kita menyiapkan pondasi (ID) dan mencatat kapan kelas itu mulai digunakan (Timestamps).",
+    "categories": ["migration", "table", "schema", "create"],
+    "code": "use Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration {\n    public function up(): void {\n        Schema::create('students', function (Blueprint $table) {\n            $table->id();\n            $table->string('name');\n            $table->timestamps();\n        });\n    }\n\n    public function down(): void {\n        Schema::dropIfExists('students');\n    }\n};",
+    "link": "https://laravel.com/docs/migrations#creating-tables"
   },
   {
     "id": "Migration-002",
-    "title": "Soft Deletes Column",
-    "description": "Menambahkan kolom deleted_at untuk fitur soft delete.",
-    "categories": ["migration", "delete", "soft-delete"],
-    "code": "$table->softDeletes();",
+    "title": "Soft Deletes for Students",
+    "description": "Analogi: Status 'Skorsing' atau 'Pindah Sekolah'. Siswa tidak benar-benar dihapus dari buku induk (database), tapi mereka dianggap tidak aktif sehingga data historisnya tetap aman.",
+    "categories": ["migration", "delete", "soft-delete", "schema"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->softDeletes();\n});",
     "link": "https://laravel.com/docs/migrations#column-method-softDeletes"
   },
-    {
-        "id": "Migration-003",
-        "title": "Add Foreign Key",
-        "description": "Menambahkan kolom foreign key untuk relasi antar tabel.",
-        "categories": ["migration", "foreign-key", "relationship"],
-        "code": "$table->unsignedBigInteger('user_id');\n$table->foreign('user_id')->references('id')->on('users');",
-        "link": "https://laravel.com/docs/migrations#foreign-key-constraints"
-    },
-    {
-        "id": "Migration-004",
-        "title": "Rename Column",
-        "description": "Mengubah nama kolom pada tabel yang sudah ada.",
-        "categories": ["migration", "rename", "schema"],
-        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->renameColumn('old_name', 'new_name');\n});",
-        "link": "https://laravel.com/docs/migrations#renaming-columns"
-    },
-    {
-        "id": "Migration-005",
-        "title": "Drop Column",
-        "description": "Menghapus kolom dari tabel yang sudah ada.",
-        "categories": ["migration", "drop", "schema"],
-        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->dropColumn('column_name');\n});",
-        "link": "https://laravel.com/docs/migrations#dropping-columns"
-    },
-    {
-        "id": "Migration-006",
-        "title": "Change Column Type",
-        "description": "Mengubah tipe data kolom pada tabel yang sudah ada.",
-        "categories": ["migration", "change", "schema"],
-        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->string('column_name')->change();\n});",
-        "link": "https://laravel.com/docs/migrations#modifying-columns"
-    },
-    {
-        "id": "Migration-007",
-        "title": "Add Index",
-        "description": "Menambahkan index pada kolom untuk meningkatkan performa query.",
-        "categories": ["migration", "index", "performance"],
-        "code": "$table->index('column_name');",
-        "link": "https://laravel.com/docs/migrations#creating-indexes"
-    },
-    {
-        "id": "Migration-008",
-        "title": "Drop Table",
-        "description": "Menghapus tabel dari database.",
-        "categories": ["migration", "drop", "schema"],
-        "code": "Schema::dropIfExists('table_name');",
-        "link": "https://laravel.com/docs/migrations#dropping-tables"
-    },
-    {
-        "id": "Migration-009",
-        "title": "Add Unique Constraint",
-        "description": "Menambahkan constraint unik pada kolom untuk mencegah duplikasi data.",
-        "categories": ["migration", "unique", "constraint"],
-        "code": "$table->unique('column_name');",
-        "link": "https://laravel.com/docs/migrations#creating-unique-indexes"
-    },
-    {
-        "id": "Migration-010",
-        "title": "Add Default Value",
-        "description": "Menambahkan nilai default pada kolom untuk data yang tidak diisi.",
-        "categories": ["migration", "default", "schema"],
-        "code": "$table->string('column_name')->default('default_value');",
-        "link": "https://laravel.com/docs/migrations#column-modifiers"
-    }
+  {
+    "id": "Migration-003",
+    "title": "Add Classroom Relation (Manual)",
+    "description": "Analogi: Menempelkan label 'Kelas A' pada seragam siswa. Secara manual kita membuat kolom ID Kelas dan memastikan jika Gedung Kelas dihancurkan, data siswa di dalamnya juga ikut terhapus (Cascade).",
+    "categories": ["migration", "foreign-key", "relationship", "constraint"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->unsignedBigInteger('classroom_id');\n    $table->foreign('classroom_id')->references('id')->on('classrooms')->onDelete('cascade');\n});",
+    "link": "https://laravel.com/docs/migrations#foreign-key-constraints"
+  },
+  {
+    "id": "Migration-004",
+    "title": "Rename Student Name Column",
+    "description": "Analogi: Mengganti papan nama di pintu kelas. Dari yang sebelumnya bertuliskan 'Nama Panggilan' menjadi 'Nama Lengkap' agar lebih formal.",
+    "categories": ["migration", "rename", "schema", "modify"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->renameColumn('nickname', 'full_name');\n});",
+    "link": "https://laravel.com/docs/migrations#renaming-columns"
+  },
+  {
+    "id": "Migration-005",
+    "title": "Drop Hobby Column",
+    "description": "Analogi: Menghapus kolom 'Hobi' di formulir pendaftaran sekolah karena dianggap tidak lagi relevan dengan kurikulum akademik.",
+    "categories": ["migration", "drop", "schema", "delete"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->dropColumn('hobby');\n});",
+    "link": "https://laravel.com/docs/migrations#dropping-columns"
+  },
+  {
+    "id": "Migration-006",
+    "title": "Expand Address Column",
+    "description": "Analogi: Mengganti buku catatan kecil menjadi buku besar. Mengubah tipe data 'Alamat' dari string pendek (255 karakter) menjadi TEXT agar bisa menampung alamat lengkap beserta koordinat.",
+    "categories": ["migration", "change", "schema", "modify"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->text('address')->change();\n});",
+    "link": "https://laravel.com/docs/migrations#modifying-columns"
+  },
+  {
+    "id": "Migration-007",
+    "title": "Index on Student NIS",
+    "description": "Analogi: Membuat Buku Daftar Isi di perpustakaan. Dengan Index, mencari siswa berdasarkan NIS (Nomor Induk Siswa) menjadi instan tanpa harus mengecek satu per satu dari halaman pertama.",
+    "categories": ["migration", "index", "performance", "optimization"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->index('nis_number');\n});",
+    "link": "https://laravel.com/docs/migrations#creating-indexes"
+  },
+  {
+    "id": "Migration-008",
+    "title": "Drop Temporary Table",
+    "description": "Analogi: Membongkar tenda darurat setelah gedung sekolah asli selesai dibangun. Menghapus tabel sementara yang sudah tidak digunakan.",
+    "categories": ["migration", "drop", "schema", "table"],
+    "code": "Schema::dropIfExists('temporary_registration_data');",
+    "link": "https://laravel.com/docs/migrations#dropping-tables"
+  },
+  {
+    "id": "Migration-009",
+    "title": "Unique Email Constraint",
+    "description": "Analogi: Peraturan bahwa satu alamat email hanya boleh digunakan oleh satu siswa. Menjamin tidak ada duplikasi akun di sistem sekolah.",
+    "categories": ["migration", "unique", "constraint", "validation"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->unique('email');\n});",
+    "link": "https://laravel.com/docs/migrations#creating-unique-indexes"
+  },
+  {
+    "id": "Migration-010",
+    "title": "Default Status and Nullable Bio",
+    "description": "Analogi: Siswa baru otomatis berstatus 'Aktif' (Default), dan kolom 'Biografi' boleh dikosongkan (Nullable) jika siswa belum sempat mengisinya.",
+    "categories": ["migration", "default", "nullable", "modifier"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->string('status')->default('active');\n    $table->text('biography')->nullable();\n});",
+    "link": "https://laravel.com/docs/migrations#column-modifiers"
+  },
+  {
+    "id": "Migration-011",
+    "title": "Modern Teacher Relation",
+    "description": "Analogi: Menugaskan Wali Kelas dengan cara modern. Cukup sebutkan 'Guru ini bertanggung jawab atas kelas ini', Laravel akan mengurus semua teknis relasinya secara otomatis.",
+    "categories": ["migration", "relationship", "shorthand"],
+    "code": "Schema::table('classrooms', function (Blueprint $table) {\n    $table->foreignId('teacher_id')->constrained()->onDelete('cascade');\n});",
+    "link": "https://laravel.com/docs/10.x/migrations#foreign-key-constraints"
+  },
+  {
+    "id": "Migration-012",
+    "title": "School Morphs (Polymorphic)",
+    "description": "Analogi: Kolom 'Penerima Pesan'. Pesan pengumuman bisa dikirim ke 'Siswa' atau ke 'Guru' menggunakan satu sistem kolom yang fleksibel (ID & Tipe).",
+    "categories": ["migration", "polymorphic", "relationship"],
+    "code": "Schema::create('announcements', function (Blueprint $table) {\n    $table->id();\n    $table->morphs('receivable'); // receivable_id & receivable_type\n    $table->text('content');\n});",
+    "link": "https://laravel.com/docs/10.x/migrations#column-method-morphs"
+  },
+  {
+    "id": "Migration-013",
+    "title": "School Role Enum",
+    "description": "Analogi: Seragam sekolah. Kita membatasi peran hanya boleh: 'Kepala Sekolah', 'Guru', atau 'Siswa'. Tidak boleh ada peran di luar itu.",
+    "categories": ["migration", "enum", "validation", "security"],
+    "code": "Schema::table('users', function (Blueprint $table) {\n    $table->enum('role', ['principal', 'teacher', 'student'])->default('student');\n});",
+    "link": "https://laravel.com/docs/10.x/migrations#column-method-enum"
+  },
+  {
+    "id": "Migration-014",
+    "title": "Auto Timestamp Registration",
+    "description": "Analogi: Absensi otomatis menggunakan mesin fingerprint. Database akan mencatat waktu kedatangan secara otomatis tanpa perlu diinput manual oleh admin.",
+    "categories": ["migration", "raw", "database", "advanced"],
+    "code": "Schema::table('attendances', function (Blueprint $table) {\n    $table->timestamp('clock_in')->default(DB::raw('CURRENT_TIMESTAMP'));\n});",
+    "link": "https://laravel.com/docs/10.x/migrations#column-modifiers"
+  },
+  {
+    "id": "Migration-015",
+    "title": "School Location (Spatial)",
+    "description": "Analogi: Menandai titik koordinat sekolah di Google Maps agar bus sekolah bisa menemukan rute tercepat.",
+    "categories": ["migration", "maps", "location", "geometry"],
+    "code": "Schema::table('schools', function (Blueprint $table) {\n    $table->geometry('coordinate_location');\n});",
+    "link": "https://laravel.com/docs/10.x/migrations#column-method-geometry"
+  }
 ]
