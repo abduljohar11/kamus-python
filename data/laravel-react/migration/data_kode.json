@@ -1,6 +1,6 @@
 [
   {
-    "id": "LV-MIG-001",
+    "id": "Migratiion-001",
     "title": "Create Basic Table",
     "description": "Template standar migration untuk tabel baru.",
     "categories": ["migration", "table", "schema"],
@@ -8,11 +8,75 @@
     "link": "https://laravel.com/docs/migrations"
   },
   {
-    "id": "LV-MIG-002",
+    "id": "Migration-002",
     "title": "Soft Deletes Column",
     "description": "Menambahkan kolom deleted_at untuk fitur soft delete.",
     "categories": ["migration", "delete", "soft-delete"],
     "code": "$table->softDeletes();",
     "link": "https://laravel.com/docs/migrations#column-method-softDeletes"
-  }
+  },
+    {
+        "id": "Migration-003",
+        "title": "Add Foreign Key",
+        "description": "Menambahkan kolom foreign key untuk relasi antar tabel.",
+        "categories": ["migration", "foreign-key", "relationship"],
+        "code": "$table->unsignedBigInteger('user_id');\n$table->foreign('user_id')->references('id')->on('users');",
+        "link": "https://laravel.com/docs/migrations#foreign-key-constraints"
+    },
+    {
+        "id": "Migration-004",
+        "title": "Rename Column",
+        "description": "Mengubah nama kolom pada tabel yang sudah ada.",
+        "categories": ["migration", "rename", "schema"],
+        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->renameColumn('old_name', 'new_name');\n});",
+        "link": "https://laravel.com/docs/migrations#renaming-columns"
+    },
+    {
+        "id": "Migration-005",
+        "title": "Drop Column",
+        "description": "Menghapus kolom dari tabel yang sudah ada.",
+        "categories": ["migration", "drop", "schema"],
+        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->dropColumn('column_name');\n});",
+        "link": "https://laravel.com/docs/migrations#dropping-columns"
+    },
+    {
+        "id": "Migration-006",
+        "title": "Change Column Type",
+        "description": "Mengubah tipe data kolom pada tabel yang sudah ada.",
+        "categories": ["migration", "change", "schema"],
+        "code": "Schema::table('table_name', function (Blueprint $table) {\n    $table->string('column_name')->change();\n});",
+        "link": "https://laravel.com/docs/migrations#modifying-columns"
+    },
+    {
+        "id": "Migration-007",
+        "title": "Add Index",
+        "description": "Menambahkan index pada kolom untuk meningkatkan performa query.",
+        "categories": ["migration", "index", "performance"],
+        "code": "$table->index('column_name');",
+        "link": "https://laravel.com/docs/migrations#creating-indexes"
+    },
+    {
+        "id": "Migration-008",
+        "title": "Drop Table",
+        "description": "Menghapus tabel dari database.",
+        "categories": ["migration", "drop", "schema"],
+        "code": "Schema::dropIfExists('table_name');",
+        "link": "https://laravel.com/docs/migrations#dropping-tables"
+    },
+    {
+        "id": "Migration-009",
+        "title": "Add Unique Constraint",
+        "description": "Menambahkan constraint unik pada kolom untuk mencegah duplikasi data.",
+        "categories": ["migration", "unique", "constraint"],
+        "code": "$table->unique('column_name');",
+        "link": "https://laravel.com/docs/migrations#creating-unique-indexes"
+    },
+    {
+        "id": "Migration-010",
+        "title": "Add Default Value",
+        "description": "Menambahkan nilai default pada kolom untuk data yang tidak diisi.",
+        "categories": ["migration", "default", "schema"],
+        "code": "$table->string('column_name')->default('default_value');",
+        "link": "https://laravel.com/docs/migrations#column-modifiers"
+    }
 ]
