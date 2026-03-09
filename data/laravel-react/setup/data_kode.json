@@ -1,0 +1,82 @@
+[
+  {
+    "id": "Init-001",
+    "title": "Create Project & Core Installation",
+    "description": "Analogi: Peletakan Batu Pertama. Membangun kerangka dasar bangunan sekolah menggunakan Laravel 12 sebagai pondasi utama.",
+    "categories": ["laravel", "setup"],
+    "code": "composer create-project laravel/laravel Euj\ncd Euj",
+    "link": "https://laravel.com/docs/12.x/installation"
+  },
+  {
+    "id": "Init-002",
+    "title": "Install Breeze & Inertia Scaffold",
+    "description": "Analogi: Pemasangan Listrik & Air. Breeze menyiapkan sistem autentikasi (Login/Register) dan menghubungkan kabel antara Backend (Laravel) dan Frontend (React) via Inertia.",
+    "categories": ["laravel", "breeze", "inertia"],
+    "code": "composer require laravel/breeze --dev\nphp artisan breeze:install react",
+    "link": "https://laravel.com/docs/12.x/starter-kits#laravel-breeze"
+  },
+  {
+    "id": "Init-003",
+    "title": "Frontend Dependencies Installation",
+    "description": "Analogi: Membeli Perlengkapan Interior. Menginstal library tambahan untuk ikon (Lucide), notifikasi (SweetAlert2), validasi (Zod), dan animasi (Framer Motion).",
+    "categories": ["npm", "setup"],
+    "code": "npm install\nnpm install sweetalert2 lucide-react zod framer-motion clsx tailwind-merge",
+    "link": "https://www.npmjs.com/"
+  },
+  {
+    "id": "Init-004",
+    "title": "Database Migration & Fresh Start",
+    "description": "Analogi: Pemetaan Lahan. Membuat tabel-tabel awal di database dan mengisinya dengan data sampel (Seed) untuk pengujian.",
+    "categories": ["laravel", "migration"],
+    "code": "php artisan migrate\nphp artisan migrate:fresh --seed",
+    "link": "https://laravel.com/docs/12.x/migrations"
+  },
+  {
+    "id": "Init-005",
+    "title": "Development Servers",
+    "description": "Analogi: Membuka Gerbang Sekolah. Menjalankan dua mesin: satu untuk melayani logika PHP, satu lagi untuk memantau perubahan desain CSS/JS secara real-time.",
+    "categories": ["laravel", "npm", "dev"],
+    "code": "// Jalankan di dua terminal berbeda:\nphp artisan serve\nnpm run dev",
+    "link": "https://vitejs.dev/"
+  },
+  {
+    "id": "Init-006",
+    "title": "Database Status & Autoload Refresh",
+    "description": "Analogi: Inspeksi Bangunan. Mengecek apakah semua tabel sudah terpasang dengan benar dan menyegarkan peta file proyek agar file baru terbaca oleh sistem.",
+    "categories": ["laravel", "composer", "maintenance"],
+    "code": "php artisan migrate:status\ncomposer dump-autoload",
+    "link": "https://getcomposer.org/doc/03-cli.md#dump-autoload"
+  },
+  {
+    "id": "Init-007",
+    "title": "Creating New Module (Workplace Example)",
+    "description": "Analogi: Membangun Ruang Kelas Baru. Membuat blueprint tabel untuk menyimpan data pekerjaan.",
+    "categories": ["laravel", "migration"],
+    "code": "php artisan make:migration create_pekerjaans_table",
+    "link": "https://laravel.com/docs/12.x/migrations#creating-migrations"
+  },
+  {
+    "id": "Init-008",
+    "title": "System Cache Clearing (The 'Fix-All' Command)",
+    "description": "Analogi: Membersihkan Papan Tulis. Menghapus semua memori sementara yang mungkin membuat error karena perubahan konfigurasi yang tidak terbaca.",
+    "categories": ["laravel", "maintenance"],
+    "code": "php artisan cache:clear\nphp artisan config:clear\nphp artisan route:clear\nphp artisan view:clear",
+    "link": "https://laravel.com/docs/12.x/artisan#introduction"
+  },
+  {
+    "id": "Init-009",
+    "title": "Security: Symlink Storage",
+    "description": "Analogi: Jembatan Gudang. Menghubungkan folder rahasia (storage) ke folder publik (public) agar foto profil siswa bisa diakses oleh browser dengan aman.",
+    "categories": ["laravel", "security"],
+    "code": "php artisan storage:link",
+    "link": "https://laravel.com/docs/12.x/filesystem#the-public-disk"
+  },
+  {
+    "id": "Init-010",
+    "title": "Optimizing for Production",
+    "description": "Analogi: Mengunci Pintu Sekolah di Malam Hari. Perintah ini menggabungkan semua konfigurasi menjadi satu file agar aplikasi berjalan 2x lebih cepat di server asli.",
+    "categories": ["laravel", "performance"],
+    "code": "php artisan optimize",
+    "link": "https://laravel.com/docs/12.x/deployment#optimization"
+  }
+]

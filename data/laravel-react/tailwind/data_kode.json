@@ -1,0 +1,804 @@
+[
+  {
+    "id": "TW-001",
+    "title": "Flexbox Centering",
+    "description": "Analogi: Posisi Tengah Lapangan. Menempatkan pemain tepat di tengah-tengah kotak penalti baik secara horizontal maupun vertikal.",
+    "categories": ["tailwind", "layout", "flex"],
+    "code": "<div class=\"flex items-center justify-center h-screen\">\n  <p>Centered Element</p>\n</div>",
+    "link": "https://tailwindcss.com/docs/flex-direction"
+  },
+  {
+    "id": "TW-002",
+    "title": "Grid 12 Columns",
+    "description": "Analogi: Rak Supermarket. Membagi ruangan menjadi 12 kolom presisi, memudahkan kita menaruh barang (elemen) di posisi mana pun.",
+    "categories": ["tailwind", "layout", "grid"],
+    "code": "<div class=\"grid grid-cols-12 gap-4\">\n  <div class=\"col-span-8\">Main Content</div>\n  <div class=\"col-span-4\">Sidebar</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/grid-template-columns"
+  },
+  {
+    "id": "TW-003",
+    "title": "Responsive Breakpoints",
+    "description": "Analogi: Ukuran Baju. Baju yang sama otomatis menyesuaikan diri dari ukuran S (Mobile) ke XL (Desktop) tanpa harus ganti baju.",
+    "categories": ["tailwind", "responsive"],
+    "code": "<div class=\"w-full md:w-1/2 lg:w-1/3 bg-blue-500\">\n  Responsive Card\n</div>",
+    "link": "https://tailwindcss.com/docs/responsive-design"
+  },
+  {
+    "id": "TW-004",
+    "title": "Hover & Active States",
+    "description": "Analogi: Saklar Lampu. Berubah warna atau gaya ketika disentuh kursor (Hover) atau ditekan (Active).",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<button class=\"bg-blue-500 hover:bg-blue-700 active:scale-95 transition\">\n  Click Me\n</button>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states"
+  },
+  {
+    "id": "TW-005",
+    "title": "Z-Index Layering",
+    "description": "Analogi: Tumpukan Piring. Menentukan piring mana yang berada paling atas agar tidak tertutup piring lainnya.",
+    "categories": ["tailwind", "layout", "stacking"],
+    "code": "<div class=\"relative\">\n  <div class=\"absolute z-50 top-0\">I am on Top</div>\n  <div class=\"absolute z-0 top-0\">I am at Back</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/z-index"
+  },
+  {
+    "id": "TW-006",
+    "title": "Aspect Ratio Control",
+    "description": "Analogi: Bingkai Foto 4x6. Memastikan gambar atau video tetap proporsional (misal 16:9) meski ukuran layarnya berubah-ubah.",
+    "categories": ["tailwind", "layout", "media"],
+    "code": "<div class=\"aspect-video bg-slate-800\">\n  <iframe src=\"...\"></iframe>\n</div>",
+    "link": "https://tailwindcss.com/docs/aspect-ratio"
+  },
+  {
+    "id": "TW-007",
+    "title": "Custom Spacing (Margin/Padding)",
+    "description": "Analogi: Social Distancing. Mengatur jarak aman antar elemen agar tidak saling bertabrakan dan enak dipandang.",
+    "categories": ["tailwind", "spacing"],
+    "code": "<div class=\"mt-4 mb-2 px-6 py-3\">\n  Spaced Element\n</div>",
+    "link": "https://tailwindcss.com/docs/margin"
+  },
+  {
+    "id": "TW-008",
+    "title": "Typography Gradients",
+    "description": "Analogi: Tulisan Pelangi. Memberikan efek warna gradasi pada teks agar terlihat lebih modern dan eye-catching.",
+    "categories": ["tailwind", "typography", "effects"],
+    "code": "<h1 class=\"text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 font-black\">\n  Gradient Text\n</h1>",
+    "link": "https://tailwindcss.com/docs/background-clip"
+  },
+  {
+    "id": "TW-009",
+    "title": "Ring & Outline Focus",
+    "description": "Analogi: Sorotan Lampu Panggung. Memberikan garis luar (glow) saat elemen dipilih (focus) menggunakan keyboard.",
+    "categories": ["tailwind", "interactivity", "accessibility"],
+    "code": "<input class=\"focus:outline-none focus:ring-2 focus:ring-blue-500 rounded\">",
+    "link": "https://tailwindcss.com/docs/ring-width"
+  },
+  {
+    "id": "TW-010",
+    "title": "Arbitrary Values",
+    "description": "Analogi: Custom Tailor. Jika ukuran standar Tailwind tidak cukup, kita bisa menjahit ukuran sendiri secara spesifik.",
+    "categories": ["tailwind", "utility"],
+    "code": "<div class=\"w-[432px] bg-[#34d399]\">\n  Custom Width & Color\n</div>",
+    "link": "https://tailwindcss.com/docs/adding-custom-styles#using-arbitrary-values"
+  },
+  
+  {
+    "id": "TW-011",
+    "title": "Backdrop Blur (Glassmorphism)",
+    "description": "Analogi: Kaca Buram Kantor. Efek transparan yang memburamkan latar belakang, memberikan kesan premium dan bersih.",
+    "categories": ["tailwind", "effects", "glassmorphism"],
+    "code": "<div class=\"bg-white/30 backdrop-blur-md border border-white/20 p-6 rounded-2xl\">\n  Frosted Glass Card\n</div>",
+    "link": "https://tailwindcss.com/docs/backdrop-blur"
+  },
+  {
+    "id": "TW-012",
+    "title": "Truncate Long Text",
+    "description": "Analogi: Sensor Kalimat. Memotong kalimat yang terlalu panjang dan menggantinya dengan tanda titik tiga (...) di ujungnya.",
+    "categories": ["tailwind", "typography"],
+    "code": "<p class=\"truncate w-40\">\n  This is a very long text that will be truncated.\n</p>",
+    "link": "https://tailwindcss.com/docs/text-overflow"
+  },
+  {
+    "id": "TW-013",
+    "title": "Animated Spin (Loader)",
+    "description": "Analogi: Kincir Angin. Elemen yang berputar terus-menerus sebagai indikator bahwa sistem sedang sibuk memproses data.",
+    "categories": ["tailwind", "animation"],
+    "code": "<svg class=\"animate-spin h-5 w-5 text-blue-500\" viewBox=\"0 0 24 24\">\n  \n</svg>",
+    "link": "https://tailwindcss.com/docs/animation#spin"
+  },
+  {
+    "id": "TW-014",
+    "title": "Group Hover",
+    "description": "Analogi: Reaksi Berantai. Saat kamu menyentuh kotak besar (Parent), elemen kecil (Child) di dalamnya ikut bereaksi serentak.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"group p-4 border\">\n  <p class=\"group-hover:text-blue-500\">I change when box is hovered</p>\n</div>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#styling-based-on-parent-state"
+  },
+  {
+    "id": "TW-015",
+    "title": "Dark Mode Toggle",
+    "description": "Analogi: Mode Malam. Otomatis mengubah skema warna menjadi gelap saat matahari terbenam atau pengaturan user diaktifkan.",
+    "categories": ["tailwind", "dark-mode"],
+    "code": "<div class=\"bg-white dark:bg-slate-900 text-slate-900 dark:text-white\">\n  Adaptive Theme\n</div>",
+    "link": "https://tailwindcss.com/docs/dark-mode"
+  },
+  {
+    "id": "TW-016",
+    "title": "Sticky Header",
+    "description": "Analogi: Topi yang Menempel. Ke mana pun kamu berjalan (scroll), topi (header) tetap berada di kepalamu tanpa tertinggal.",
+    "categories": ["tailwind", "layout", "position"],
+    "code": "<nav class=\"sticky top-0 z-50 bg-white shadow-md\">\n  Header Content\n</nav>",
+    "link": "https://tailwindcss.com/docs/position#sticky"
+  },
+  {
+    "id": "TW-017",
+    "title": "Invisible Scrollbar",
+    "description": "Analogi: Jalan Rahasia. Kamu tetap bisa berjalan (scroll) tapi tidak ada tanda-tanda jalan (scrollbar) yang terlihat di permukaan.",
+    "categories": ["tailwind", "layout", "overflow"],
+    "code": "<div class=\"overflow-x-auto no-scrollbar\">\n  <div class=\"flex w-[200%]\">...</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/overflow"
+  },
+  {
+    "id": "TW-018",
+    "title": "Card Glassmorphism Sidebar",
+    "description": "Analogi: Sekat Kaca Es. Memberikan tampilan sidebar yang modern dengan efek blur di belakangnya, cocok untuk dashboard pro.",
+    "categories": ["tailwind", "ui", "glassmorphism"],
+    "code": "<aside class=\"bg-slate-900/50 backdrop-blur-xl border-r border-white/10 w-64 h-screen\">\n  Sidebar Menu\n</aside>",
+    "link": "https://tailwindcss.com/docs/backdrop-blur"
+  },
+  {
+    "id": "TW-019",
+    "title": "Flex Wrap (Auto Line Break)",
+    "description": "Analogi: Barisan Antrean. Jika ruangan sudah penuh, orang berikutnya otomatis membuat barisan baru di bawahnya.",
+    "categories": ["tailwind", "layout", "flex"],
+    "code": "<div class=\"flex flex-wrap gap-2\">\n  <span class=\"px-3 py-1 bg-blue-500 rounded\">Tag 1</span>\n  <span class=\"px-3 py-1 bg-blue-500 rounded\">Tag 2</span>\n</div>",
+    "link": "https://tailwindcss.com/docs/flex-wrap"
+  },
+  {
+    "id": "TW-020",
+    "title": "Custom Checkbox Style",
+    "description": "Analogi: Kotak Centang Kustom. Mengubah tampilan checkbox bawaan browser yang kaku menjadi lebih estetik dan sesuai brand.",
+    "categories": ["tailwind", "forms", "ui"],
+    "code": "<input type=\"checkbox\" class=\"w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500\">",
+    "link": "https://tailwindcss.com/docs/forms"
+  },
+  {
+    "id": "TW-021",
+    "title": "Divide Utility (Auto Border)",
+    "description": "Analogi: Garis Pembatas Antrean. Otomatis memberikan garis di antara elemen-elemen list tanpa perlu menambah border manual di tiap item.",
+    "categories": ["tailwind", "layout", "spacing"],
+    "code": "<ul class=\"divide-y divide-slate-800\">\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>",
+    "link": "https://tailwindcss.com/docs/divide-width"
+  },
+  {
+    "id": "TW-022",
+    "title": "Skeleton Loading Effect",
+    "description": "Analogi: Sketsa Bangunan. Menampilkan bayangan struktur sebelum data asli (furnitur) datang, agar user tahu ada sesuatu yang sedang dimuat.",
+    "categories": ["tailwind", "animation", "ui"],
+    "code": "<div class=\"animate-pulse flex space-x-4\">\n  <div class=\"rounded-full bg-slate-700 h-10 w-10\"></div>\n  <div class=\"flex-1 space-y-6 py-1\">\n    <div class=\"h-2 bg-slate-700 rounded\"></div>\n  </div>\n</div>",
+    "link": "https://tailwindcss.com/docs/animation#pulse"
+  },
+  {
+    "id": "TW-023",
+    "title": "Linear Gradient Overlay",
+    "description": "Analogi: Kacamata Hitam Gradasi. Memberikan lapisan gelap di atas gambar agar teks putih di atasnya tetap terbaca jelas.",
+    "categories": ["tailwind", "background", "effects"],
+    "code": "<div class=\"bg-gradient-to-t from-black/80 to-transparent p-4\">\n  <h2 class=\"text-white italic\">Image Title</h2>\n</div>",
+    "link": "https://tailwindcss.com/docs/background-image"
+  },
+  {
+    "id": "TW-024",
+    "title": "Responsive Grid Sidebar (Holy Grail)",
+    "description": "Analogi: Rumah Bongkar Pasang. Sidebar ada di samping saat di Desktop, tapi otomatis pindah ke bawah atau hilang saat di Mobile.",
+    "categories": ["tailwind", "layout", "grid"],
+    "code": "<div class=\"grid grid-cols-1 lg:grid-cols-4\">\n  <div class=\"hidden lg:block\">Sidebar</div>\n  <div class=\"lg:col-span-3\">Main Content</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/grid-template-columns"
+  },
+  {
+    "id": "TW-025",
+    "title": "Input Floating Labels",
+    "description": "Analogi: Label yang Melayang. Saat kamu mulai mengetik, label (nama field) akan mengecil dan naik ke atas agar tidak menghalangi tulisanmu.",
+    "categories": ["tailwind", "forms", "ui"],
+    "code": "<div class=\"relative\">\n  <input id=\"f1\" placeholder=\" \" class=\"peer block w-full border-0 border-b-2\">\n  <label for=\"f1\" class=\"absolute top-3 -z-10 origin-[0] peer-focus:-translate-y-6\">Email</label>\n</div>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#peer-focus"
+  },
+  {
+    "id": "TW-026",
+    "title": "Object Fit (Cover)",
+    "description": "Analogi: Poster di Bingkai. Memastikan gambar memenuhi seluruh bingkai tanpa terlihat gepeng (stretch), meski ukuran bingkainya tidak proporsional.",
+    "categories": ["tailwind", "layout", "images"],
+    "code": "<img src=\"...\" class=\"w-full h-64 object-cover rounded-xl\">",
+    "link": "https://tailwindcss.com/docs/object-fit"
+  },
+  {
+    "id": "TW-027",
+    "title": "Line Clamp (Multi-line Truncate)",
+    "description": "Analogi: Ringkasan Berita. Membatasi teks hanya tampil maksimal 2 atau 3 baris, selebihnya disembunyikan dengan tanda '...'.",
+    "categories": ["tailwind", "typography"],
+    "code": "<p class=\"line-clamp-3 text-sm\">\n  Very long description here...\n</p>",
+    "link": "https://tailwindcss.com/docs/line-clamp"
+  },
+  {
+    "id": "TW-028",
+    "title": "Ping Animation (Notification Dot)",
+    "description": "Analogi: Detak Jantung. Lingkaran yang berdenyut untuk menarik perhatian user bahwa ada notifikasi baru.",
+    "categories": ["tailwind", "animation", "ui"],
+    "code": "<span class=\"relative flex h-3 w-3\">\n  <span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75\"></span>\n  <span class=\"relative inline-flex rounded-full h-3 w-3 bg-red-500\"></span>\n</span>",
+    "link": "https://tailwindcss.com/docs/animation#ping"
+  },
+  {
+    "id": "TW-029",
+    "title": "Shadow Box Layering",
+    "description": "Analogi: Ketinggian Benda. Semakin tebal bayangannya, semakin tinggi benda tersebut melayang di atas permukaan layar.",
+    "categories": ["tailwind", "effects"],
+    "code": "<div class=\"shadow-sm\">Low</div>\n<div class=\"shadow-xl\">High</div>",
+    "link": "https://tailwindcss.com/docs/box-shadow"
+  },
+  {
+    "id": "TW-030",
+    "title": "Accent Color",
+    "description": "Analogi: Highlighter. Memberikan warna tema utama pada elemen-elemen kecil seperti checkbox, radio button, atau progress bar secara cepat.",
+    "categories": ["tailwind", "utility"],
+    "code": "<input type=\"range\" class=\"accent-blue-500\">",
+    "link": "https://tailwindcss.com/docs/accent-color"
+  },
+  {
+    "id": "TW-031",
+    "title": "Text Underline Offset",
+    "description": "Analogi: Jarak Garis Bawah. Memberikan ruang napas antara teks dan garis bawahnya agar tidak terlihat menumpuk.",
+    "categories": ["tailwind", "typography"],
+    "code": "<a class=\"underline underline-offset-4 decoration-2\">Link Style</a>",
+    "link": "https://tailwindcss.com/docs/text-underline-offset"
+  },
+  {
+    "id": "TW-032",
+    "title": "Isolation (Mix Blend Mode)",
+    "description": "Analogi: Filter Foto. Menentukan bagaimana warna elemen bercampur dengan warna elemen yang ada di belakangnya (seperti efek Photoshop).",
+    "categories": ["tailwind", "effects"],
+    "code": "<div class=\"mix-blend-multiply bg-blue-400\">...</div>",
+    "link": "https://tailwindcss.com/docs/mix-blend-mode"
+  },
+  {
+    "id": "TW-033",
+    "title": "Grayscale Filter",
+    "description": "Analogi: Foto Jadul. Mengubah elemen yang penuh warna menjadi hitam putih, sering digunakan untuk logo partner yang belum aktif.",
+    "categories": ["tailwind", "effects", "filters"],
+    "code": "<img class=\"grayscale hover:grayscale-0 transition duration-500\">",
+    "link": "https://tailwindcss.com/docs/grayscale"
+  },
+  {
+    "id": "TW-034",
+    "title": "User Select Control",
+    "description": "Analogi: Larangan Copy-Paste. Mencegah user memblokir (highlight) teks tertentu, berguna untuk elemen UI seperti tombol.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"select-none\">You cannot highlight this text</div>",
+    "link": "https://tailwindcss.com/docs/user-select"
+  },
+  {
+    "id": "TW-035",
+    "title": "Scroll Snap",
+    "description": "Analogi: Magnet Halaman. Saat user men-scroll gallery, elemen akan otomatis 'terpaku' (snap) ke posisi tengah layar secara rapi.",
+    "categories": ["tailwind", "layout", "interactivity"],
+    "code": "<div class=\"snap-x flex overflow-x-auto\">\n  <div class=\"snap-center shrink-0 w-80\">Card 1</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/scroll-snap-type"
+  },
+  {
+    "id": "TW-036",
+    "title": "Pointer Events (Click Through)",
+    "description": "Analogi: Tembus Pandang. Membuat elemen bisa dilihat tapi tidak bisa diklik, sehingga klik user akan tembus ke elemen di belakangnya.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"pointer-events-none opacity-50\">I am unclickable</div>",
+    "link": "https://tailwindcss.com/docs/pointer-events"
+  },
+  {
+    "id": "TW-037",
+    "title": "Whitespace Handling",
+    "description": "Analogi: Penulisan Puisi. Memaksa teks untuk tetap mengikuti spasi dan baris baru sesuai yang kamu ketik di kode, tanpa digabung jadi satu baris.",
+    "categories": ["tailwind", "typography"],
+    "code": "<pre class=\"whitespace-pre-wrap\">Teks yang menjaga format baris.</pre>",
+    "link": "https://tailwindcss.com/docs/whitespace"
+  },
+  {
+    "id": "TW-038",
+    "title": "Table Layout Fixed",
+    "description": "Analogi: Ukuran Meja Permanen. Memaksa kolom tabel untuk memiliki lebar yang tetap, tidak peduli seberapa panjang teks di dalamnya.",
+    "categories": ["tailwind", "layout", "tables"],
+    "code": "<table class=\"table-fixed w-full\">\n  <thead><tr><th class=\"w-1/2\">Fixed Width</th></tr></thead>\n</table>",
+    "link": "https://tailwindcss.com/docs/table-layout"
+  },
+  {
+    "id": "TW-039",
+    "title": "Stroke Width (Icon Styling)",
+    "description": "Analogi: Ketebalan Spidol. Mengatur seberapa tebal garis pada icon SVG buatanmu.",
+    "categories": ["tailwind", "svg"],
+    "code": "<svg class=\"stroke-2 stroke-blue-500 fill-none\">...</svg>",
+    "link": "https://tailwindcss.com/docs/stroke-width"
+  },
+  {
+    "id": "TW-040",
+    "title": "Will Change (GPU Optimization)",
+    "description": "Analogi: Pemanasan Mesin. Memberi tahu browser bahwa elemen ini akan segera bergerak/berubah, agar browser menyiapkan performa terbaiknya.",
+    "categories": ["tailwind", "performance"],
+    "code": "<div class=\"will-change-transform transform hover:scale-110\">...</div>",
+    "link": "https://tailwindcss.com/docs/will-change"
+  },
+  {
+    "id": "TW-041",
+    "title": "Peer Styling (Form Validation UI)",
+    "description": "Analogi: Efek Domino. Saat input (kakak) tidak valid, pesan error di bawahnya (adik) otomatis muncul tanpa perlu logika Javascript tambahan.",
+    "categories": ["tailwind", "interactivity", "forms"],
+    "code": "<input type=\"email\" class=\"peer border-gray-300 invalid:border-red-500\">\n<p class=\"invisible peer-invalid:visible text-red-500\">Email tidak valid.</p>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#styling-based-on-sibling-state"
+  },
+  {
+    "id": "TW-042",
+    "title": "Grid Auto-Fill (Responsive Cards)",
+    "description": "Analogi: Parkiran Pintar. Kartu-kartu akan mengisi baris secara otomatis dan menyesuaikan jumlah kolomnya sendiri tergantung lebar layar.",
+    "categories": ["tailwind", "layout", "grid"],
+    "code": "<div class=\"grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4\">\n  <div class=\"bg-slate-800 p-4 rounded\">Card</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/grid-template-columns#arbitrary-values"
+  },
+  {
+    "id": "TW-043",
+    "title": "Backface Visibility",
+    "description": "Analogi: Kartu Remi. Menentukan apakah bagian belakang elemen tetap terlihat atau menghilang saat elemen diputar (flip) 180 derajat.",
+    "categories": ["tailwind", "effects", "animation"],
+    "code": "<div class=\"backface-hidden rotate-y-180\">\n  Hanya terlihat jika tidak diputar.\n</div>",
+    "link": "https://tailwindcss.com/docs/backface-visibility"
+  },
+  {
+    "id": "TW-044",
+    "title": "Custom Selection Color",
+    "description": "Analogi: Stabilo Custom. Mengubah warna latar belakang teks saat user melakukan blokir (highlight) agar senada dengan brand kamu.",
+    "categories": ["tailwind", "typography", "ui"],
+    "code": "<div class=\"selection:bg-blue-500 selection:text-white\">\n  Blokir teks ini untuk melihat hasilnya.\n</div>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#selection"
+  },
+  {
+    "id": "TW-045",
+    "title": "List Style Custom Marker",
+    "description": "Analogi: Poin Peluru Berwarna. Mengubah warna titik (bullet) pada list tanpa harus mengubah warna teks utamanya.",
+    "categories": ["tailwind", "typography", "list"],
+    "code": "<ul class=\"list-disc marker:text-blue-500\">\n  <li>Item dengan bullet biru</li>\n</ul>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#marker"
+  },
+  {
+    "id": "TW-046",
+    "title": "Background Blend Mode (Luminosity)",
+    "description": "Analogi: Cetak Sablon. Mencampurkan warna latar belakang dengan gambar untuk menciptakan efek artistik seperti poster film.",
+    "categories": ["tailwind", "background", "effects"],
+    "code": "<div class=\"bg-blue-500 bg-blend-luminosity bg-[url('image.jpg')]\">\n  Efek Warna Bertekstur\n</div>",
+    "link": "https://tailwindcss.com/docs/background-blend-mode"
+  },
+  {
+    "id": "TW-047",
+    "title": "Contrast & Brightness Filter",
+    "description": "Analogi: Editor Foto Instagram. Mengatur ketajaman warna dan kecerahan gambar langsung lewat class tanpa edit file asli.",
+    "categories": ["tailwind", "effects", "filters"],
+    "code": "<img src=\"...\" class=\"brightness-50 contrast-125 hover:brightness-100 transition\">",
+    "link": "https://tailwindcss.com/docs/brightness"
+  },
+  {
+    "id": "TW-048",
+    "title": "Vertical Writing Mode",
+    "description": "Analogi: Papan Nama Jepang. Mengubah orientasi teks agar mengalir dari atas ke bawah, sering dipakai untuk label vertikal di sisi dashboard.",
+    "categories": ["tailwind", "typography", "layout"],
+    "code": "<div class=\"[writing-mode:vertical-rl] rotate-180 text-sm\">\n  VERTikal LABEL\n</div>",
+    "link": "https://tailwindcss.com/docs/writing-mode"
+  },
+  {
+    "id": "TW-049",
+    "title": "Container Queries (Basic)",
+    "description": "Analogi: Responsif Berbasis Ruangan. Komponen menyesuaikan gayanya bukan berdasarkan layar HP, tapi berdasarkan lebar kotak tempat dia diletakkan.",
+    "categories": ["tailwind", "responsive", "layout"],
+    "code": "\n<div class=\"@container\">\n  <div class=\"@lg:underline\">Garis bawah hanya jika container lebar.</div>\n</div>",
+    "link": "https://github.com/tailwindlabs/tailwindcss-container-queries"
+  },
+  {
+    "id": "TW-050",
+    "title": "Gradient Text Underline",
+    "description": "Analogi: Garis Bawah Estetik. Membuat garis bawah yang tebal dan memiliki warna gradasi, memberikan kesan modern pada link.",
+    "categories": ["tailwind", "typography", "effects"],
+    "code": "<span class=\"bg-gradient-to-r from-blue-500 to-purple-500 bg-[length:100%_3px] bg-no-repeat bg-bottom pb-1\">\n  Stylish Underline\n</span>",
+    "link": "https://tailwindcss.com/docs/background-image"
+  },
+  {
+    "id": "TW-051",
+    "title": "Object Position (Focusing)",
+    "description": "Analogi: Membingkai Wajah. Menentukan bagian mana dari gambar yang harus tetap terlihat di tengah bingkai (misal: bagian atas gambar).",
+    "categories": ["tailwind", "layout", "images"],
+    "code": "<img src=\"...\" class=\"h-48 w-full object-cover object-top rounded\">",
+    "link": "https://tailwindcss.com/docs/object-position"
+  },
+  {
+    "id": "TW-052",
+    "title": "Hyphens Auto Control",
+    "description": "Analogi: Pemenggalan Kata. Otomatis menambahkan tanda hubung (-) jika sebuah kata terlalu panjang dan harus pindah ke baris baru.",
+    "categories": ["tailwind", "typography"],
+    "code": "<p class=\"hyphens-auto text-justify\">\n  Pernyataan yang sangat panjang sekali...\n</p>",
+    "link": "https://tailwindcss.com/docs/hyphens"
+  },
+  {
+    "id": "TW-053",
+    "title": "Fill & Stroke CurrentColor",
+    "description": "Analogi: Bunglon Icon. Membuat icon SVG otomatis mengikuti warna teks di sekitarnya tanpa perlu diatur manual satu-persatu.",
+    "categories": ["tailwind", "svg", "ui"],
+    "code": "<svg class=\"fill-current text-blue-500\">...</svg>",
+    "link": "https://tailwindcss.com/docs/fill"
+  },
+  {
+    "id": "TW-054",
+    "title": "Screen Reader Only (Accessibility)",
+    "description": "Analogi: Pesan Rahasia. Teks yang disembunyikan dari layar tapi tetap bisa dibaca oleh alat bantu tunanetra (Screen Reader).",
+    "categories": ["tailwind", "accessibility"],
+    "code": "<button>\n  <span class=\"sr-only\">Tutup Menu</span>\n  <svg>...</svg>\n</button>",
+    "link": "https://tailwindcss.com/docs/screen-readers"
+  },
+  {
+    "id": "TW-055",
+    "title": "Space Between Utility",
+    "description": "Analogi: Jaga Jarak Otomatis. Memberikan jarak antar elemen dalam list tanpa harus memberikan margin satu per satu ke tiap item.",
+    "categories": ["tailwind", "layout", "spacing"],
+    "code": "<div class=\"flex space-x-4\">\n  <div>1</div><div>2</div><div>3</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/space"
+  },
+  {
+    "id": "TW-056",
+    "title": "Columns Layout (Masonry-like)",
+    "description": "Analogi: Kolom Koran. Membagi konten menjadi beberapa kolom vertikal seperti tampilan Pinterest secara instan.",
+    "categories": ["tailwind", "layout"],
+    "code": "<div class=\"columns-3 gap-4\">\n  <img src=\"...\" class=\"w-full mb-4\">\n  <img src=\"...\" class=\"w-full\">\n</div>",
+    "link": "https://tailwindcss.com/docs/columns"
+  },
+  {
+    "id": "TW-057",
+    "title": "Border Image Gradient",
+    "description": "Analogi: Bingkai Warna-warni. Memberikan border pada kotak yang memiliki warna gradasi transisi halus.",
+    "categories": ["tailwind", "border", "effects"],
+    "code": "<div class=\"border-4 border-transparent bg-clip-border [border-image:linear-gradient(to_right,blue,purple)_1]\">\n  Gradient Border Box\n</div>",
+    "link": "https://tailwindcss.com/docs/border-image"
+  },
+  {
+    "id": "TW-058",
+    "title": "Pointer Events Auto/None",
+    "description": "Analogi: Kaca Anti Peluru. Kamu bisa melihat apa yang ada di dalamnya, tapi tidak bisa menyentuhnya (klik tidak berfungsi).",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"pointer-events-none opacity-50\">Unclickable</div>",
+    "link": "https://tailwindcss.com/docs/pointer-events"
+  },
+  {
+    "id": "TW-059",
+    "title": "Drop Shadow (Filter vs Box Shadow)",
+    "description": "Analogi: Bayangan Bentuk Asli. Memberikan bayangan sesuai lekuk objek (misal: icon transparan), bukan sekadar kotak di luarnya.",
+    "categories": ["tailwind", "effects", "filters"],
+    "code": "<img src=\"logo-transparan.png\" class=\"filter drop-shadow-lg\">",
+    "link": "https://tailwindcss.com/docs/drop-shadow"
+  },
+  {
+    "id": "TW-060",
+    "title": "Scroll Padding (Navbar Offset)",
+    "description": "Analogi: Jarak Berhenti. Saat kamu klik link menu, halaman akan berhenti sedikit lebih tinggi agar judul tidak tertutup header yang melayang.",
+    "categories": ["tailwind", "layout", "interactivity"],
+    "code": "<html class=\"scroll-pt-20\">\n  \n</html>",
+    "link": "https://tailwindcss.com/docs/scroll-padding"
+  },
+  {
+    "id": "TW-061",
+    "title": "Hiding Scrollbar (Cross-browser)",
+    "description": "Analogi: Lantai Licin Sempurna. Scrolling tetap berfungsi tapi visual bar penanda di samping benar-benar hilang.",
+    "categories": ["tailwind", "layout", "utility"],
+    "code": "<div class=\"scrollbar-hide\">\n  Scrollable without visual bar\n</div>",
+    "link": "https://tailwindcss.com/docs/overflow"
+  },
+  {
+    "id": "TW-062",
+    "title": "User Drag None",
+    "description": "Analogi: Gambar Terpaku. Mencegah user menarik (drag) gambar atau logo kamu keluar dari browser atau ke folder mereka.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<img src=\"logo.png\" class=\"select-none pointer-events-none\">\n",
+    "link": "https://tailwindcss.com/docs/user-select"
+  },
+  {
+    "id": "TW-063",
+    "title": "Font Variant Numeric (Tabular)",
+    "description": "Analogi: Barisan Angka Kalkulator. Membuat angka memiliki lebar yang sama (monospaced) agar saat angka berubah (misal: timer), teks tidak bergeser-geser.",
+    "categories": ["tailwind", "typography"],
+    "code": "<div class=\"tabular-nums\">\n  01:59\n</div>",
+    "link": "https://tailwindcss.com/docs/font-variant-numeric"
+  },
+  {
+    "id": "TW-064",
+    "title": "Background Attachment Fixed",
+    "description": "Analogi: Pemandangan di Balik Jendela. Saat kamu scroll rumah (konten), pemandangan di luar (background) tetap diam tidak ikut bergerak.",
+    "categories": ["tailwind", "background"],
+    "code": "<div class=\"bg-[url('hero.jpg')] bg-fixed bg-cover\">\n  Parallax Background\n</div>",
+    "link": "https://tailwindcss.com/docs/background-attachment"
+  },
+  {
+    "id": "TW-065",
+    "title": "Touch Action Control",
+    "description": "Analogi: Kunci Layar. Mengatur bagaimana layar merespon sentuhan (zoom, scroll dua jari, dll), sangat penting untuk aplikasi mobile pro.",
+    "categories": ["tailwind", "interactivity", "mobile"],
+    "code": "<div class=\"touch-none\">\n  No mobile gestures allowed here.\n</div>",
+    "link": "https://tailwindcss.com/docs/touch-action"
+  },
+  {
+    "id": "TW-066",
+    "title": "Text Stroke (Outline Text)",
+    "description": "Analogi: Tulisan Papan Tulis. Hanya menampilkan garis luar huruf tanpa isi warna di dalamnya, memberikan kesan desain poster yang berani.",
+    "categories": ["tailwind", "typography", "effects"],
+    "code": "<h1 class=\"text-5xl font-black text-transparent [text-stroke:1px_white]\">\n  HOLLOW TEXT\n</h1>",
+    "link": "https://tailwindcss.com/docs/adding-custom-styles"
+  },
+  {
+    "id": "TW-067",
+    "title": "Smooth Scroll Behavior",
+    "description": "Analogi: Lift Mewah. Saat kamu menekan tombol lantai (link), pergerakannya meluncur halus, bukan berpindah secara instan (teleport).",
+    "categories": ["tailwind", "interactivity", "layout"],
+    "code": "<html class=\"scroll-smooth\">\n  \n</html>",
+    "link": "https://tailwindcss.com/docs/scroll-behavior"
+  },
+  {
+    "id": "TW-068",
+    "title": "Custom Underline Decoration",
+    "description": "Analogi: Stabilo Bertekstur. Mengubah garis bawah link menjadi bergelombang atau putus-putus untuk mempercantik tipografi.",
+    "categories": ["tailwind", "typography"],
+    "code": "<a class=\"underline decoration-wavy decoration-blue-500\">Wavy Link</a>",
+    "link": "https://tailwindcss.com/docs/text-decoration-style"
+  },
+  {
+    "id": "TW-069",
+    "title": "Content Visibility (Performance)",
+    "description": "Analogi: Lampu Sensor Gerak. Browser hanya akan merender elemen jika user sedang melihatnya, sangat ampuh untuk mempercepat halaman yang sangat panjang.",
+    "categories": ["tailwind", "performance", "layout"],
+    "code": "<div class=\"[content-visibility:auto] contain-intrinsic-size-[500px]\">\n  Heavy Content Area\n</div>",
+    "link": "https://web.dev/content-visibility/"
+  },
+  {
+    "id": "TW-070",
+    "title": "Grayscale On Interaction",
+    "description": "Analogi: Foto Menjadi Berwarna. Gambar yang awalnya hitam putih (monokrom) berubah menjadi penuh warna saat disentuh (hover).",
+    "categories": ["tailwind", "effects", "filters"],
+    "code": "<img src=\"...\" class=\"grayscale hover:grayscale-0 transition-all duration-700\">",
+    "link": "https://tailwindcss.com/docs/grayscale"
+  },
+  {
+    "id": "TW-071",
+    "title": "Mix Blend Mode (Difference)",
+    "description": "Analogi: Klise Foto. Warna teks akan otomatis berubah kontras dengan warna latar belakang di bawahnya (Hitam di atas Putih, Putih di atas Hitam).",
+    "categories": ["tailwind", "effects"],
+    "code": "<div class=\"bg-white h-20 w-full\">\n  <h2 class=\"mix-blend-difference text-white\">Smart Contrast</h2>\n</div>",
+    "link": "https://tailwindcss.com/docs/mix-blend-mode"
+  },
+  {
+    "id": "TW-072",
+    "title": "Object Fit Contain (Product List)",
+    "description": "Analogi: Bingkai Foto Galeri. Memastikan seluruh bagian gambar terlihat utuh di dalam bingkai tanpa ada yang terpotong sedikit pun.",
+    "categories": ["tailwind", "layout", "images"],
+    "code": "<img src=\"...\" class=\"w-full h-40 object-contain bg-slate-100\">",
+    "link": "https://tailwindcss.com/docs/object-fit"
+  },
+  {
+    "id": "TW-073",
+    "title": "Text Wrap Balanced",
+    "description": "Analogi: Judul Buku. Memastikan baris judul memiliki panjang yang seimbang antara baris atas dan bawah agar tidak ada satu kata yang 'jomblo' di bawah.",
+    "categories": ["tailwind", "typography"],
+    "code": "<h2 class=\"text-balance text-2xl font-bold italic\">\n  Judul Yang Sangat Panjang Tapi Tetap Rapi\n</h2>",
+    "link": "https://tailwindcss.com/docs/text-wrap"
+  },
+  {
+    "id": "TW-074",
+    "title": "Accent Color Radio/Range",
+    "description": "Analogi: Seragam Sekolah. Menentukan satu warna tema untuk semua elemen input native agar terlihat serasi dengan desain utama.",
+    "categories": ["tailwind", "forms", "ui"],
+    "code": "<input type=\"radio\" class=\"accent-blue-600\">\n<input type=\"range\" class=\"accent-blue-600\">",
+    "link": "https://tailwindcss.com/docs/accent-color"
+  },
+  {
+    "id": "TW-075",
+    "title": "Letter Spacing (Kerning)",
+    "description": "Analogi: Jarak Barisan. Merapatkan atau merenggangkan jarak antar huruf untuk menciptakan gaya teks minimalis atau futuristik.",
+    "categories": ["tailwind", "typography"],
+    "code": "<h3 class=\"tracking-[0.5em] uppercase text-xs font-bold\">MINIMALIST</h3>",
+    "link": "https://tailwindcss.com/docs/letter-spacing"
+  },
+  {
+    "id": "TW-076",
+    "title": "Flex Basis (Fixed Sizing)",
+    "description": "Analogi: Ukuran Kamar. Menentukan lebar dasar sebuah elemen dalam barisan flex sebelum sisa ruang dibagikan ke elemen lain.",
+    "categories": ["tailwind", "layout", "flex"],
+    "code": "<div class=\"flex\">\n  <div class=\"basis-1/4\">Sidebar</div>\n  <div class=\"flex-1\">Main</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/flex-basis"
+  },
+  {
+    "id": "TW-077",
+    "title": "Grid Row Start/End",
+    "description": "Analogi: Gedung Bertingkat. Menentukan sebuah ruangan (elemen) akan dimulai dari lantai berapa dan berakhir di lantai berapa.",
+    "categories": ["tailwind", "layout", "grid"],
+    "code": "<div class=\"row-start-2 row-span-2 bg-blue-500\">High Card</div>",
+    "link": "https://tailwindcss.com/docs/grid-row-start-end"
+  },
+  {
+    "id": "TW-078",
+    "title": "Pointer Events (Icon Overlay)",
+    "description": "Analogi: Kaca Tembus Pandang. Membuat elemen dekorasi bisa dilihat tapi tidak bisa menghalangi klik user ke tombol di belakangnya.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"pointer-events-none absolute inset-0\">Decorative Layer</div>",
+    "link": "https://tailwindcss.com/docs/pointer-events"
+  },
+  {
+    "id": "TW-079",
+    "title": "Table Caption Side",
+    "description": "Analogi: Judul Meja. Menaruh judul keterangan tabel di bagian bawah (bottom) meja, bukan di atas seperti biasanya.",
+    "categories": ["tailwind", "layout", "tables"],
+    "code": "<table class=\"caption-bottom\">\n  <caption>Daftar Siswa v1.0</caption>\n  \n</table>",
+    "link": "https://tailwindcss.com/docs/caption-side"
+  },
+  {
+    "id": "TW-080",
+    "title": "Will Change Transform",
+    "description": "Analogi: Pemanasan Atlet. Memberi tahu browser untuk menyiapkan kartu grafis (GPU) karena elemen ini akan segera bergerak/dianimasikan.",
+    "categories": ["tailwind", "performance"],
+    "code": "<div class=\"will-change-transform transform hover:scale-105 transition\">...</div>",
+    "link": "https://tailwindcss.com/docs/will-change"
+  },
+  {
+    "id": "TW-081",
+    "title": "Perspective View",
+    "description": "Analogi: Efek 3D. Memberikan kedalaman visual pada elemen saat diputar, sehingga terlihat seperti benda nyata yang miring di depan mata.",
+    "categories": ["tailwind", "effects", "animation"],
+    "code": "<div class=\"[perspective:1000px]\">\n  <div class=\"rotate-y-12 bg-white shadow-xl p-6\">3D Card</div>\n</div>",
+    "link": "https://tailwindcss.com/docs/adding-custom-styles"
+  },
+  {
+    "id": "TW-082",
+    "title": "Shadow Inside (Inset)",
+    "description": "Analogi: Ukiran Kayu. Memberikan bayangan ke arah dalam, sehingga elemen terlihat seperti tertekan masuk ke dalam layar.",
+    "categories": ["tailwind", "effects"],
+    "code": "<div class=\"shadow-inner bg-slate-100 p-4 rounded-xl font-mono text-blue-500 text-sm\">\n  Input Field Simulation\n</div>",
+    "link": "https://tailwindcss.com/docs/box-shadow"
+  },
+  {
+    "id": "TW-083",
+    "title": "Mask Image (Alpha Mask)",
+    "description": "Analogi: Stensil. Memotong elemen atau gambar sesuai bentuk pola tertentu menggunakan bantuan gambar lain sebagai cetakan.",
+    "categories": ["tailwind", "effects", "advanced"],
+    "code": "<div class=\"[mask-image:linear-gradient(to_bottom,black,transparent)]\">\n  Fade Out Content Area\n</div>",
+    "link": "https://tailwindcss.com/docs/adding-custom-styles"
+  },
+  {
+    "id": "TW-084",
+    "title": "Overscroll Behavior",
+    "description": "Analogi: Rem Tangan. Mencegah aplikasi 'mental' atau me-refresh halaman saat user melakukan scroll hingga mentok di bagian atas mobile.",
+    "categories": ["tailwind", "layout", "interactivity"],
+    "code": "<div class=\"overscroll-none overflow-auto\">No bounce scroll area</div>",
+    "link": "https://tailwindcss.com/docs/overscroll-behavior"
+  },
+  {
+    "id": "TW-085",
+    "title": "Columns Gap Control",
+    "description": "Analogi: Gang Perumahan. Mengatur lebar jarak antara kolom-kolom teks yang dibuat menggunakan utilitas columns.",
+    "categories": ["tailwind", "layout", "spacing"],
+    "code": "<div class=\"columns-2 gap-12\">Column with wide gap</div>",
+    "link": "https://tailwindcss.com/docs/columns"
+  },
+  {
+    "id": "TW-086",
+    "title": "Stroke Dasharray (SVG Dash)",
+    "description": "Analogi: Garis Jahitan. Mengubah garis lurus pada icon SVG menjadi garis putus-putus yang bisa dianimasikan meluncur.",
+    "categories": ["tailwind", "svg", "animation"],
+    "code": "<circle class=\"stroke-[2] [stroke-dasharray:5_5]\"></circle>",
+    "link": "https://tailwindcss.com/docs/stroke-width"
+  },
+  {
+    "id": "TW-087",
+    "title": "Isolation Isolation-Auto",
+    "description": "Analogi: Batasan Dimensi. Menentukan apakah elemen harus membuat layer (stacking context) baru agar tidak tercampur efeknya dengan elemen lain.",
+    "categories": ["tailwind", "layout", "advanced"],
+    "code": "<div class=\"isolation-auto relative z-10\">Isolated Content</div>",
+    "link": "https://tailwindcss.com/docs/isolation"
+  },
+  {
+    "id": "TW-088",
+    "title": "Font Smoothing (Antialiasing)",
+    "description": "Analogi: Filter Wajah. Membuat tampilan huruf terlihat lebih halus dan tipis pada browser berbasis Webkit (Chrome/Safari).",
+    "categories": ["tailwind", "typography"],
+    "code": "<p class=\"antialiased\">Smooth Professional Text</p>",
+    "link": "https://tailwindcss.com/docs/font-smoothing"
+  },
+  {
+    "id": "TW-089",
+    "title": "Background Size Control",
+    "description": "Analogi: Ukuran Kertas Kado. Mengatur seberapa besar gambar latar belakang ditampilkan, apakah menutupi seluruh area atau sesuai ukuran aslinya.",
+    "categories": ["tailwind", "background"],
+    "code": "<div class=\"bg-contain bg-center bg-no-repeat bg-[url('icon.png')]\"></div>",
+    "link": "https://tailwindcss.com/docs/background-size"
+  },
+  {
+    "id": "TW-090",
+    "title": "Empty Cells Control",
+    "description": "Analogi: Meja Kosong. Menentukan apakah sel tabel yang tidak ada isinya tetap harus menampilkan garis border atau disembunyikan total.",
+    "categories": ["tailwind", "layout", "tables"],
+    "code": "<table class=\"empty-cells-hidden\">...</table>",
+    "link": "https://tailwindcss.com/docs/adding-custom-styles"
+  },
+  {
+    "id": "TW-091",
+    "title": "Group Focus Styling",
+    "description": "Analogi: Satu Komando. Saat user menekan tab ke kotak besar, elemen-elemen kecil di dalamnya ikut bereaksi (misal: berubah warna) secara kolektif.",
+    "categories": ["tailwind", "interactivity"],
+    "code": "<div class=\"group focus:bg-blue-50\">\n  <span class=\"group-focus:text-blue-600\">Focus effect inherited</span>\n</div>",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#styling-based-on-parent-state"
+  },
+  {
+    "id": "TW-092",
+    "title": "Scroll Margin (Anchor Links)",
+    "description": "Analogi: Jarak Parkir. Memberikan ruang kosong di atas elemen saat kita berpindah via link anchor agar tidak mepet ke bagian atas layar.",
+    "categories": ["tailwind", "layout", "interactivity"],
+    "code": "<section id=\"services\" class=\"scroll-mt-24\">Services Area</section>",
+    "link": "https://tailwindcss.com/docs/scroll-margin"
+  },
+  {
+    "id": "TW-093",
+    "title": "List Style Position Inside",
+    "description": "Analogi: Indentasi Paragraf. Menaruh titik peluru (bullet) sejajar di dalam blok teks, bukan melayang di luar batas teks.",
+    "categories": ["tailwind", "typography", "list"],
+    "code": "<ul class=\"list-disc list-inside\"><li>Bullet Inside Text Flow</li></ul>",
+    "link": "https://tailwindcss.com/docs/list-style-position"
+  },
+  {
+    "id": "TW-094",
+    "title": "Caret Color (Cursor Style)",
+    "description": "Analogi: Warna Spidol Ketik. Mengubah warna garis kedip (kursor) saat user sedang mengetik di dalam input atau textarea.",
+    "categories": ["tailwind", "forms", "ui"],
+    "code": "<input class=\"caret-blue-500 focus:outline-none focus:border-blue-500 border-b-2\">",
+    "link": "https://tailwindcss.com/docs/caret-color"
+  },
+  {
+    "id": "TW-095",
+    "title": "Text Decoration Thickness",
+    "description": "Analogi: Ketebalan Garis Stabilo. Mengatur seberapa tebal garis bawah (underline) pada sebuah teks link.",
+    "categories": ["tailwind", "typography"],
+    "code": "<a class=\"underline decoration-4 decoration-blue-500/30\">Heavy Underline</a>",
+    "link": "https://tailwindcss.com/docs/text-decoration-thickness"
+  },
+  {
+    "id": "TW-096",
+    "title": "Box Decoration Break",
+    "description": "Analogi: Kertas yang Robek. Menentukan bagaimana background dan border ditampilkan jika sebuah teks pindah ke baris baru (apakah terputus atau mengulang gaya).",
+    "categories": ["tailwind", "layout", "typography"],
+    "code": "<span class=\"decoration-clone bg-gradient-to-r from-blue-400 to-purple-500 text-white px-2\">\n  Teks Yang Melompat Baris\n</span>",
+    "link": "https://tailwindcss.com/docs/box-decoration-break"
+  },
+  {
+    "id": "TW-097",
+    "title": "Border Spacing (Tables)",
+    "description": "Analogi: Jarak Antar Keramik. Mengatur jarak antar sel dalam tabel saat menggunakan mode border separate.",
+    "categories": ["tailwind", "layout", "tables"],
+    "code": "<table class=\"border-separate border-spacing-2\">...</table>",
+    "link": "https://tailwindcss.com/docs/border-spacing"
+  },
+  {
+    "id": "TW-098",
+    "title": "Ring Offset Color",
+    "description": "Analogi: Cincin Berlapis. Memberikan warna pembatas antara elemen dengan garis luar (ring) agar terlihat lebih berdimensi.",
+    "categories": ["tailwind", "ui", "interactivity"],
+    "code": "<button class=\"ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-900 rounded\">Ring with Offset</button>",
+    "link": "https://tailwindcss.com/docs/ring-offset-color"
+  },
+  {
+    "id": "TW-099",
+    "title": "Break After / Break Before",
+    "description": "Analogi: Halaman Baru. Memaksa printer atau tampilan kolom untuk pindah ke kolom/halaman baru tepat setelah elemen ini selesai.",
+    "categories": ["tailwind", "layout"],
+    "code": "<div class=\"break-after-column\">End of Column 1</div>",
+    "link": "https://tailwindcss.com/docs/break-after"
+  },
+  {
+    "id": "TW-100",
+    "title": "Custom Scrollbar Colors (Webkit)",
+    "description": "Analogi: Pintu Geser Kustom. Mengubah warna batang penggeser (scrollbar) agar serasi dengan tema gelap dashboard kamu.",
+    "categories": ["tailwind", "ui", "layout"],
+    "code": "<div class=\"scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-slate-800\">\n  Custom Scrollable Area\n</div>",
+    "link": "https://tailwindcss.com/docs/overflow"
+  }
+
+]
