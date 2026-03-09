@@ -118,5 +118,128 @@
     "categories": ["migration", "maps", "location", "geometry"],
     "code": "Schema::table('schools', function (Blueprint $table) {\n    $table->geometry('coordinate_location');\n});",
     "link": "https://laravel.com/docs/10.x/migrations#column-method-geometry"
+  },
+  
+  {
+    "id": "Migration-016",
+    "title": "Database Table Comments",
+    "description": "Analogi: Memberi label pada kardus arsip. Memberikan keterangan deskriptif pada tabel di level database agar pengelola database paham bahwa tabel ini sangat rahasia.",
+    "categories": ["migration", "documentation", "schema"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->comment('Tabel utama untuk menyimpan data privasi siswa sekolah.');\n});",
+    "link": "https://laravel.com/docs/11.x/migrations#table-comments"
+  },
+  {
+    "id": "Migration-017",
+    "title": "Rename Classroom Table",
+    "description": "Analogi: Mengganti plang nama gedung. Misalnya dari nama gedung 'Lama' menjadi 'Pusat Belajar', tanpa memindahkan isi (data) di dalamnya.",
+    "categories": ["migration", "rename", "table"],
+    "code": "Schema::rename('classrooms', 'study_groups');",
+    "link": "https://laravel.com/docs/11.x/migrations#renaming-tables"
+  },
+  {
+  "id": "Migration-018",
+  "title": "Rangkuman Arsitektur Migration Laravel 12 (Indeks Referensi)",
+  "description": "Analogi: Cetak Biru (Blueprint) Pembangunan Sekolah. Kamus ini adalah panduan lengkap bagaimana kita membangun infrastruktur digital sekolah dari nol hingga tingkat lanjut. Berikut adalah kegunaan dari seluruh migration yang telah disusun:\n\n1. **Pondasi & Struktur Utama (ID 001, 008, 011, 017):** Mengatur pembuatan tabel dasar siswa, penghapusan tabel sementara, hingga penggunaan relasi modern dan perubahan nama tabel jika struktur organisasi sekolah berkembang.\n\n2. **Integritas & Keamanan Data (ID 002, 009, 013, 016):** Melindungi data melalui sistem 'Skorsing' (Soft Deletes) agar data tidak hilang permanen, memastikan email tidak ganda (Unique), membatasi peran pengguna (Enum Role), hingga memberikan dokumentasi internal (Table Comments).\n\n3. **Optimasi Performa & Pencarian (ID 007, 015):** Mempercepat pencarian data siswa melalui Index (NIS) dan memungkinkan pemetaan lokasi geografis sekolah secara akurat menggunakan data spasial (Geometry).\n\n4. **Fleksibilitas Skema (ID 003, 004, 005, 006, 010, 012, 014):** Memberikan kemampuan untuk mengubah nama kolom, menghapus kolom yang tidak relevan, memperluas kapasitas penyimpanan alamat, mengatur nilai otomatis (Default/Timestamp), hingga sistem pengumuman yang fleksibel (Polymorphic).",
+  "categories": ["summary", "index", "indonesia", "migration"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Migration-019",
+    "title": "Database Table Partitioning (Conceptual)",
+    "description": "Analogi: Membagi lemari arsip besar menjadi laci per tahun (2024, 2025, 2026). Saat mencari data nilai tahun 2026, sistem tidak perlu menggeledah laci tahun-tahun sebelumnya. Sangat penting untuk tabel 'Absensi' yang punya jutaan data.",
+    "categories": ["migration", "performance", "big-data"],
+    "code": "DB::statement('ALTER TABLE attendances PARTITION BY RANGE (YEAR(created_at)) (...)');",
+    "link": "https://dev.mysql.com/doc/refman/8.0/en/partitioning.html"
+  },
+  {
+    "id": "Migration-020",
+    "title": "Composite Index for Optimized Search",
+    "description": "Analogi: Daftar Isi Ganda. Mencari siswa berdasarkan 'Nama' DAN 'Kelas' sekaligus jauh lebih cepat jika kita membuat Index gabungan, daripada membuat Index terpisah untuk masing-masing kolom.",
+    "categories": ["migration", "performance", "index"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->index(['classroom_id', 'status']);\n});",
+    "link": "https://laravel.com/docs/12.x/migrations#creating-indexes"
+  },
+  {
+    "id": "Migration-021",
+    "title": "Virtual Generated Column (Auto-Calculation)",
+    "description": "Analogi: Kalkulator Otomatis di Kertas. Database secara otomatis menghitung 'Nilai Akhir' (Tugas + Ujian) tanpa perlu bantuan kode PHP. Data ini selalu akurat dan tidak bisa dimanipulasi manual.",
+    "categories": ["migration", "database-logic", "mysql"],
+    "code": "Schema::table('grades', function (Blueprint $table) {\n    $table->decimal('final_score')->virtualAs('assignment_score + exam_score');\n});",
+    "link": "https://laravel.com/docs/12.x/migrations#column-modifiers"
+  },
+  {
+    "id": "Migration-022",
+    "title": "JSON Column for Flexible Metadata",
+    "description": "Analogi: Kantong Ajaib. Menyimpan data tambahan siswa yang tidak menentu (seperti riwayat penyakit atau prestasi luar sekolah) dalam format JSON agar skema tabel tetap rapi.",
+    "categories": ["migration", "json", "schema"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->json('metadata')->nullable();\n});",
+    "link": "https://laravel.com/docs/12.x/migrations#column-method-json"
+  },
+  {
+    "id": "Migration-023",
+    "title": "Full-Text Search Index",
+    "description": "Analogi: Mesin Pencari Perpustakaan. Mengaktifkan fitur pencarian kata di dalam kolom 'Biografi' yang sangat panjang agar hasil pencarian muncul dalam hitungan milidetik.",
+    "categories": ["migration", "performance", "search"],
+    "code": "Schema::table('students', function (Blueprint $table) {\n    $table->fullText('biography');\n});",
+    "link": "https://laravel.com/docs/12.x/migrations#creating-indexes"
+  },
+  {
+    "id": "Migration-024",
+    "title": "Stored Procedure / Trigger Integration",
+    "description": "Analogi: Jebakan Keamanan. Jika ada seseorang yang mencoba mengubah 'Nilai Kelulusan' secara paksa di database, Trigger akan otomatis membatalkannya atau mencatat aksinya di tabel audit.",
+    "categories": ["migration", "security", "database-logic"],
+    "code": "DB::unprepared('CREATE TRIGGER audit_grades BEFORE UPDATE ON grades ...');",
+    "link": ""
+  },
+  {
+    "id": "Migration-025",
+    "title": "Custom UUID / ULID Primary Keys",
+    "description": "Analogi: Kode Barcode Unik Dunia. Menggunakan ID yang tidak bisa ditebak (bukan 1, 2, 3) agar hacker tidak bisa mencoba-coba menebak ID siswa lain melalui URL.",
+    "categories": ["migration", "security", "uuid"],
+    "code": "Schema::create('exams', function (Blueprint $table) {\n    $table->uuid('id')->primary();\n    $table->string('title');\n});",
+    "link": "https://laravel.com/docs/12.x/migrations#column-method-uuid"
+  },
+  {
+    "id": "Migration-026",
+    "title": "Foreign Key Restriction (Restrict On Delete)",
+    "description": "Analogi: Larangan Membongkar Pondasi. Mencegah Admin menghapus data 'Kelas' jika masih ada 'Siswa' di dalamnya. Ini melindungi integritas data agar tidak ada siswa yang 'kehilangan kelas'.",
+    "categories": ["migration", "integrity", "foreign-key"],
+    "code": "$table->foreignId('classroom_id')->constrained()->onDelete('restrict');",
+    "link": ""
+  },
+  {
+    "id": "Migration-027",
+    "title": "Conditional Index (Filtered Index)",
+    "description": "Analogi: Indeks Khusus Siswa Bermasalah. Hanya membuat Index untuk siswa yang statusnya 'Drop Out', sehingga ukuran file database tetap kecil namun pencarian data kritikal tetap cepat.",
+    "categories": ["migration", "performance", "advanced"],
+    "code": "DB::statement('CREATE INDEX active_students_index ON students (name) WHERE status = \"active\"');",
+    "link": ""
+  },
+  {
+    "id": "Migration-028",
+    "title": "Set Null on Delete Strategy",
+    "description": "Analogi: Penghapusan Wali Kelas. Jika seorang Guru (Wali Kelas) keluar dari sekolah, data Kelas tidak dihapus, tapi kolom Wali Kelas dikosongkan (Set Null) hingga ada penggantinya.",
+    "categories": ["migration", "integrity", "foreign-key"],
+    "code": "$table->foreignId('teacher_id')->nullable()->constrained()->onDelete('set null');",
+    "link": ""
+  },
+  {
+    "id": "Migration-029",
+    "title": "Database View Creation",
+    "description": "Analogi: Jendela Laporan Khusus. Membuat 'Tabel Bayangan' yang menggabungkan data Siswa, Nilai, dan Guru agar Admin bisa melihat laporan lengkap tanpa perlu menulis query SQL yang rumit berkali-kali.",
+    "categories": ["migration", "database-logic", "view"],
+    "code": "DB::statement('CREATE VIEW student_report AS SELECT ...');",
+    "link": ""
+  },
+  {
+    "id": "Migration-030",
+    "title": "Rangkuman Engineering & Security (Final Architecture)",
+    "description": "Analogi: Benteng Pertahanan Data Sekolah. Dengan poin 19-29, database-mu kini memiliki standar keamanan perbankan. \n\n1. **High Speed (019, 020, 023, 027):** Menggunakan teknik indexing dan partisi tercanggih.\n2. **Smart Logic (021, 022, 029):** Database bisa menghitung dan mengelola data JSON secara mandiri.\n3. **Military Security (024, 025, 026, 028):** Mencegah penghapusan data sembarangan dan tebakan ID dari pihak luar.",
+    "categories": ["summary", "index", "indonesia", "advanced-migration"],
+    "code": "",
+    "link": ""
   }
+
 ]

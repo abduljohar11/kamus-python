@@ -1,0 +1,889 @@
+[
+  {
+    "id": "React-001",
+    "title": "Main Layout Component",
+    "description": "Analogi: Gedung Utama Sekolah. Layout adalah struktur permanen (Atap, Dinding, Navigasi) yang tidak berubah saat siswa (User) berpindah dari Ruang Kelas A ke Ruang Kelas B. Ini mencegah layar berkedip saat memuat halaman baru.",
+    "categories": ["react", "layout", "inertia"],
+    "code": "import { Link } from '@inertiajs/react';\n\nexport default function AuthenticatedLayout({ user, children }) {\n    return (\n        <div className=\"min-h-screen bg-gray-100\">\n            <nav>Navigasi Utama Sekolah (Halo, {user.name})</nav>\n            <main>{children}</main> {/* Di sinilah komponen 'Page' akan dimasukkan */}\n        </div>\n    );\n}",
+    "link": "https://inertiajs.com/pages#persistent-layouts"
+  },
+  {
+    "id": "React-002",
+    "title": "Page Component",
+    "description": "Analogi: Ruang Kelas Spesifik. Komponen raksasa ini adalah halaman yang dipanggil langsung oleh Controller Backend (misal: 'Students/Index'). Ia menerima 'Props' (Data siswa) dari server.",
+    "categories": ["react", "page", "inertia"],
+    "code": "import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';\n\nexport default function StudentIndex({ students }) {\n    return (\n        <AuthenticatedLayout>\n            <h1>Daftar Siswa Aktif</h1>\n            {/* Tampilkan data siswa di sini */}\n        </AuthenticatedLayout>\n    );\n}",
+    "link": "https://inertiajs.com/pages"
+  },
+  {
+    "id": "React-003",
+    "title": "Atomic Components (Reusable UI)",
+    "description": "Analogi: Perabotan Kelas (Meja, Kursi, Papan Tulis). Memecah elemen kecil seperti Tombol atau Input Teks menjadi komponen sendiri agar bisa dipakai ribuan kali di seluruh sekolah tanpa menulis ulang kode desainnya.",
+    "categories": ["react", "components", "ui"],
+    "code": "export default function PrimaryButton({ className = '', children, ...props }) {\n    return (\n        <button {...props} className={`bg-blue-600 text-white p-2 rounded ${className}`}>\n            {children}\n        </button>\n    );\n}",
+    "link": "https://react.dev/learn/your-first-component"
+  },
+  {
+    "id": "React-004",
+    "title": "Lucide React Icons",
+    "description": "Analogi: Rambu dan Papan Petunjuk Sekolah. Menggunakan library ikon SVG yang sangat ringan dan modern untuk memberikan petunjuk visual (Ikon User, Ikon Home, Ikon Peringatan) tanpa membebani performa web.",
+    "categories": ["react", "icons", "ui"],
+    "code": "import { UserPlus, Trash2, Home } from 'lucide-react';\n\nexport default function Sidebar() {\n    return <button><Home size={20} color=\"blue\" /> Beranda</button>;\n}",
+    "link": "https://lucide.dev/guide/packages/lucide-react"
+  },
+  {
+    "id": "React-005",
+    "title": "Inertia Link (SPA Navigation)",
+    "description": "Analogi: Pintu Tembus Pandang. Mengganti tag <a> HTML biasa. Dengan Link Inertia, siswa pindah ruangan secara instan tanpa perlu memuat ulang (refresh) seluruh halaman browser.",
+    "categories": ["react", "inertia", "routing"],
+    "code": "import { Link } from '@inertiajs/react';\n\n// Jangan gunakan <a href=\"/students\">, gunakan:\n<Link href={route('students.index')} className=\"text-blue-500\">\n    Lihat Daftar Siswa\n</Link>",
+    "link": "https://inertiajs.com/links"
+  },
+  {
+    "id": "React-006",
+    "title": "SweetAlert2 Utility Function",
+    "description": "Analogi: Mikrofon Pengumuman. Membuat alat bantu (Utility) terpusat di folder 'utils/alert.js' agar komponen manapun bisa memanggil pop-up peringatan interaktif tanpa harus mengatur desainnya berkali-kali.",
+    "categories": ["react", "utility", "sweetalert"],
+    "code": "import Swal from 'sweetalert2';\n\nexport const showAlert = (title, text, icon = 'success') => {\n    return Swal.fire({ title, text, icon, confirmButtonColor: '#3085d6' });\n};\n\nexport const showConfirm = (title, text) => {\n    return Swal.fire({ title, text, icon: 'warning', showCancelButton: true });\n};",
+    "link": "https://sweetalert2.github.io/#usage"
+  },
+  {
+    "id": "React-007",
+    "title": "Calling SweetAlert from Component",
+    "description": "Analogi: Guru Memberi Peringatan. Mengimpor mikrofon darurat (Utility) ke dalam ruang kelas (Komponen) untuk menanyakan konfirmasi kepada pengguna sebelum menghapus data.",
+    "categories": ["react", "ui", "interaction"],
+    "code": "import { showConfirm, showAlert } from '@/utils/alert';\n\nconst handleDelete = () => {\n    showConfirm('Yakin hapus siswa?', 'Data akan hilang permanen!').then((result) => {\n        if (result.isConfirmed) {\n            // Jalankan logika hapus...\n            showAlert('Terhapus!', 'Data siswa berhasil dihapus.');\n        }\n    });\n};",
+    "link": "https://sweetalert2.github.io/"
+  },
+  {
+    "id": "React-008",
+    "title": "Listening to Backend Flash Messages (Global Alert)",
+    "description": "Analogi: Speaker Pusat Otomatis. Komponen pintar yang diletakkan di Layout Utama. Ia 'mendengarkan' kiriman data dari Controller Backend (Controller-015) dan otomatis membunyikan SweetAlert jika ada pesan sukses/gagal dari server.",
+    "categories": ["react", "inertia", "sweetalert", "integration"],
+    "code": "import { usePage } from '@inertiajs/react';\nimport { useEffect } from 'react';\nimport { showAlert } from '@/utils/alert';\n\nexport default function FlashMessageListener() {\n    const { flash } = usePage().props;\n    useEffect(() => {\n        if (flash.message) {\n            showAlert(flash.type === 'success' ? 'Berhasil' : 'Peringatan', flash.message, flash.type);\n        }\n    }, [flash]);\n    return null; // Komponen ini tidak berwujud, hanya memantau data\n}",
+    "link": "https://inertiajs.com/shared-data"
+  },
+  {
+    "id": "React-009",
+    "title": "Inertia useForm (Formulir Cerdas)",
+    "description": "Analogi: Formulir Pendaftaran Ajaib. Alat bantu bawaan Inertia yang mengingat apa yang kita ketik, memunculkan coretan merah jika ada error dari Backend, dan menampilkan animasi loading saat dikirim.",
+    "categories": ["react", "form", "inertia"],
+    "code": "import { useForm } from '@inertiajs/react';\n\nconst { data, setData, post, processing, errors } = useForm({\n    name: '', email: ''\n});\n\nconst submit = (e) => {\n    e.preventDefault();\n    post(route('students.store')); // Mengirim ke Controller\n};",
+    "link": "https://inertiajs.com/forms"
+  },
+  {
+    "id": "React-010",
+    "title": "Manual Form Routing (router.post/put/delete)",
+    "description": "Analogi: Kurir Kilat. Jika kita hanya ingin mengirim satu data tanpa perlu membuat formulir lengkap (misal: tombol 'Luluskan Siswa'), kita bisa langsung memanggil 'router' Inertia.",
+    "categories": ["react", "inertia", "routing"],
+    "code": "import { router } from '@inertiajs/react';\n\nconst promoteStudent = (studentId) => {\n    router.put(route('students.promote', studentId), {}, {\n        preserveScroll: true,\n        onSuccess: () => showAlert('Sukses', 'Siswa naik kelas!', 'success')\n    });\n};",
+    "link": "https://inertiajs.com/manual-visits"
+  },
+  {
+    "id": "React-011",
+    "title": "React useState (State Management Dasar)",
+    "description": "Analogi: Ingatan Jangka Pendek. Cara komponen mengingat informasi sementara, seperti apakah sebuah laci (Dropdown/Modal) sedang dalam keadaan terbuka atau tertutup.",
+    "categories": ["react", "hooks", "state"],
+    "code": "import { useState } from 'react';\n\nconst [isModalOpen, setIsModalOpen] = useState(false);\n\nreturn (\n    <button onClick={() => setIsModalOpen(!isModalOpen)}>Buka Pengaturan</button>\n);",
+    "link": "https://react.dev/reference/react/useState"
+  },
+  {
+    "id": "React-012",
+    "title": "React useEffect (Side Effects)",
+    "description": "Analogi: Tindakan Otomatis (CCTV). Memerintahkan komponen untuk melakukan sesuatu tepat SETELAH ia muncul di layar, atau saat ada data yang berubah (misal: mengambil data cuaca saat halaman dimuat).",
+    "categories": ["react", "hooks", "lifecycle"],
+    "code": "import { useEffect, useState } from 'react';\n\nuseEffect(() => {\n    console.log('Ruang Kelas telah dibuka!');\n    // Fungsi pembersihan (saat pindah halaman)\n    return () => console.log('Ruang Kelas ditutup.');\n}, []); // Array kosong berarti hanya dijalankan sekali",
+    "link": "https://react.dev/reference/react/useEffect"
+  },
+  {
+    "id": "React-013",
+    "title": "Security: dangerouslySetInnerHTML (Anti-XSS)",
+    "description": "Analogi: Mading Tanpa Sensor. Secara default React mengamankan semua teks dari serangan skrip mematikan (XSS). Fungsi ini adalah peringatan keras bahwa kita mematikan sensor tersebut. HANYA gunakan jika data sudah dibersihkan oleh Service-020 (HTML Purifier).",
+    "categories": ["react", "security", "dom"],
+    "code": "const studentBio = \"<script>alert('Hacked!')</script>\";\n// Sangat berbahaya jika tidak di-sanitize dari Backend!\n<div dangerouslySetInnerHTML={{ __html: studentBio }} />",
+    "link": "https://react.dev/reference/react-dom/components/common#dangerouslysetinnerhtml"
+  },
+  {
+    "id": "React-014",
+    "title": "Destructuring Props for Clean Code",
+    "description": "Analogi: Membongkar Koper langsung di Pintu. Daripada memanggil `props.student.name` berkali-kali, kita langsung mengekstrak data yang dibutuhkan saat komponen dipanggil agar kode lebih elegan.",
+    "categories": ["react", "clean-code", "javascript"],
+    "code": "export default function StudentCard({ student: { name, email, classroom }, onEdit }) {\n    return (\n        <div>\n            <h3>{name}</h3>\n            <p>{email}</p>\n            <button onClick={onEdit}>Edit</button>\n        </div>\n    );\n}",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment"
+  },
+  {
+    "id": "React-015",
+    "title": "Component Composition (Children)",
+    "description": "Analogi: Kotak Bekal Kosong. Membuat komponen pembungkus (seperti Kartu atau Modal) yang desain luarnya tetap, tapi isinya (children) bisa kita masukkan apa saja secara bebas dari luar.",
+    "categories": ["react", "components", "pattern"],
+    "code": "function Card({ title, children }) {\n    return (\n        <div className=\"bg-white shadow rounded p-4\">\n            <h2 className=\"font-bold border-b\">{title}</h2>\n            <div className=\"mt-2\">{children}</div>\n        </div>\n    );\n}\n\n// Cara pakai:\n<Card title=\"Data Diri\"><p>Nama: Budi</p></Card>",
+    "link": "https://react.dev/learn/passing-props-to-a-component#passing-jsx-as-children"
+  },
+  {
+    "id": "React-016",
+    "title": "Tailwind Utility Merging (clsx / tailwind-merge)",
+    "description": "Analogi: Memadukan Seragam. Jika komponen tombol punya warna dasar biru, tapi kadang kita ingin menimpanya jadi merah, utilitas ini menggabungkan kelas CSS tanpa bentrok.",
+    "categories": ["react", "tailwind", "css", "utility"],
+    "code": "import { twMerge } from 'tailwind-merge';\nimport clsx from 'clsx';\n\nexport function cn(...inputs) {\n    return twMerge(clsx(inputs));\n}\n\n// Penggunaan di Komponen:\n<button className={cn('bg-blue-500 p-2', hasError && 'bg-red-500')}>Simpan</button>",
+    "link": "https://github.com/dcastil/tailwind-merge"
+  },
+  {
+    "id": "React-017",
+    "title": "Inertia Head (SEO & Meta Tags)",
+    "description": "Analogi: Papan Nama di Atap Gedung. Karena kita memakai SPA, judul browser (Title) tidak otomatis berubah. Komponen ini memberitahu browser apa judul halaman saat ini untuk kebutuhan SEO dan UX.",
+    "categories": ["react", "inertia", "seo"],
+    "code": "import { Head } from '@inertiajs/react';\n\nexport default function Dashboard() {\n    return (\n        <>\n            <Head title=\"Dashboard Kepala Sekolah\" />\n            <h1>Selamat Datang</h1>\n        </>\n    );\n}",
+    "link": "https://inertiajs.com/title-and-meta"
+  },
+  {
+    "id": "React-018",
+    "title": "Handling Validation Errors Display",
+    "description": "Analogi: Menandai Jawaban Salah. Menggunakan komponen kecil `InputError` untuk merender pesan kesalahan yang dilempar oleh Controller-004 secara seragam di bawah kolom input.",
+    "categories": ["react", "form", "ui"],
+    "code": "export default function InputError({ message, className = '' }) {\n    return message ? (\n        <p className={`text-sm text-red-600 mt-1 ${className}`}>{message}</p>\n    ) : null;\n}\n\n// Dipakai bersama useForm:\n<InputError message={errors.email} />",
+    "link": "https://inertiajs.com/validation"
+  },
+  {
+    "id": "React-019",
+    "title": "Custom React Hooks (useStudentFilter)",
+    "description": "Analogi: Membuat SOP Sendiri. Daripada mengotori Ruang Kelas dengan logika panjang untuk mencari siswa, kita membungkus logika tersebut ke dalam 'Alat Khusus' (Hook) yang bisa dipinjam oleh kelas manapun.",
+    "categories": ["react", "hooks", "architecture"],
+    "code": "import { useState } from 'react';\n\nexport function useStudentFilter(initialData) {\n    const [query, setQuery] = useState('');\n    const filtered = initialData.filter(s => s.name.toLowerCase().includes(query.toLowerCase()));\n    return { query, setQuery, filtered };\n}",
+    "link": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+  },
+  {
+    "id": "React-020",
+    "title": "Preserve State & Scroll on Inertia Visits",
+    "description": "Analogi: Mengingat Jejak Langkah. Saat kita mencari data siswa dan menekan tombol 'Hapus', kita tidak ingin layar melompat kembali ke atas (puncak halaman). Opsi ini mempertahankan posisi layar dan kotak pencarian.",
+    "categories": ["react", "inertia", "ux"],
+    "code": "import { router } from '@inertiajs/react';\n\nrouter.reload({ \n    only: ['students'], \n    preserveScroll: true, \n    preserveState: true \n});",
+    "link": "https://inertiajs.com/scroll-management"
+  },
+  {
+    "id": "React-021",
+    "title": "Conditional Rendering (Logical AND &&)",
+    "description": "Analogi: Saklar Lampu Otomatis. Tampilkan tombol 'Luluskan' HANYA JIKA siswa tersebut sudah di kelas 12. Ini menjaga UI tetap bersih dari tombol yang tidak relevan.",
+    "categories": ["react", "logic", "jsx"],
+    "code": "{student.grade === 12 && (\n    <button className=\"bg-green-500\">Luluskan Siswa</button>\n)}\n\n// Atau pakai Ternary untuk If-Else\n{student.isActive ? <BadgeActive /> : <BadgeSuspended />}",
+    "link": "https://react.dev/learn/conditional-rendering"
+  },
+  {
+    "id": "React-022",
+    "title": "React Context API (Global State Frontend)",
+    "description": "Analogi: Siaran Radio Internal Sekolah. Jika kita ingin tema Gelap/Terang (Dark Mode) diketahui oleh seluruh ruangan kelas tanpa harus mengoper instruksi dari pintu ke pintu (Prop Drilling).",
+    "categories": ["react", "context", "state"],
+    "code": "import { createContext, useContext, useState } from 'react';\n\nconst ThemeContext = createContext();\n\nexport function ThemeProvider({ children }) {\n    const [theme, setTheme] = useState('light');\n    return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;\n}\n// Panggil di komponen mana saja: const { theme } = useContext(ThemeContext);",
+    "link": "https://react.dev/learn/passing-data-deeply-with-context"
+  },
+  {
+    "id": "React-023",
+    "title": "Handling Loading States (Disabled UI)",
+    "description": "Analogi: Mengunci Pintu saat Rapat. Saat `useForm` sedang mengirim data ke Backend, kita menonaktifkan (disable) tombol simpan dan mengubah teksnya menjadi 'Memproses...' agar user tidak mengklik 2 kali (Mencegah Spam).",
+    "categories": ["react", "ux", "form"],
+    "code": "<PrimaryButton disabled={processing}>\n    {processing ? 'Menyimpan Data...' : 'Simpan Siswa'}\n</PrimaryButton>",
+    "link": "https://inertiajs.com/forms#processing-state"
+  },
+  {
+    "id": "React-024",
+    "title": "React.memo (Performance Optimization)",
+    "description": "Analogi: Mencegah Cat Ulang Dinding. Jika ruang kelas tidak ada perubahan data, jangan paksa staf untuk menata ulang meja. Ini mencegah komponen di-render ulang secara boros ketika komponen induknya berubah.",
+    "categories": ["react", "performance", "optimization"],
+    "code": "import { memo } from 'react';\n\nconst HeavyTableComponent = memo(function HeavyTable({ data }) {\n    // Komponen ini berisi 1000 baris data\n    return <table>...</table>;\n});\nexport default HeavyTableComponent;",
+    "link": "https://react.dev/reference/react/memo"
+  },
+  {
+    "id": "React-025",
+    "title": "Intertia Partial Reloads",
+    "description": "Analogi: Mengupdate Mading Saja. Daripada meminta Backend mengirim seluruh data (Daftar Guru, Statistik, Daftar Siswa), kita hanya meminta pembaruan untuk data 'Siswa' saja agar hemat kuota internet.",
+    "categories": ["react", "inertia", "performance"],
+    "code": "import { router } from '@inertiajs/react';\n\nconst refreshStudents = () => {\n    router.visit('/dashboard', {\n        only: ['students'], // Hanya meminta props 'students' dari Controller\n    });\n};",
+    "link": "https://inertiajs.com/partial-reloads"
+  },
+  {
+  "id": "React-026",
+  "title": "Rangkuman Fundamental Tampilan Modern (Indeks Referensi)",
+  "description": "Analogi: Buku Panduan Desain Interior dan Komunikasi Sekolah. 25 poin di atas adalah fondasi mutlak untuk membangun UI yang kuat. \n\n1. **Struktur & Komponen Berulang (001-003, 015):** Bagaimana kita mendesain Gedung (Layout) dan Kelas (Page) menggunakan potongan Lego kecil (Atomic Components) yang bisa dipakai ribuan kali.\n2. **Komunikasi Frontend-Backend (005, 009, 010, 025):** Menggunakan kekuatan Inertia untuk menavigasi tanpa refresh, mengirim form cerdas, dan meminta data sebagian (Partial Reload) untuk performa kilat.\n3. **Ekosistem Notifikasi & Peringatan (006, 007, 008):** Menggabungkan SweetAlert2 dengan Global Shared Data dari Controller untuk menciptakan sistem 'Speaker Pusat' yang otomatis menyuarakan keberhasilan atau kegagalan transaksi.\n4. **Manajemen Otak Frontend (011, 012, 019, 022):** Menggunakan React Hooks (State, Effect, Context) agar komponen memiliki 'ingatan' sendiri, bertindak otomatis, dan berkomunikasi dengan komponen lain tanpa kabel silang (Prop Drilling).",
+  "categories": ["summary", "index", "indonesia", "react-architecture"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "React-027",
+    "title": "Dynamic Pagination Component",
+    "description": "Analogi: Buku Induk Berhalaman. Daripada memuat 10.000 siswa di satu layar yang membuat browser 'hang', kita membuat komponen navigasi (Prev/Next) yang membaca link paginasi otomatis dari Laravel (Controller-008).",
+    "categories": ["react", "inertia", "pagination", "ui"],
+    "code": "import { Link } from '@inertiajs/react';\n\nexport default function Pagination({ links }) {\n    return (\n        <div className=\"flex space-x-1\">\n            {links.map((link, index) => (\n                <Link\n                    key={index}\n                    href={link.url || '#'}\n                    className={`px-3 py-1 border rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white'}`}\n                    dangerouslySetInnerHTML={{ __html: link.label }}\n                />\n            ))}\n        </div>\n    );\n}",
+    "link": "https://inertiajs.com/pagination"
+  },
+  {
+    "id": "React-028",
+    "title": "Search Debounce (Anti-Spam API)",
+    "description": "Analogi: Menunggu Siswa Selesai Berbicara. Saat siswa mengetik nama di kotak pencarian, kita tidak langsung mengirim permintaan ke server di setiap ketikan huruf (bisa membuat server down). Kita menunggu 300 milidetik setelah ia berhenti mengetik.",
+    "categories": ["react", "performance", "security", "hooks"],
+    "code": "import { useState, useEffect } from 'react';\nimport { router } from '@inertiajs/react';\n\nexport function useDebounceSearch(initialValue = '') {\n    const [search, setSearch] = useState(initialValue);\n    useEffect(() => {\n        const timeout = setTimeout(() => {\n            router.get(route('students.index'), { search }, { preserveState: true, replace: true });\n        }, 300);\n        return () => clearTimeout(timeout);\n    }, [search]);\n    return { search, setSearch };\n}",
+    "link": "https://usehooks.com/usedebounce"
+  },
+  {
+    "id": "React-029",
+    "title": "Image Upload Preview",
+    "description": "Analogi: Cermin Sebelum Foto Rapor. Membiarkan siswa melihat foto yang mereka pilih di layar komputer mereka sendiri (via URL sementara) sebelum foto tersebut benar-benar dikirim ke server.",
+    "categories": ["react", "form", "ui", "file-upload"],
+    "code": "const [preview, setPreview] = useState(null);\n\nconst handleImageChange = (e) => {\n    const file = e.target.files[0];\n    setData('photo', file); // Untuk Inertia useForm\n    setPreview(URL.createObjectURL(file)); // Untuk Preview UI\n};\n\n// Di JSX:\n{preview && <img src={preview} alt=\"Preview\" className=\"w-32 h-32 rounded-full\" />}",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static"
+  },
+  {
+    "id": "React-030",
+    "title": "Reusable Modal Dialog",
+    "description": "Analogi: Ruang Rapat Kaca. Sebuah kotak melayang (pop-up) yang bisa muncul di atas halaman manapun, menggelapkan latar belakang, dan bisa ditutup dengan menekan tombol 'Esc' atau mengklik area luar.",
+    "categories": ["react", "ui", "modal", "components"],
+    "code": "export default function Modal({ isOpen, onClose, title, children }) {\n    if (!isOpen) return null;\n    return (\n        <div className=\"fixed inset-0 bg-black/50 flex items-center justify-center z-50\">\n            <div className=\"bg-white rounded-lg p-6 w-full max-w-md\">\n                <h2 className=\"text-lg font-bold mb-4\">{title}</h2>\n                <div>{children}</div>\n                <button onClick={onClose} className=\"mt-4 text-red-500\">Tutup</button>\n            </div>\n        </div>\n    );\n}",
+    "link": "https://react.dev/learn/escape-hatches"
+  },
+  {
+    "id": "React-031",
+    "title": "Error Boundaries",
+    "description": "Analogi: Pemadam Api Ringan (APAR). Jika ada satu komponen yang error (JS Crash), batas ini mencegah seluruh aplikasi sekolah menjadi layar putih kosong (White Screen of Death), dan menampilkan pesan error yang ramah.",
+    "categories": ["react", "security", "error-handling"],
+    "code": "import React from 'react';\n\nclass ErrorBoundary extends React.Component {\n    state = { hasError: false };\n    static getDerivedStateFromError(error) { return { hasError: true }; }\n    render() {\n        if (this.state.hasError) return <h1>Maaf, terjadi kesalahan teknis pada komponen ini.</h1>;\n        return this.props.children;\n    }\n}",
+    "link": "https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary"
+  },
+  {
+    "id": "React-032",
+    "title": "React Portals (Z-Index Fix)",
+    "description": "Analogi: Teleportasi Pengumuman. Merender Modal Dialog di luar struktur HTML utama (langsung di dalam <body>) agar tidak tertimpa oleh komponen lain yang memiliki z-index atau overflow tersembunyi.",
+    "categories": ["react", "dom", "ui"],
+    "code": "import { createPortal } from 'react-dom';\n\nexport default function PortalModal({ children }) {\n    // Memasukkan children langsung ke document.body\n    return createPortal(\n        <div className=\"fixed inset-0 z-[999]\">{children}</div>,\n        document.body\n    );\n}",
+    "link": "https://react.dev/reference/react-dom/createPortal"
+  },
+  {
+    "id": "React-033",
+    "title": "React useRef (Direct DOM Access)",
+    "description": "Analogi: Menunjuk Langsung ke Siswa. Digunakan saat kita butuh mengendalikan elemen HTML secara langsung, misalnya otomatis meletakkan kursor (focus) di kotak 'Nama' saat halaman formulir pendaftaran dibuka.",
+    "categories": ["react", "hooks", "dom"],
+    "code": "import { useRef, useEffect } from 'react';\n\nexport default function SearchInput() {\n    const inputRef = useRef(null);\n    useEffect(() => {\n        inputRef.current.focus(); // Otomatis fokus saat komponen dimuat\n    }, []);\n    return <input ref={inputRef} type=\"text\" placeholder=\"Cari Siswa...\" />;\n}",
+    "link": "https://react.dev/reference/react/useRef"
+  },
+  {
+    "id": "React-034",
+    "title": "Persistent Layouts per Page",
+    "description": "Analogi: Seragam Berbeda Tiap Jurusan. Inertia memungkinkan kita mengatur Layout berbeda untuk halaman tertentu (misal halaman Login tidak pakai Layout Navigasi) tanpa perlu merombak komponen induk.",
+    "categories": ["react", "inertia", "layout"],
+    "code": "import GuestLayout from '@/Layouts/GuestLayout';\n\nexport default function Login() {\n    return <div>Form Login Sekolah</div>;\n}\n\n// Menyambungkan layout spesifik ke komponen ini\nLogin.layout = page => <GuestLayout children={page} />;",
+    "link": "https://inertiajs.com/pages#persistent-layouts"
+  },
+  {
+    "id": "React-035",
+    "title": "useMemo (Heavy Calculation Cache)",
+    "description": "Analogi: Kalkulator Pintar. Jika kita memiliki tabel statistik nilai yang rumit, React akan menghafal hasilnya. Kalkulasi ulang hanya terjadi JIKA data nilai siswa ada yang berubah, menghemat daya CPU komputer user.",
+    "categories": ["react", "performance", "hooks"],
+    "code": "import { useMemo } from 'react';\n\nconst averageScore = useMemo(() => {\n    console.log('Menghitung rata-rata...');\n    return students.reduce((acc, curr) => acc + curr.score, 0) / students.length;\n}, [students]); // Hanya hitung ulang jika array 'students' berubah",
+    "link": "https://react.dev/reference/react/useMemo"
+  },
+  {
+    "id": "React-036",
+    "title": "useCallback (Function Reference Cache)",
+    "description": "Analogi: Menyalin Prosedur. Mirip `useMemo`, tapi untuk menghafal fungsi. Mencegah React membuat ulang fungsi 'Hapus Siswa' berkali-kali setiap kali layar berkedip (re-render), yang bisa memperlambat komponen anak.",
+    "categories": ["react", "performance", "hooks"],
+    "code": "import { useCallback } from 'react';\n\nconst handleDelete = useCallback((studentId) => {\n    router.delete(route('students.destroy', studentId));\n}, []); // Fungsi dihafal selamanya selama komponen hidup",
+    "link": "https://react.dev/reference/react/useCallback"
+  },
+  {
+    "id": "React-037",
+    "title": "Inertia Progress Bar Customization",
+    "description": "Analogi: Jam Pasir Waktu Muat. Mengubah warna garis *loading* di bagian atas layar saat pindah halaman antar kelas agar sesuai dengan warna identitas (branding) sekolah kita.",
+    "categories": ["react", "inertia", "ui"],
+    "code": "// Di app.jsx (Entry point Inertia)\nimport { createInertiaApp } from '@inertiajs/react';\n\ncreateInertiaApp({\n    progress: {\n        delay: 250,\n        color: '#2563eb', // Warna biru sekolah\n        includeCSS: true,\n        showSpinner: false,\n    },\n    // ... setup lainnya\n});",
+    "link": "https://inertiajs.com/progress-indicators"
+  },
+  {
+    "id": "React-038",
+    "title": "Role-Based Component Rendering",
+    "description": "Analogi: Ruang Rahasia Kepala Sekolah. Sebuah fungsi pelindung yang bertugas menyembunyikan tombol atau menu tertentu (seperti tombol 'Hapus Guru') jika yang sedang login hanyalah seorang Siswa.",
+    "categories": ["react", "security", "authorization"],
+    "code": "export default function Can({ role, user, children }) {\n    // Asumsi objek 'user' disuplai via Inertia props global\n    if (user && user.role === role) {\n        return <>{children}</>;\n    }\n    return null; // Sembunyikan elemen jika bukan role-nya\n}\n\n// Cara pakai: <Can role=\"admin\" user={auth.user}><button>Hapus</button></Can>",
+    "link": "https://react.dev/learn/conditional-rendering"
+  },
+  {
+    "id": "React-039",
+    "title": "Dynamic Form Arrays (Multiple Inputs)",
+    "description": "Analogi: Menambah Baris Ekstrakurikuler. Membiarkan siswa mengklik tombol 'Tambah Hobi' berulang kali untuk memunculkan kotak input baru tanpa batas waktu pendaftaran.",
+    "categories": ["react", "form", "logic"],
+    "code": "const [hobbies, setHobbies] = useState(['']);\n\nconst addHobby = () => setHobbies([...hobbies, '']);\nconst updateHobby = (index, value) => {\n    const newHobbies = [...hobbies];\n    newHobbies[index] = value;\n    setHobbies(newHobbies);\n};",
+    "link": "https://react.dev/learn/updating-arrays-in-state"
+  },
+  {
+    "id": "React-040",
+    "title": "Inertia Router Events (Global Listeners)",
+    "description": "Analogi: Pengumuman Bel Pindah Kelas. Kita bisa memasang 'telinga' global. Misalnya, setiap kali Inertia mulai memuat halaman baru, kita tampilkan layar *Loading* atau menyembunyikan menu samping (Sidebar).",
+    "categories": ["react", "inertia", "events"],
+    "code": "import { router } from '@inertiajs/react';\nimport { useEffect } from 'react';\n\nuseEffect(() => {\n    const removeStart = router.on('start', () => console.log('Mulai pindah halaman...'));\n    const removeFinish = router.on('finish', () => console.log('Selesai pindah.'));\n    return () => { removeStart(); removeFinish(); }; // Bersihkan saat komponen hancur\n}, []);",
+    "link": "https://inertiajs.com/events"
+  },
+  {
+    "id": "React-041",
+    "title": "React Context for Auth State",
+    "description": "Analogi: Tanda Pengenal Berjalan. Daripada melempar data `auth.user` dari Komponen A ke B lalu ke C, kita menyimpannya di udara (Context) agar komponen Z di ujung halaman bisa langsung membaca nama user tersebut.",
+    "categories": ["react", "state", "context"],
+    "code": "import { createContext, useContext } from 'react';\nimport { usePage } from '@inertiajs/react';\n\nconst AuthContext = createContext();\n\nexport function AuthProvider({ children }) {\n    const { auth } = usePage().props;\n    return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;\n}\nexport const useAuth = () => useContext(AuthContext);",
+    "link": "https://react.dev/learn/passing-data-deeply-with-context"
+  },
+  {
+    "id": "React-042",
+    "title": "Custom Data Fetching (Axios outside Inertia)",
+    "description": "Analogi: Pintu Belakang Tata Usaha. Meskipun aplikasi kita pakai Inertia, kadang kita butuh mengambil data kecil diam-diam (misal: mengecek kode pos) tanpa mengganggu siklus routing Inertia utama.",
+    "categories": ["react", "api", "axios"],
+    "code": "import axios from 'axios';\nimport { useState, useEffect } from 'react';\n\nexport function usePostalCode(code) {\n    const [city, setCity] = useState(null);\n    useEffect(() => {\n        if (code.length === 5) {\n            axios.get(`/api/postal/${code}`).then(res => setCity(res.data.city));\n        }\n    }, [code]);\n    return city;\n}",
+    "link": "https://axios-http.com/docs/intro"
+  },
+  {
+    "id": "React-043",
+    "title": "Handling Empty States (UI/UX)",
+    "description": "Analogi: Ruang Kelas Kosong. Saat tidak ada satupun siswa yang mendaftar, jangan biarkan tabel kosong melompong. Tampilkan ilustrasi atau teks ramah yang membimbing admin untuk menambahkan siswa pertama.",
+    "categories": ["react", "ui", "ux"],
+    "code": "export default function EmptyState({ message, actionText, onAction }) {\n    return (\n        <div className=\"flex flex-col items-center justify-center py-12 text-gray-500\">\n            <svg className=\"w-16 h-16 mb-4\" /* Icon Kosong */></svg>\n            <p>{message}</p>\n            <button onClick={onAction} className=\"mt-4 text-blue-500 underline\">{actionText}</button>\n        </div>\n    );\n}",
+    "link": "https://www.nngroup.com/articles/empty-states/"
+  },
+  {
+    "id": "React-044",
+    "title": "Headless UI (Accessible Dropdowns)",
+    "description": "Analogi: Pintu Otomatis Ramah Difabel. Saat membuat menu Dropdown yang kompleks, gunakan library 'Headless' (seperti Radix atau HeadlessUI) yang menjamin komponen bisa dinavigasi menggunakan keyboard (Tab) untuk aksesibilitas.",
+    "categories": ["react", "accessibility", "components"],
+    "code": "import { Menu } from '@headlessui/react';\n\n// Headless UI memberikan struktur logika (bisa diklik, ditekan panah keyboard, ditutup dengan Esc)\n// Kita yang menyediakan warna dan bentuknya pakai TailwindCSS.\n<Menu>\n  <Menu.Button>Opsi</Menu.Button>\n  <Menu.Items>\n    <Menu.Item>{({ active }) => <a className={active ? 'bg-blue-500' : 'bg-white'} href=\"/profile\">Profil</a>}</Menu.Item>\n  </Menu.Items>\n</Menu>",
+    "link": "https://headlessui.com/"
+  },
+  {
+    "id": "React-045",
+    "title": "React Suspense & Lazy Loading",
+    "description": "Analogi: Memanggil Guru Tamu. Jika aplikasi punya grafik nilai 3D yang sangat berat, jangan panggil kodenya saat siswa baru masuk gerbang. Panggil (download kode JS) HANYA saat siswa membuka halaman laporan nilai.",
+    "categories": ["react", "performance", "lazy-load"],
+    "code": "import React, { Suspense } from 'react';\n\n// Kode komponen ini tidak di-load sampai benar-benar di-render\nconst HeavyChart = React.lazy(() => import('./HeavyChartComponent'));\n\nexport default function ReportPage() {\n    return (\n        <Suspense fallback={<div>Memuat grafik berat...</div>}>\n            <HeavyChart />\n        </Suspense>\n    );\n}",
+    "link": "https://react.dev/reference/react/lazy"
+  },
+  {
+    "id": "React-046",
+    "title": "Data Transformation in Frontend",
+    "description": "Analogi: Merapikan Dokumen Kasar. Terkadang data tanggal dari Laravel (ISO String) sulit dibaca. Kita buat fungsi di Frontend untuk memoles '2026-03-09T10:00:00Z' menjadi '9 Maret 2026'.",
+    "categories": ["react", "utility", "data"],
+    "code": "export const formatDate = (dateString) => {\n    if (!dateString) return '-';\n    return new Date(dateString).toLocaleDateString('id-ID', {\n        day: 'numeric', month: 'long', year: 'numeric'\n    });\n};",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString"
+  },
+  {
+    "id": "React-047",
+    "title": "Controlled vs Uncontrolled Inputs",
+    "description": "Analogi: Tali Pengekang vs Merdeka. *Controlled* berarti React memantau setiap ketikan huruf di input (berguna untuk validasi real-time). *Uncontrolled* (pakai `useRef`) berarti React membiarkan input bekerja sendiri sampai tombol kirim ditekan (lebih hemat CPU).",
+    "categories": ["react", "form", "concepts"],
+    "code": "// Controlled (State)\n<input value={name} onChange={e => setName(e.target.value)} />\n\n// Uncontrolled (Ref)\n<input ref={nameRef} defaultValue=\"Budi\" />",
+    "link": "https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components"
+  },
+  {
+    "id": "React-048",
+    "title": "Environment Variables in React (Vite)",
+    "description": "Analogi: Kunci Brankas Publik. Cara menyimpan konfigurasi penting (seperti URL API Eksternal) yang berbeda antara komputer Development dan server Production. Di Laravel+Vite, harus diawali `VITE_`.",
+    "categories": ["react", "config", "vite"],
+    "code": "// Di file .env: VITE_MAPS_API_KEY=123xyz\n\n// Di dalam file React:\nconst apiKey = import.meta.env.VITE_MAPS_API_KEY;\nconsole.log('Kunci Maps:', apiKey);",
+    "link": "https://vitejs.dev/guide/env-and-mode.html"
+  },
+  {
+    "id": "React-049",
+    "title": "Cleaning Up Intervals in useEffect",
+    "description": "Analogi: Mematikan Alarm Saat Lulus. Jika kita membuat jam dinding digital (setInterval) di kelas, pastikan kita 'mencopot' baterainya saat pindah ke halaman lain. Jika tidak, jam itu akan terus berdetak di memori (Memory Leak).",
+    "categories": ["react", "hooks", "performance"],
+    "code": "useEffect(() => {\n    const timer = setInterval(() => console.log('Detak...'), 1000);\n    \n    // Cleanup function sangat penting!\n    return () => clearInterval(timer);\n}, []);",
+    "link": "https://react.dev/reference/react/useEffect#connecting-to-an-external-system"
+  },
+  {
+    "id": "React-050",
+    "title": "React Strict Mode",
+    "description": "Analogi: Inspeksi Mendadak. Alat developer yang sengaja menjalankan fungsi komponen dua kali lipat saat di komputer lokal. Tujuannya untuk mencari apakah ada fungsi kita yang tidak sengaja merusak data atau memiliki efek samping buruk.",
+    "categories": ["react", "debugging", "architecture"],
+    "code": "// Biasanya ada di app.jsx atau main.jsx\nimport { StrictMode } from 'react';\nimport { createRoot } from 'react-dom/client';\n\ncreateRoot(document.getElementById('app')).render(\n    <StrictMode>\n        <App />\n    </StrictMode>\n);",
+    "link": "https://react.dev/reference/react/StrictMode"
+  },
+  {
+  "id": "React-051",
+  "title": "Rangkuman Arsitektur UI Interaktif & Performa Tinggi (Fase 2)",
+  "description": "Analogi: Sistem Tata Kelola Visual Sekolah Modern. Dari poin 27 hingga 50, kita telah merakit antarmuka yang sangat responsif dan aman.\n\n1. **Dinamisme & Interaksi (027-030, 039):** Mengelola tabel panjang dengan paginasi mulus, membatasi spam pencarian (debounce), dan menangani formulir array ganda. Pengguna merasa UI bereaksi instan.\n2. **Manajemen Memori & Performa (035, 036, 045, 049):** Aplikasi tingkat *Enterprise* tidak boleh bocor memori. Kita menggunakan penghafal kalkulasi (`useMemo`), menunda pemuatan komponen berat (`React.lazy`), dan membersihkan proses sisa (`Cleanup Interval`).\n3. **Kendali Visual Lanjutan (032, 034, 040, 044):** Membuat Modal Dialog yang kebal tertimpa elemen lain (Portals), membuat layout berbeda-beda tiap rute, serta menggunakan Headless UI demi aksesibilitas penyandang disabilitas.\n4. **Security & State (031, 038, 041, 048):** Menghindari aplikasi mati mendadak (Error Boundaries), menyembunyikan tombol rahasia (Role-Based Rendering), mengatur konfigurasi *Environment* yang aman, dan menyebarkan status identitas pengguna secara efisien via Context API.\n\nDengan ini, bagian Frontend React kamu bukan lagi sekadar penampil data, tapi aplikasi SPA sungguhan yang mandiri, cerdas, dan tahan banting.",
+  "categories": ["summary", "index", "indonesia", "react-pro"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "React-052",
+    "title": "Skeleton Loading UI",
+    "description": "Analogi: Sketsa Papan Tulis. Daripada menampilkan layar putih atau ikon 'muter-muter' (spinner) yang membosankan saat menunggu data dari server, kita menampilkan bayangan kotak-kotak abu-abu yang menyerupai bentuk tabel atau kartu siswa agar mata pengguna lebih nyaman.",
+    "categories": ["react", "ui", "ux", "performance"],
+    "code": "export default function SkeletonCard() {\n    return (\n        <div className=\"animate-pulse flex space-x-4 p-4 border rounded\">\n            <div className=\"rounded-full bg-gray-300 h-12 w-12\"></div>\n            <div className=\"flex-1 space-y-4 py-1\">\n                <div className=\"h-4 bg-gray-300 rounded w-3/4\"></div>\n                <div className=\"h-4 bg-gray-300 rounded\"></div>\n            </div>\n        </div>\n    );\n}",
+    "link": "https://tailwindcss.com/docs/animation#pulse"
+  },
+  {
+    "id": "React-053",
+    "title": "Inertia useRemember (State Persistence)",
+    "description": "Analogi: Pembatas Buku. Jika siswa sedang mengisi formulir panjang, lalu iseng menekan menu profil dan kembali lagi ke halaman formulir, semua ketikannya tidak akan hilang berkat fitur 'ingatan' khusus dari Inertia ini.",
+    "categories": ["react", "inertia", "state"],
+    "code": "import { useRemember } from '@inertiajs/react';\n\nexport default function LongForm() {\n    // FormState akan dipertahankan di history browser\n    const [formState, setFormState] = useRemember({ name: '', address: '' }, 'StudentForm');\n    return <input value={formState.name} onChange={e => setFormState({...formState, name: e.target.value})} />;\n}",
+    "link": "https://inertiajs.com/remembering-state"
+  },
+  {
+    "id": "React-054",
+    "title": "Dependent Dropdowns (Provinsi -> Kota)",
+    "description": "Analogi: Laci Bertingkat. Saat siswa memilih 'Jawa Barat' di kotak pertama, kotak kedua secara dinamis hanya akan menampilkan kota-kota di Jawa Barat (mengambil data dari API via Axios tanpa mengganggu Inertia).",
+    "categories": ["react", "form", "logic"],
+    "code": "const [provinceId, setProvinceId] = useState('');\nconst [cities, setCities] = useState([]);\n\nuseEffect(() => {\n    if (provinceId) axios.get(`/api/cities/${provinceId}`).then(res => setCities(res.data));\n}, [provinceId]);",
+    "link": "https://react.dev/learn/synchronizing-with-effects"
+  },
+  {
+    "id": "React-055",
+    "title": "File Upload with Progress Bar",
+    "description": "Analogi: Meteran Pengisian Air. Saat siswa mengunggah video tugas berukuran 100MB, form Inertia secara otomatis bisa memberikan persentase angka (0% hingga 100%) agar siswa tahu prosesnya sedang berjalan.",
+    "categories": ["react", "inertia", "file-upload", "ux"],
+    "code": "import { useForm } from '@inertiajs/react';\n\nconst { data, setData, post, progress } = useForm({ video: null });\n\n// Di dalam JSX:\n{progress && (\n    <div className=\"w-full bg-gray-200 rounded\">\n        <div className=\"bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded\" style={{ width: `${progress.percentage}%` }}>\n            {progress.percentage}%\n        </div>\n    </div>\n)}",
+    "link": "https://inertiajs.com/file-uploads"
+  },
+  {
+    "id": "React-056",
+    "title": "Drag and Drop (Kanban / Roster)",
+    "description": "Analogi: Memindah Meja di Kelas. Memungkinkan Kepala Sekolah memindahkan jadwal pelajaran dari hari Senin ke Selasa hanya dengan menahan klik mouse dan menggesernya (menggunakan library dnd-kit untuk performa terbaik).",
+    "categories": ["react", "ui", "advanced-interaction"],
+    "code": "import { DndContext } from '@dnd-kit/core';\n\nfunction handleDragEnd(event) {\n    const { active, over } = event;\n    if (active.id !== over.id) {\n        // Panggil router.put() untuk menyimpan posisi baru ke Laravel\n        router.put(route('schedules.move', active.id), { target_id: over.id });\n    }\n}\n// JSX: <DndContext onDragEnd={handleDragEnd}>...</DndContext>",
+    "link": "https://docs.dndkit.com/"
+  },
+  {
+    "id": "React-057",
+    "title": "Data Polling (Auto-Refresh Interval)",
+    "description": "Analogi: Papan Skor Pertandingan. Membuat halaman 'Dashboard Ujian' secara otomatis meminta data terbaru ke server setiap 5 detik agar guru bisa melihat nilai ujian siswa yang masuk secara *real-time*.",
+    "categories": ["react", "inertia", "real-time"],
+    "code": "import { router } from '@inertiajs/react';\nimport { useEffect } from 'react';\n\nuseEffect(() => {\n    const interval = setInterval(() => {\n        router.reload({ only: ['examScores'], preserveScroll: true });\n    }, 5000);\n    return () => clearInterval(interval);\n}, []);",
+    "link": "https://inertiajs.com/partial-reloads"
+  },
+  {
+    "id": "React-058",
+    "title": "React useReducer (Complex State)",
+    "description": "Analogi: Bendahara Sekolah. Saat formulir SPP memiliki banyak logika rumit (Diskon, Denda, Cicilan), kita tidak menggunakan `useState` biasa. Kita pakai `useReducer` agar semua aturan hitung-hitungan terkumpul rapi di satu fungsi (Reducer).",
+    "categories": ["react", "hooks", "architecture"],
+    "code": "const sppReducer = (state, action) => {\n    switch (action.type) {\n        case 'ADD_DISCOUNT': return { ...state, total: state.total - action.payload };\n        case 'ADD_PENALTY': return { ...state, total: state.total + 50000 };\n        default: return state;\n    }\n};\nconst [state, dispatch] = useReducer(sppReducer, { total: 500000 });",
+    "link": "https://react.dev/reference/react/useReducer"
+  },
+  {
+    "id": "React-059",
+    "title": "Handling File Downloads (Blob API)",
+    "description": "Analogi: Mengambil Cetakan Ijazah. Mengambil file PDF raport yang dilindungi sistem *Auth* dari server Laravel, lalu memicu browser pengguna untuk mengunduh (Save As) file tersebut secara otomatis.",
+    "categories": ["react", "api", "file-handling"],
+    "code": "const downloadRaport = (studentId) => {\n    axios.get(`/raport/${studentId}/download`, { responseType: 'blob' }).then((response) => {\n        const url = window.URL.createObjectURL(new Blob([response.data]));\n        const link = document.createElement('a');\n        link.href = url; link.setAttribute('download', `raport_${studentId}.pdf`);\n        document.body.appendChild(link); link.click();\n    });\n};",
+    "link": "https://axios-http.com/docs/api_intro"
+  },
+  {
+    "id": "React-060",
+    "title": "Infinite Scrolling",
+    "description": "Analogi: Gulungan Kertas Tak Berujung. Daripada pakai tombol 'Halaman Berikutnya', daftar alumni akan otomatis memuat lebih banyak nama saat pengguna menggulir layar (scroll) sampai ke bagian paling bawah tabel.",
+    "categories": ["react", "ui", "pagination"],
+    "code": "import { useIntersection } from 'react-use'; // Library bantu\n\n// Saat elemen 'bottomRef' terlihat di layar, panggil fungsi loadMore()\nconst intersection = useIntersection(bottomRef, { root: null, rootMargin: '0px', threshold: 1 });\nuseEffect(() => {\n    if (intersection && intersection.isIntersecting) loadMore();\n}, [intersection]);",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API"
+  },
+  {
+    "id": "React-061",
+    "title": "List Virtualization (react-window)",
+    "description": "Analogi: Jendela Intip. Jika sekolah punya 50.000 alumni, merender semuanya di HTML akan membuat komputer hang. Teknik ini hanya merender 20 baris yang sedang terlihat di layar, menghemat memori hingga 99%.",
+    "categories": ["react", "performance", "optimization"],
+    "code": "import { FixedSizeList as List } from 'react-window';\n\nconst Row = ({ index, style }) => (\n  <div style={style}>Siswa ke-{index}: {students[index].name}</div>\n);\n\nexport default function VirtualList() {\n    return <List height={400} itemCount={50000} itemSize={35} width={300}>{Row}</List>;\n}",
+    "link": "https://github.com/bvaughn/react-window"
+  },
+  {
+    "id": "React-062",
+    "title": "Dark Mode Toggle with Tailwind",
+    "description": "Analogi: Saklar Lampu Kelas. Tombol untuk beralih antara tema Terang dan Gelap. Statusnya disimpan di `localStorage` agar tidak hilang saat halaman di-refresh, dan menggunakan fitur 'dark:' dari Tailwind CSS.",
+    "categories": ["react", "ui", "tailwind"],
+    "code": "const toggleDarkMode = () => {\n    const html = document.documentElement;\n    html.classList.toggle('dark');\n    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');\n};\n\n// JSX: <div className=\"bg-white dark:bg-gray-800 text-black dark:text-white\">",
+    "link": "https://tailwindcss.com/docs/dark-mode"
+  },
+  {
+    "id": "React-063",
+    "title": "Frontend DOM Sanitization (DOMPurify)",
+    "description": "Analogi: Masker Filter Udara. Lapisan keamanan tambahan di sisi browser. Jika Backend terlewat, DOMPurify memastikan artikel Mading yang ditulis pengguna bersih dari script hacker sebelum dirender menggunakan `dangerouslySetInnerHTML`.",
+    "categories": ["react", "security", "sanitization"],
+    "code": "import DOMPurify from 'dompurify';\n\nexport default function SafeHTMLDisplay({ htmlContent }) {\n    const cleanHTML = DOMPurify.sanitize(htmlContent);\n    return <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />;\n}",
+    "link": "https://github.com/cure53/DOMPurify"
+  },
+  {
+    "id": "React-064",
+    "title": "React useLayoutEffect",
+    "description": "Analogi: Mengukur Meja Sebelum Digunakan. Mirip `useEffect`, tapi ini dieksekusi SEBELUM layar di-paint oleh browser. Berguna saat kita butuh mengukur tinggi sebuah elemen (misal: dropdown) agar posisinya pas dan layar tidak terlihat bergetar.",
+    "categories": ["react", "hooks", "dom"],
+    "code": "import { useLayoutEffect, useRef } from 'react';\n\nuseLayoutEffect(() => {\n    const height = tooltipRef.current.offsetHeight;\n    // Atur posisi tooltip berdasarkan tingginya sebelum muncul ke mata user\n}, []);",
+    "link": "https://react.dev/reference/react/useLayoutEffect"
+  },
+  {
+    "id": "React-065",
+    "title": "React useTransition (Concurrent UI)",
+    "description": "Analogi: Mengerjakan Ujian sambil Mendengarkan Pengumuman. Jika kita sedang memfilter ribuan data, input pencarian bisa terasa 'ngelag'. Hook ini memberitahu React: 'Tetap mulus merespon ketikan user, filter datanya belakangan sebagai prioritas rendah'.",
+    "categories": ["react", "performance", "hooks"],
+    "code": "import { useTransition, useState } from 'react';\n\nconst [isPending, startTransition] = useTransition();\nconst [filter, setFilter] = useState('');\n\nconst handleChange = (e) => {\n    // startTransition membuat proses berat tidak mengganggu ketikan keyboard\n    startTransition(() => setFilter(e.target.value));\n};",
+    "link": "https://react.dev/reference/react/useTransition"
+  },
+  {
+    "id": "React-066",
+    "title": "Custom Hook: useLocalStorage",
+    "description": "Analogi: Laci Pribadi Siswa. Membuat fungsi pembantu (Hook) agar menyimpan dan mengambil pengaturan pribadi (seperti status sidebar ditutup/dibuka) ke browser menjadi semudah menggunakan `useState`.",
+    "categories": ["react", "hooks", "utility"],
+    "code": "export function useLocalStorage(key, initialValue) {\n    const [storedValue, setStoredValue] = useState(() => {\n        try { return JSON.parse(window.localStorage.getItem(key)) || initialValue; }\n        catch (error) { return initialValue; }\n    });\n    const setValue = (value) => {\n        setStoredValue(value);\n        window.localStorage.setItem(key, JSON.stringify(value));\n    };\n    return [storedValue, setValue];\n}",
+    "link": "https://usehooks.com/uselocalstorage"
+  },
+  {
+    "id": "React-067",
+    "title": "Handling Session Expiration (419/401)",
+    "description": "Analogi: Satpam Meminta ID Ulang. Mengatur *Axios Interceptor* global. Jika sesi login Laravel habis (expired) saat user mencoba menyimpan form secara diam-diam (via API), aplikasi akan langsung menendang user ke halaman Login.",
+    "categories": ["react", "security", "axios", "auth"],
+    "code": "import axios from 'axios';\n\naxios.interceptors.response.use(response => response, error => {\n    if (error.response && [401, 419].includes(error.response.status)) {\n        window.location.href = '/login'; // Redirect paksa ke login\n    }\n    return Promise.reject(error);\n});",
+    "link": "https://axios-http.com/docs/interceptors"
+  },
+  {
+    "id": "React-068",
+    "title": "React PropTypes (Type Checking Dasar)",
+    "description": "Analogi: Label Spesifikasi Alat Lab. Memastikan bahwa komponen yang butuh 'ID Angka' tidak dikirimi 'Teks'. (Di era modern sering digantikan oleh TypeScript, namun penting untuk proyek JavaScript murni).",
+    "categories": ["react", "architecture", "validation"],
+    "code": "import PropTypes from 'prop-types';\n\nfunction StudentBadge({ name, age }) { return <div>{name} ({age})</div>; }\n\nStudentBadge.propTypes = {\n    name: PropTypes.string.isRequired,\n    age: PropTypes.number\n};",
+    "link": "https://react.dev/reference/react/Component#static-proptypes"
+  },
+  {
+    "id": "React-069",
+    "title": "Inertia Prefetching (Laravel 11/12)",
+    "description": "Analogi: Menyiapkan Buku Sebelum Pelajaran. Fitur modern Inertia: Saat *mouse* user melayang (hover) di atas tombol 'Profil', Inertia diam-diam mengunduh halaman profil tersebut di latar belakang. Saat di-klik, halaman muncul tanpa *delay* sedikitpun.",
+    "categories": ["react", "inertia", "performance", "routing"],
+    "code": "import { Link } from '@inertiajs/react';\n\n// Prefetch data otomatis saat kursor mouse di atas tombol (hover)\n<Link href=\"/profile\" prefetch>\n    Profil Sekolah\n</Link>",
+    "link": "https://inertiajs.com/prefetching"
+  },
+  {
+    "id": "React-070",
+    "title": "Print Media CSS in React",
+    "description": "Analogi: Mode Cetak Kertas. Menambahkan utilitas kelas Tailwind spesifik (`print:hidden`) agar saat admin menekan CTRL+P untuk mencetak Tagihan SPP, menu Navigasi dan tombol tidak ikut tercetak di kertas.",
+    "categories": ["react", "css", "tailwind", "ui"],
+    "code": "export default function Invoice() {\n    return (\n        <div>\n            {/* Navigasi ini disembunyikan saat masuk layar Print */}\n            <nav className=\"print:hidden bg-blue-500 p-4\">Menu Rahasia</nav>\n            <main className=\"print:text-black print:bg-white\">Surat Tagihan...</main>\n            <button className=\"print:hidden\" onClick={() => window.print()}>Cetak</button>\n        </div>\n    );\n}",
+    "link": "https://tailwindcss.com/docs/hover-focus-and-other-states#print-modifier"
+  },
+  {
+    "id": "React-071",
+    "title": "Clipboard Copy (Navigator API)",
+    "description": "Analogi: Menyalin Catatan Teman. Fitur UX sederhana: tombol kecil di sebelah kode 'Nomor Pendaftaran Siswa' yang jika diklik akan menyalin kode tersebut ke *Clipboard* perangkat pengguna.",
+    "categories": ["react", "api", "ux"],
+    "code": "const copyToClipboard = async (text) => {\n    try {\n        await navigator.clipboard.writeText(text);\n        showAlert('Berhasil', 'Nomor Pendaftaran disalin!', 'success');\n    } catch (err) {\n        console.error('Gagal menyalin:', err);\n    }\n};",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API"
+  },
+  {
+    "id": "React-072",
+    "title": "Geolocation API in React",
+    "description": "Analogi: Absensi Berbasis Lokasi GPS. Saat siswa melakukan absensi mandiri, komponen ini meminta izin *browser* untuk melacak kordinat lokasi siswa dan mengirimkannya bersama form absen via Inertia.",
+    "categories": ["react", "api", "security"],
+    "code": "const getLocationAndAbsen = () => {\n    if (navigator.geolocation) {\n        navigator.geolocation.getCurrentPosition((position) => {\n            post(route('absen.store', { lat: position.coords.latitude, lng: position.coords.longitude }));\n        });\n    }\n};",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API"
+  },
+  {
+    "id": "React-073",
+    "title": "WebSockets / Laravel Echo Setup",
+    "description": "Analogi: Interkom Ruang Kelas (Dua Arah). Integrasi tingkat dewa untuk sekolah. Saat Admin di pusat menambahkan Pengumuman baru, layar semua siswa yang sedang *online* akan berkedip dan memunculkan pengumuman tanpa perlu *refresh*.",
+    "categories": ["react", "real-time", "integration", "advanced"],
+    "code": "import Echo from 'laravel-echo';\nimport Pusher from 'pusher-js';\n\nuseEffect(() => {\n    window.Echo = new Echo({ broadcaster: 'pusher', key: 'app-key', cluster: 'mt1' });\n    window.Echo.private('school-announcements')\n        .listen('NewAnnouncement', (e) => {\n            showAlert('Pengumuman Baru!', e.message, 'info');\n        });\n    return () => window.Echo.leave('school-announcements');\n}, []);",
+    "link": "https://laravel.com/docs/12.x/broadcasting#receiving-broadcasts"
+  },
+  {
+    "id": "React-074",
+    "title": "React forwardRef (Component Reusability)",
+    "description": "Analogi: Menyambung Kabel Remote. Jika kita membuat komponen Custom Input khusus (`<SchoolInput />`), kita butuh `forwardRef` agar komponen induk tetap bisa memberikan instruksi *focus()* ke elemen asli HTML `<input>` di dalamnya.",
+    "categories": ["react", "architecture", "advanced"],
+    "code": "import { forwardRef } from 'react';\n\nconst SchoolInput = forwardRef(({ label, ...props }, ref) => (\n    <div>\n        <label>{label}</label>\n        <input ref={ref} className=\"border p-2\" {...props} />\n    </div>\n));\nexport default SchoolInput;",
+    "link": "https://react.dev/reference/react/forwardRef"
+  },
+  {
+    "id": "React-075",
+    "title": "Code Splitting Route Loading (React)",
+    "description": "Analogi: Mencetak Buku per Bab. Inertia otomatis menangani *Code Splitting* di metode `resolve`. Artinya, ukuran file aplikasi kita tidak akan raksasa (misal 5MB). Browser hanya mengunduh *file javascript* untuk halaman yang sedang diakses saja (hanya beberapa Kilobyte).",
+    "categories": ["react", "inertia", "architecture", "performance"],
+    "code": "// Di file app.jsx\nimport { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';\n\ncreateInertiaApp({\n    // Fungsi ini akan memanggil file JS dari folder Pages HANYA jika diminta oleh URL\n    resolve: (name) => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),\n    // ...\n});",
+    "link": "https://inertiajs.com/client-side-setup"
+  },
+  {
+  "id": "React-076",
+  "title": "Rangkuman Arsitektur UI Level Enterprise (Fase 3)",
+  "description": "Analogi: Fasilitas Sekolah Masa Depan. Poin 52 hingga 75 ini adalah garis batas antara aplikasi 'tugas kampus' dan aplikasi 'kelas korporat'.\n\n1. **Optimalisasi Tanpa Batas (052, 060, 061, 065, 069, 075):** Dengan teknik Virtualisasi, Skeleton, Infinite Scroll, Concurrent UI, dan Prefetching, aplikasi bisa menampung ribuan data alumni dan ratusan transaksi SPP tanpa satu pun lag di browser pengguna.\n2. **Logika & State Terpusat (053, 058, 066):** Kita telah menguasai cara menjaga data tidak hilang (Remember/LocalStorage) dan mengendalikan logika bisnis yang rumit murni di frontend menggunakan useReducer.\n3. **Integrasi Canggih & Real-Time (056, 059, 072, 073):** Mengimplementasikan fitur Drag and Drop layaknya Trello, unduhan laporan PDF, absensi berbasis lokasi GPS, dan komunikasi real-time menggunakan WebSockets (Laravel Echo).\n4. **Keamanan Ekstra Browser (063, 067):** Menerapkan DOMPurify untuk menangkal script beracun dan membangun interceptor untuk menendang pengguna yang sesinya sudah kedaluwarsa secara otomatis.\n\nSelamat! Arsitektur Frontend-mu sudah menembus batas standar.",
+  "categories": ["summary", "index", "indonesia", "react-enterprise"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "React-077",
+    "title": "Progressive Web App (PWA) Setup via Vite",
+    "description": "Analogi: Menyulap Web Menjadi Aplikasi HP. Menggunakan `vite-plugin-pwa` agar web sekolahmu bisa di-install langsung ke layar HP siswa (Android/iOS) tanpa perlu mendaftar ke Play Store, lengkap dengan ikon sekolah.",
+    "categories": ["react", "pwa", "mobile", "vite"],
+    "code": "// Di vite.config.js\nimport { VitePWA } from 'vite-plugin-pwa';\n\nexport default defineConfig({\n    plugins: [\n        VitePWA({ registerType: 'autoUpdate', manifest: { name: 'Portal Sekolah', short_name: 'Sekolah', theme_color: '#ffffff', icons: [...] } })\n    ]\n});",
+    "link": "https://vite-pwa-org.netlify.app/"
+  },
+  {
+    "id": "React-078",
+    "title": "Service Workers (Offline Fallback UI)",
+    "description": "Analogi: Genset Sekolah. Saat server utama mati atau kuota internet siswa habis, layar tidak akan menampilkan Dinosaurus Google Chrome. PWA akan menampilkan halaman 'Anda Sedang Offline' yang cantik dan ramah.",
+    "categories": ["react", "pwa", "offline", "ux"],
+    "code": "window.addEventListener('offline', () => {\n    showAlert('Koneksi Terputus', 'Anda sedang offline. Beberapa fitur mungkin tidak tersedia.', 'warning');\n});\nwindow.addEventListener('online', () => {\n    showAlert('Kembali Online', 'Koneksi internet telah pulih.', 'success');\n});",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
+  },
+  {
+    "id": "React-079",
+    "title": "Zustand (Advanced Global State)",
+    "description": "Analogi: Memori Pusat Sekolah. Pengganti Context API yang jauh lebih ringan dan cepat. Sangat cocok untuk menyimpan data yang sangat sering berubah, seperti status 'Waktu Ujian Berjalan' tanpa membuat seluruh aplikasi melambat.",
+    "categories": ["react", "state", "performance", "architecture"],
+    "code": "import { create } from 'zustand';\n\nexport const useExamStore = create((set) => ({\n    timeLeft: 3600,\n    decrementTime: () => set((state) => ({ timeLeft: state.timeLeft - 1 })),\n    finishExam: () => set({ timeLeft: 0 })\n}));\n// Cara panggil di komponen: const timeLeft = useExamStore(state => state.timeLeft);",
+    "link": "https://github.com/pmndrs/zustand"
+  },
+  {
+    "id": "React-080",
+    "title": "IndexedDB / LocalForage (Offline CBT)",
+    "description": "Analogi: Kertas Buram Jawaban. Fitur *Cyber Security* & UX krusial untuk Ujian Online (CBT). Setiap kali siswa mengklik jawaban, kita menyimpannya diam-diam ke *database browser* (IndexedDB). Jika internet mati saat ujian di-submit, jawaban tidak akan hilang!",
+    "categories": ["react", "database", "offline", "security"],
+    "code": "import localforage from 'localforage';\n\nconst saveAnswerLocally = async (questionId, answer) => {\n    await localforage.setItem(`exam_answer_${questionId}`, answer);\n};\nconst syncAnswersToServer = async () => {\n    // Tarik dari localforage dan kirim via Axios saat internet menyala\n};",
+    "link": "https://localforage.github.io/localForage/"
+  },
+  {
+    "id": "React-081",
+    "title": "Client-Side Schema Validation (Zod)",
+    "description": "Analogi: Satpam Formulir Cerdas. Sebelum form pendaftaran dikirim ke Laravel, Zod memeriksa di HP pengguna apakah format email benar dan password kuat. Ini menghemat kuota internet dan mengurangi beban server (Double Security Layer).",
+    "categories": ["react", "validation", "security", "zod"],
+    "code": "import { z } from 'zod';\n\nconst studentSchema = z.object({\n    email: z.string().email({ message: \"Format email salah\" }),\n    password: z.string().min(8, { message: \"Minimal 8 karakter\" })\n});\n\n// Gunakan schema ini sebelum memanggil post() Inertia",
+    "link": "https://zod.dev/"
+  },
+  {
+    "id": "React-082",
+    "title": "Data Visualization (Recharts)",
+    "description": "Analogi: Grafik Raport Visual. Mengubah data angka nilai tryout dari Laravel menjadi grafik garis atau batang yang interaktif, bisa di-hover, dan sangat responsif di layar HP Kepala Sekolah.",
+    "categories": ["react", "charts", "ui", "analytics"],
+    "code": "import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';\n\nexport default function GradeChart({ data }) {\n    return (\n        <LineChart width={400} height={300} data={data}>\n            <XAxis dataKey=\"month\" /> <YAxis /> <Tooltip /> <CartesianGrid stroke=\"#eee\" />\n            <Line type=\"monotone\" dataKey=\"score\" stroke=\"#8884d8\" />\n        </LineChart>\n    );\n}",
+    "link": "https://recharts.org/en-US/"
+  },
+  {
+    "id": "React-083",
+    "title": "Keyboard Shortcuts (useHotkeys)",
+    "description": "Analogi: Jalur Tikus Staf Admin. Memungkinkan staf TU menekan tombol `CTRL + K` untuk langsung membuka kotak pencarian siswa, atau `CTRL + S` untuk menyimpan data tanpa harus menyentuh mouse. Bikin kerja 10x lebih cepat.",
+    "categories": ["react", "ux", "accessibility"],
+    "code": "import { useHotkeys } from 'react-hotkeys-hook';\n\nexport default function AdminDashboard() {\n    useHotkeys('ctrl+k', (e) => {\n        e.preventDefault();\n        document.getElementById('search-siswa').focus();\n    });\n    return <input id=\"search-siswa\" placeholder=\"Cari (Ctrl+K)\" />;\n}",
+    "link": "https://react-hotkeys-hook.vercel.app/"
+  },
+  {
+    "id": "React-084",
+    "title": "Web Workers for Heavy Processing",
+    "description": "Analogi: Mempekerjakan Asisten Gaib. Jika admin mengunggah file Excel berisi 10.000 data siswa yang harus dicek formatnya di Frontend, Web Worker melakukannya di *background* sehingga browser tidak hang atau *freeze*.",
+    "categories": ["react", "performance", "advanced"],
+    "code": "// file: worker.js -> self.onmessage = (e) => { /* proses berat */ self.postMessage(hasil); };\nimport { useEffect } from 'react';\n\nconst worker = new Worker(new URL('./worker.js', import.meta.url));\nworker.postMessage(massiveData);\nworker.onmessage = (e) => console.log('Proses selesai:', e.data);",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API"
+  },
+  {
+    "id": "React-085",
+    "title": "Content Security Policy (CSP) Nonces",
+    "description": "Analogi: Stempel Rahasia Skrip. Pertahanan utama melawan serangan XSS. Memastikan bahwa browser HANYA menjalankan kode Javascript React yang disetujui oleh server Laravel (memiliki stempel/nonce yang sama), dan memblokir skrip hacker.",
+    "categories": ["react", "security", "inertia", "architecture"],
+    "code": "// Di app.blade.php (Laravel)\n<script type=\"module\" nonce=\"{{ csp_nonce() }}\" src=\"/build/assets/app.js\"></script>\n\n// Semua inline style/script di React juga harus mewariskan nonce ini jika CSP sangat ketat.",
+    "link": "https://inertiajs.com/client-side-setup#content-security-policy"
+  },
+  {
+    "id": "React-086",
+    "title": "Multilingual i18n (react-i18next)",
+    "description": "Analogi: Kamus Multibahasa Instan. Sekolah bertaraf internasional membutuhkan UI yang bisa berubah dari Bahasa Indonesia ke Bahasa Inggris secara instan tanpa perlu memuat ulang data dari server.",
+    "categories": ["react", "localization", "ux"],
+    "code": "import { useTranslation } from 'react-i18next';\n\nexport default function Welcome() {\n    const { t, i18n } = useTranslation();\n    return (\n        <div>\n            <h1>{t('welcome_message')}</h1>\n            <button onClick={() => i18n.changeLanguage('en')}>English</button>\n        </div>\n    );\n}",
+    "link": "https://react.i18next.com/"
+  },
+  {
+    "id": "React-087",
+    "title": "Unit Testing with React Testing Library",
+    "description": "Analogi: Inspektur Mutu. Sebuah robot (skrip pengujian) yang secara otomatis menekan tombol 'Hapus Siswa' di kode kita untuk memastikan bahwa SweetAlert konfirmasi benar-benar muncul sebelum data terhapus.",
+    "categories": ["react", "testing", "quality-assurance"],
+    "code": "import { render, screen, fireEvent } from '@testing-library/react';\nimport DeleteButton from './DeleteButton';\n\ntest('memunculkan dialog konfirmasi saat diklik', () => {\n    render(<DeleteButton />);\n    fireEvent.click(screen.getByText('Hapus'));\n    expect(screen.getByText('Yakin ingin menghapus?')).toBeInTheDocument();\n});",
+    "link": "https://testing-library.com/docs/react-testing-library/intro/"
+  },
+  {
+    "id": "React-088",
+    "title": "End-to-End (E2E) Testing with Cypress",
+    "description": "Analogi: Simulasi Hari Pertama Sekolah. Cypress membuka browser asli secara otomatis, mengetik email dan password, login, lalu mencoba mendaftar kelas. Jika ada yang gagal, ia merekam videonya untuk kita perbaiki.",
+    "categories": ["react", "testing", "e2e", "cypress"],
+    "code": "// Di file cypress/e2e/login.cy.js\ndescribe('Sistem Login', () => {\n    it('Siswa bisa login dan melihat dashboard', () => {\n        cy.visit('/login');\n        cy.get('input[name=\"email\"]').type('budi@siswa.com');\n        cy.get('input[name=\"password\"]').type('rahasia123');\n        cy.get('button[type=\"submit\"]').click();\n        cy.contains('Selamat Datang, Budi').should('be.visible');\n    });\n});",
+    "link": "https://www.cypress.io/"
+  },
+  {
+    "id": "React-089",
+    "title": "React Profiler for Bottlenecks",
+    "description": "Analogi: Dokter Spesialis Performa. Alat ukur bawaan React untuk mendeteksi komponen mana yang paling lambat dimuat. Jika halaman 'Daftar Nilai' memakan waktu 3 detik, Profiler akan menunjukkan baris kode mana pelakunya.",
+    "categories": ["react", "performance", "debugging"],
+    "code": "import { Profiler } from 'react';\n\nconst onRenderCallback = (id, phase, actualDuration) => {\n    if (actualDuration > 100) console.warn(`Komponen ${id} terlalu lambat: ${actualDuration}ms`);\n};\n\n<Profiler id=\"TabelNilai\" onRender={onRenderCallback}>\n    <HeavyGradeTable />\n</Profiler>",
+    "link": "https://react.dev/reference/react/Profiler"
+  },
+  {
+    "id": "React-090",
+    "title": "Cancel Requests (Axios AbortController)",
+    "description": "Analogi: Membatalkan Kurir. Saat siswa mengklik tombol 'Cari: Budi', lalu langsung merubah pikiran dan mengklik 'Cari: Andi', kita membatalkan pencarian pertama di tengah jalan agar server tidak memproses data yang sudah tidak dibutuhkan.",
+    "categories": ["react", "api", "performance"],
+    "code": "useEffect(() => {\n    const controller = new AbortController();\n    axios.get('/api/search', { signal: controller.signal, params: { q: query } })\n         .then(res => setResults(res.data)).catch(err => {\n             if (axios.isCancel(err)) console.log('Pencarian dibatalkan');\n         });\n    return () => controller.abort(); // Batalkan request saat komponen dibongkar/diubah\n}, [query]);",
+    "link": "https://axios-http.com/docs/cancellation"
+  },
+  {
+    "id": "React-091",
+    "title": "Themed CSS Variables (Dynamic Colors)",
+    "description": "Analogi: Cat Tembok Ajaib. Memungkinkan Kepala Sekolah mengganti warna dasar aplikasi (misal dari Biru ke Hijau) langsung dari pengaturan Dashboard Admin. React mengubah variabel CSS, dan Tailwind akan otomatis menyesuaikan seluruh elemen.",
+    "categories": ["react", "tailwind", "css", "architecture"],
+    "code": "useEffect(() => {\n    // schoolThemeColor didapat dari database via Inertia props\n    document.documentElement.style.setProperty('--color-primary', schoolThemeColor);\n}, [schoolThemeColor]);\n\n// Di tailwind.config.js: colors: { primary: 'var(--color-primary)' }",
+    "link": "https://tailwindcss.com/docs/customizing-colors"
+  },
+  {
+    "id": "React-092",
+    "title": "Preventing Double Submissions (Race Conditions)",
+    "description": "Analogi: Pintu Putar Satu Arah. Pertahanan keamanan sisi klien untuk memastikan siswa tidak bisa menekan tombol 'Beli Buku' dua kali berturut-turut dengan cepat sebelum server sempat merespon.",
+    "categories": ["react", "security", "form"],
+    "code": "const [isSubmitting, setIsSubmitting] = useState(false);\n\nconst handleSubmit = async (e) => {\n    e.preventDefault();\n    if (isSubmitting) return;\n    setIsSubmitting(true);\n    try { await submitData(); } \n    finally { setIsSubmitting(false); }\n};",
+    "link": "https://react.dev/reference/react/useState"
+  },
+  {
+    "id": "React-093",
+    "title": "Frontend Route Guards",
+    "description": "Analogi: Satpam Gedung B. Meski Backend sudah dikunci, Frontend juga harus pintar. Jika pengguna mencoba mengetik URL `/admin` di browser, React akan langsung memblokirnya dan melempar ke halaman `/login` tanpa perlu menunggu jawaban Laravel.",
+    "categories": ["react", "security", "routing"],
+    "code": "export default function ProtectedRoute({ children, requiredRole }) {\n    const { auth } = usePage().props;\n    if (!auth.user || auth.user.role !== requiredRole) {\n        window.location.href = '/unauthorized'; // Redirect cepat\n        return null;\n    }\n    return children;\n}",
+    "link": "https://react.dev/learn/conditional-rendering"
+  },
+  {
+    "id": "React-094",
+    "title": "Markdown Editor Integration",
+    "description": "Analogi: Buku Catatan Interaktif. Saat guru membuat artikel pengumuman, kita tidak menggunakan `<textarea>` biasa, melainkan editor Markdown (seperti MDEditor) agar mereka bisa membuat teks tebal, miring, dan daftar dengan mudah.",
+    "categories": ["react", "ui", "components"],
+    "code": "import MDEditor from '@uiw/react-md-editor';\n\nexport default function ArticleForm() {\n    const [value, setValue] = useState('**Halo Siswa!**');\n    return <MDEditor value={value} onChange={setValue} />;\n}",
+    "link": "https://uiwjs.github.io/react-md-editor/"
+  },
+  {
+    "id": "React-095",
+    "title": "React Portals for Tooltips",
+    "description": "Analogi: Kaca Pembesar Melayang. Mirip dengan Modal, jika kita memiliki ikon '?' yang bila didekati memunculkan teks penjelasan (Tooltip), kita merendernya di luar struktur tabel agar tidak terpotong (overflow: hidden) oleh batasan sel tabel.",
+    "categories": ["react", "dom", "ui"],
+    "code": "import { createPortal } from 'react-dom';\n// Tooltip dirender di body agar selalu berada di lapisan teratas (Z-index tertinggi)\nreturn createPortal(<div className=\"absolute z-[9999]\">{tooltipText}</div>, document.body);",
+    "link": "https://react.dev/reference/react-dom/createPortal"
+  },
+  {
+    "id": "React-096",
+    "title": "Optimistic UI Updates",
+    "description": "Analogi: Kepercayaan Penuh. Saat siswa menekan tombol 'Like' pada mading digital, ikon Like langsung berubah menjadi merah seketika itu juga (Optimistic), lalu React baru mengirim datanya ke server. Jika server membalas error, warnanya dikembalikan lagi. Ini menciptakan ilusi kecepatan aplikasi 0ms.",
+    "categories": ["react", "performance", "ux", "advanced"],
+    "code": "const [liked, setLiked] = useState(initialState);\n\nconst toggleLike = () => {\n    setLiked(!liked); // Ubah UI secepat kilat\n    axios.post('/api/like').catch(() => {\n        setLiked(liked); // Revert jika server menolak/error\n        showAlert('Gagal menyukai postingan');\n    });\n};",
+    "link": "https://react.dev/learn/managing-state"
+  },
+  {
+    "id": "React-097",
+    "title": "React.Fragment (<> </>)",
+    "description": "Analogi: Kantong Plastik Transparan. Membungkus banyak elemen komponen (misal: Header, Main, Footer) tanpa menghasilkan elemen `<div>` tambahan di dalam HTML yang bisa merusak desain CSS Grid atau Flexbox.",
+    "categories": ["react", "jsx", "dom"],
+    "code": "export default function StudentListItem({ student }) {\n    return (\n        <>\n            <td>{student.nis}</td>\n            <td>{student.name}</td>\n            <td>{student.grade}</td>\n        </>\n    );\n}",
+    "link": "https://react.dev/reference/react/Fragment"
+  },
+  {
+    "id": "React-098",
+    "title": "Hydration Error Prevention",
+    "description": "Analogi: Menyamakan Catatan Kiri dan Kanan. Dalam ekosistem SSR (Server Side Rendering - opsional di Inertia), pastikan elemen tanggal atau data dinamis yang dirender Laravel di server sama persis dengan yang digambar React di browser agar tidak terjadi layar berkedip.",
+    "categories": ["react", "architecture", "debugging"],
+    "code": "const [isMounted, setIsMounted] = useState(false);\nuseEffect(() => setIsMounted(true), []);\n\n// Jangan render tanggal waktu lokal sampai komponen benar-benar dipasang di browser\nreturn isMounted ? <span>{new Date().toLocaleTimeString()}</span> : <span>Loading...</span>;",
+    "link": "https://react.dev/reference/react-dom/client/hydrateRoot"
+  },
+  {
+    "id": "React-099",
+    "title": "Custom Auth Hook (usePermission)",
+    "description": "Analogi: Kunci Master Elektronik. Alat sakti yang menyederhanakan pengecekan hak akses di Frontend. Cukup tulis `if (can('edit-nilai'))` di mana saja tanpa perlu mengekstrak props Inertia berulang-ulang.",
+    "categories": ["react", "security", "hooks", "authorization"],
+    "code": "import { usePage } from '@inertiajs/react';\n\nexport function usePermission() {\n    const { auth } = usePage().props;\n    const can = (permission) => auth.permissions.includes(permission);\n    const isRole = (role) => auth.user.role === role;\n    return { can, isRole };\n}",
+    "link": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+  },
+  {
+  "id": "Fullstack-100",
+  "title": "GRAND SUMMARY: Arsitektur Fullstack Enterprise (Laravel 12 + Inertia + React)",
+  "description": "Analogi: Mewujudkan Gedung Pencakar Langit Digital. Kita telah mencapai poin ke-100! Dokumen ini sekarang adalah cetak biru (blueprint) paling komprehensif untuk merancang sistem sekolah (atau perusahaan apapun) tingkat dewa.\n\n1. **Pondasi Beton (Database & Model):** Tersusun dari Migrasi berkeamanan tinggi, Relasi Eloquent cerdas, dan Data Dummy (Seeder) untuk simulasi ekstrem.\n2. **Urat Nadi & Filter Keamanan (Router, Middleware, Controller):** Mengatur lalu lintas data yang masuk, memblokir serangan (Rate Limiting, CSP), dan mengubah instruksi mentah menjadi standar API yang elegan.\n3. **Otak Jenius (Service Layer):** Pusat logika bisnis PHP 8.x yang menerapkan *Design Patterns*, Transaksi Database yang kebal gagal, dan manajemen performa untuk memproses jutaan data tanpa memori bocor (Lazy Collections).\n4. **Wajah & Interaksi Modern (Inertia React SPA):** Mengubah data statis menjadi pengalaman mulus tanpa loading (Optimistic UI), visualisasi data (Charts), Offline Ujian (IndexedDB), Validasi Ganda (Zod), hingga pengujian otomatis (Cypress/RTL) untuk memastikan aplikasi tidak pernah cacat produksi.\n\nKamu sekarang tidak hanya memiliki sebuah 'Kamus', melainkan kerangka pikir seorang **Tech Lead** dan **Security Engineer** yang siap memimpin proyek berskala nasional.",
+  "categories": ["summary", "index", "indonesia", "masterpiece", "fullstack"],
+  "code": "echo 'Selamat! Sistem Sekolah Enterprise telah berhasil dirancang dan diarsipkan secara sempurna.';",
+  "link": "https://laravel.com/docs/12.x"
+},
+
+  {
+    "id": "React-101",
+    "title": "TanStack Query (React Query) - Server State",
+    "description": "Analogi: Asisten Pribadi yang Pintar. Meskipun kita pakai Inertia, kadang untuk fitur seperti 'Notifikasi Real-time' atau 'Chat', kita butuh React Query untuk menangani Caching data API secara otomatis, sehingga data tetap segar tanpa perlu refresh manual.",
+    "categories": ["react", "data-fetching", "performance"],
+    "code": "const { data, isLoading } = useQuery(['notifications'], fetchNotifications, {\n    refetchInterval: 30000, // Ambil data baru setiap 30 detik secara background\n});",
+    "link": "https://tanstack.com/query/latest"
+  },
+  {
+    "id": "React-102",
+    "title": "Framer Motion (Micro-Animations)",
+    "description": "Analogi: Pelumas Sendi. Membuat transisi antar halaman atau saat munculnya Modal tidak terasa kaku. Efek 'Fade In' atau 'Slide Up' yang halus membuat aplikasi terasa jauh lebih mahal dan premium.",
+    "categories": ["react", "animation", "ui"],
+    "code": "import { motion } from 'framer-motion';\n\n<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>\n   Konten Halaman Sekolah\n</motion.div>",
+    "link": "https://www.framer.com/motion/"
+  },
+  {
+    "id": "React-103",
+    "title": "React Hook Form + Zod (Optimization)",
+    "description": "Analogi: Mobil Formula 1. Dibanding `useForm` standar, kombinasi ini jauh lebih cepat karena tidak melakukan render ulang seluruh halaman setiap kali user mengetik satu huruf. Sangat penting untuk formulir ujian yang berisi ratusan input.",
+    "categories": ["react", "form", "performance"],
+    "code": "const { register, handleSubmit } = useForm({ resolver: zodResolver(schema) });",
+    "link": "https://react-hook-form.com/"
+  },
+  {
+    "id": "React-104",
+    "title": "Security: React Scan / Why Did You Render?",
+    "description": "Analogi: Detektif Pemborosan. Alat yang memantau komponen mana yang 'bocor' (render ulang tanpa alasan). Dalam sistem sekolah dengan ribuan baris data, satu kebocoran render bisa membuat laptop siswa yang spesifikasinya rendah menjadi sangat panas.",
+    "categories": ["react", "performance", "debugging"],
+    "code": "// Hanya diaktifkan di mode development\nimport { whyDidYouRender } from '@welldone-software/why-did-you-render';\nwhyDidYouRender(React, { trackAllPureComponents: true });",
+    "link": "https://github.com/welldone-software/why-did-you-render"
+  },
+  {
+    "id": "React-105",
+    "title": "Error Handling: Toast Notification Priority",
+    "description": "Analogi: Lampu Sirine. Mengatur sistem notifikasi (seperti React Hot Toast) agar pesan 'Koneksi Gagal' memiliki prioritas lebih tinggi daripada pesan 'Data Disimpan', sehingga user selalu tahu masalah kritis pertama kali.",
+    "categories": ["react", "ui", "ux"],
+    "code": "toast.error('Gagal Simpan!', { duration: 6000, position: 'top-right' });",
+    "link": "https://react-hot-toast.com/"
+  },
+  {
+    "id": "React-106",
+    "title": "Persistent State with Middleware (Zustand)",
+    "description": "Analogi: Brankas yang Tidak Pernah Lupa. Mengintegrasikan Zustand dengan 'Persist Middleware' sehingga pengaturan Dashboard (misal: urutan kolom tabel) tetap sama meskipun user menutup browser dan membukanya sebulan kemudian.",
+    "categories": ["react", "state", "storage"],
+    "code": "export const useSettingsStore = create(persist((set) => ({ ... }), { name: 'school-settings' }));",
+    "link": "https://docs.pmnd.rs/zustand/integrations/persisting-store-data"
+  },
+  {
+    "id": "React-107",
+    "title": "Responsive Container Queries",
+    "description": "Analogi: Baju yang Menyesuaikan Ruangan. Bukan cuma menyesuaikan layar (Screen), tapi komponen menyesuaikan 'Induknya'. Jika sebuah kartu siswa diletakkan di Sidebar, ia mengecil secara otomatis tanpa perlu tahu ukuran layar HP.",
+    "categories": ["react", "css", "tailwind"],
+    "code": "<div className=\"@container\">\n  <div className=\"@md:flex @md:space-x-4\"> {/* Aktif jika lebar container > 448px */}\n    <Avatar />\n  </div>\n</div>",
+    "link": "https://tailwindcss.com/docs/container-queries"
+  },
+  {
+    "id": "React-108",
+    "title": "React.lazy + Prefetch Strategy",
+    "description": "Analogi: Menyiapkan Bahan Sebelum Memasak. Menggabungkan Lazy Loading dengan strategi prefetch pada saat tombol 'Menu' disentuh (onMouseEnter), membuat aplikasi terasa seperti aplikasi desktop yang sudah terinstal.",
+    "categories": ["react", "performance"],
+    "code": "const handleHover = () => import('./HeavyComponent'); // Memulai download saat mouse di atas menu",
+    "link": "https://react.dev/reference/react/lazy"
+  },
+  {
+    "id": "React-109",
+    "title": "Custom DevTools for Security Testing",
+    "description": "Analogi: Kunci Pas Khusus Mekanik. Membuat panel rahasia (hanya bisa diakses role 'Superadmin' di environment 'local') untuk memantau status 'Permissions' dan 'Role' secara visual guna memastikan tidak ada celah otorisasi.",
+    "categories": ["react", "security", "debugging"],
+    "code": "{process.env.NODE_ENV === 'development' && <DevPanel /> }",
+    "link": ""
+  },
+  {
+    "id": "React-110",
+    "title": "Accessibility: Screen Reader Announcements",
+    "description": "Analogi: Suara Narator Sekolah. Menggunakan `aria-live` sehingga ketika ada error atau notifikasi sukses, sistem pembaca layar bagi penyandang disabilitas (tunanetra) bisa langsung membacakan status tersebut.",
+    "categories": ["react", "accessibility", "ux"],
+    "code": "<div aria-live=\"polite\" className=\"sr-only\">{statusMessage}</div>",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions"
+  }
+
+
+
+]

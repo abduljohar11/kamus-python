@@ -1,0 +1,366 @@
+[
+  {
+    "id": "Model-001",
+    "title": "Student Model with Soft Deletes",
+    "description": "Analogi: Buku Induk Siswa. Mencatat profil murid secara permanen, namun mendukung status 'Skorsing' (Soft Delete) agar data tidak benar-benar hilang dari sejarah sekolah.",
+    "categories": ["model", "eloquent", "soft-delete", "student"],
+    "code": "namespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\SoftDeletes;\n\nclass Student extends Model {\n    use SoftDeletes;\n\n    protected $fillable = ['full_name', 'email', 'classroom_id', 'status'];\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#soft-deleting"
+  },
+  {
+    "id": "Model-002",
+    "title": "Classroom Relationship",
+    "description": "Analogi: Denah Ruang Kelas. Model ini mendefinisikan bahwa satu kelas bisa menampung banyak siswa (HasMany) dan memiliki satu guru sebagai wali kelas.",
+    "categories": ["model", "relationship", "one-to-many"],
+    "code": "public function students(): HasMany {\n    return $this->hasMany(Student::class);\n}\n\npublic function teacher(): BelongsTo {\n    return $this->belongsTo(Teacher::class);\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#one-to-many"
+  },
+  {
+    "id": "Model-003",
+    "title": "Polymorphic Announcements",
+    "description": "Analogi: Speaker Pengumuman. Satu pengumuman bisa ditujukan kepada 'Siswa' atau 'Guru' secara fleksibel tanpa membuat tabel terpisah untuk masing-masing.",
+    "categories": ["model", "polymorphic", "relationship"],
+    "code": "public function receivable(): MorphTo {\n    return $this->morphTo();\n}\n\n// Di sisi Student/Teacher:\npublic function announcements(): MorphMany {\n    return $this->morphMany(Announcement::class, 'receivable');\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#one-to-many-polymorphic-relations"
+  },
+  {
+    "id": "Model-004",
+    "title": "Attendance Casting",
+    "description": "Analogi: Format Jam Digital. Memastikan data waktu dari mesin fingerprint (Database) dikonversi menjadi objek waktu yang mudah dibaca oleh aplikasi (Carbon).",
+    "categories": ["model", "casting", "date"],
+    "code": "protected $casts = [\n    'clock_in' => 'datetime',\n    'is_late' => 'boolean',\n    'metadata' => 'array'\n];",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#attribute-casting"
+  },
+  {
+    "id": "Model-005",
+    "title": "User Authentication & Role",
+    "description": "Analogi: Kartu Akses Sekolah. Model utama untuk sistem login yang menyimpan informasi siapa penggunanya dan apa tingkat otoritasnya (Principal/Teacher/Student).",
+    "categories": ["model", "auth", "security", "user"],
+    "code": "protected $hidden = ['password', 'remember_token'];\n\nprotected $fillable = ['name', 'email', 'password', 'role'];",
+    "link": "https://laravel.com/docs/12.x/authentication"
+  },
+  {
+    "id": "Model-006",
+    "title": "Accessors & Mutators (Attributes)",
+    "description": "Analogi: Seragam Otomatis. Mengubah data mentah menjadi format rapi saat ditampilkan, misalnya mengubah nama menjadi 'Capital Case' sebelum muncul di raport.",
+    "categories": ["model", "attribute", "accessor", "mutator"],
+    "code": "protected function fullName(): Attribute {\n    return Attribute::make(\n        get: fn (string $value) => ucwords($value),\n        set: fn (string $value) => strtolower($value),\n    );\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#defining-an-accessor"
+  },
+  {
+    "id": "Model-007",
+    "title": "Global Scopes for Active Students",
+    "description": "Analogi: Filter Daftar Siswa. Secara otomatis hanya menampilkan siswa yang berstatus 'Aktif' di setiap pencarian, kecuali jika kita meminta data alumni secara spesifik.",
+    "categories": ["model", "scope", "logic", "security"],
+    "code": "protected static function booted(): void {\n    static::addGlobalScope('active', function (Builder $builder) {\n        $builder->where('status', 'active');\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#global-scopes"
+  },
+  {
+    "id": "Model-008",
+    "title": "Eager Loading by Default",
+    "description": "Analogi: Membawa Daftar Siswa saat Membuka Kelas. Agar aplikasi tidak 'bolak-balik' ke database (N+1 Problem), kita langsung memuat data relasi yang sering digunakan.",
+    "categories": ["model", "optimization", "performance"],
+    "code": "protected $with = ['classroom'];",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#eager-loading"
+  },
+  {
+    "id": "Model-009",
+    "title": "Model Observers / Events",
+    "description": "Analogi: CCTV Sekolah. Menjalankan aksi otomatis saat ada kejadian tertentu, misalnya mengirim email selamat datang sesaat setelah data siswa baru disimpan.",
+    "categories": ["model", "events", "observer", "automation"],
+    "code": "protected static function booted(): void {\n    static::created(function (Student $student) {\n        // Logika kirim notifikasi\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#events"
+  },
+  {
+    "id": "Model-010",
+    "title": "Many-to-Many (Extracurricular)",
+    "description": "Analogi: Klub Ekstrakurikuler. Seorang siswa bisa mengikuti banyak klub, dan satu klub bisa memiliki banyak anggota siswa.",
+    "categories": ["model", "relationship", "many-to-many"],
+    "code": "public function clubs(): BelongsToMany {\n    return $this->belongsToMany(Club::class)->withPivot('joined_at');\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#many-to-many"
+  },
+  {
+    "id": "Model-011",
+    "title": "Strict Mass Assignment (Guarded)",
+    "description": "Analogi: Gerbang Keamanan Ganda. Jika 'Fillable' menentukan siapa yang boleh masuk, 'Guarded' menentukan siapa yang mutlak dilarang (seperti kolom 'is_admin' atau 'balance').",
+    "categories": ["model", "security", "mass-assignment"],
+    "code": "protected $guarded = ['id', 'is_admin'];\n\n// Pro tip: Untuk keamanan maksimal, biarkan $guarded kosong dan gunakan $fillable.",
+    "link": "https://laravel.com/docs/12.x/eloquent#mass-assignment"
+  },
+  {
+    "id": "Model-012",
+    "title": "Model Pruning (Auto Cleanup)",
+    "description": "Analogi: Petugas Kebersihan. Secara otomatis menghapus data sampah atau log absen yang sudah kadaluwarsa (misal: data pendaftaran yang tidak diproses selama 1 bulan).",
+    "categories": ["model", "cleanup", "maintenance"],
+    "code": "use Illuminate\\Database\\Eloquent\\Prunable;\n\nclass Attendance extends Model {\n    use Prunable;\n\n    public function prunable(): Builder {\n        return static::where('created_at', '<=', now()->subMonth());\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#pruning-models"
+  },
+  {
+    "id": "Model-013",
+    "title": "Has One Through (Grand-Relation)",
+    "description": "Analogi: Mencari Pemilik Yayasan dari Siswa. Menghubungkan Siswa ke Pemilik Sekolah melalui perantara Model Kelas dan Model Sekolah tanpa harus query satu per satu.",
+    "categories": ["model", "relationship", "advanced"],
+    "code": "public function schoolOwner(): HasOneThrough {\n    return $this->hasOneThrough(\n        Owner::class,\n        School::class,\n        'id', // Foreign key on schools table...\n        'school_id', // Foreign key on owners table...\n        'school_id', // Local key on students table...\n        'id' // Local key on schools table...\n    );\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#has-one-through"
+  },
+  {
+    "id": "Model-014",
+    "title": "Pagination Logic",
+    "description": "Analogi: Pembagian Halaman Buku Absen. Daripada memuat 10.000 siswa sekaligus yang bisa membuat server 'hang', kita membaginya menjadi 15 siswa per halaman.",
+    "categories": ["model", "performance", "pagination"],
+    "code": "protected $perPage = 15;\n\n// Di Controller:\n$students = Student::paginate(15);",
+    "link": "https://laravel.com/docs/12.x/pagination"
+  },
+  {
+    "id": "Model-015",
+    "title": "Inertia/API Resource Transformation",
+    "description": "Analogi: Kantong Filter Raport. Memastikan data yang dikirim ke Frontend (React) hanya data yang diperlukan saja, menyembunyikan field internal yang berbahaya.",
+    "categories": ["model", "json", "resource", "inertia"],
+    "code": "public function toArray($request): array {\n    return [\n        'id' => $this->id,\n        'name' => $this->full_name,\n        'joined_at' => $this->created_at->format('d-m-Y'),\n    ];\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-resources"
+  },
+  {
+    "id": "Model-016",
+    "title": "Database Transactions in Model",
+    "description": "Analogi: Pembayaran SPP. Memastikan jika proses simpan data nilai gagal di tengah jalan, maka seluruh proses dibatalkan (Rollback) agar tidak ada data 'setengah matang'.",
+    "categories": ["model", "database", "integrity"],
+    "code": "use Illuminate\\Support\\Facades\\DB;\n\nDB::transaction(function () {\n    $student->save();\n    $student->attendance()->create([...]);\n});",
+    "link": "https://laravel.com/docs/12.x/database#database-transactions"
+  },
+  {
+    "id": "Model-017",
+    "title": "Model Booted Sequence",
+    "description": "Analogi: Prosedur Standar Operasional (SOP). Menentukan apa yang harus dilakukan model saat pertama kali dinyalakan atau digunakan di dalam aplikasi.",
+    "categories": ["model", "lifecycle", "boot"],
+    "code": "protected static function booted(): void {\n    // Contoh: Selalu urutkan siswa berdasarkan nama secara alphabet\n    static::addGlobalScope('alphabetical', function (Builder $builder) {\n        $builder->orderBy('full_name', 'asc');\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#anonymous-global-scopes"
+  },
+
+  {
+    "id": "Model-018",
+    "title": "Model Sharding / Multiple Database",
+    "description": "Analogi: Cabang Sekolah. Model ini memungkinkan data siswa disimpan di database yang berbeda (misal: Database Cabang Jakarta vs Cabang Bandung) namun tetap menggunakan satu struktur kode yang sama.",
+    "categories": ["model", "database", "scaling"],
+    "code": "protected $connection = 'secondary_db';\n\n// Digunakan jika aplikasi sekolahmu berkembang menjadi sistem Multi-Tenant.",
+    "link": "https://laravel.com/docs/12.x/eloquent#introduction"
+  },
+  {
+    "id": "Model-019",
+    "title": "UUID / ULID Support",
+    "description": "Analogi: Barcode Siswa Unik. Mengganti ID angka berurutan (1, 2, 3) menjadi kode acak unik agar hacker tidak bisa menebak jumlah siswa atau melakukan 'ID Enumeration'.",
+    "categories": ["model", "security", "uuid"],
+    "code": "use Illuminate\\Database\\Eloquent\\Concerns\\HasUuids;\n\nclass Student extends Model {\n    use HasUuids;\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#uuid-and-ulid-keys"
+  },
+  {
+    "id": "Model-020",
+    "title": "One of Many (Latest/Oldest Relation)",
+    "description": "Analogi: Raport Terakhir. Secara otomatis mengambil satu data terbaru dari banyak riwayat (misalnya mengambil 'Nilai Ujian Terakhir' dari daftar panjang nilai siswa).",
+    "categories": ["model", "relationship", "advanced"],
+    "code": "public function latestGrade(): HasOne {\n    return $this->hasOne(Grade::class)->latestOfMany();\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#one-of-many"
+  },
+  {
+    "id": "Model-021",
+    "title": "Custom Pivot Models",
+    "description": "Analogi: Detail Kartu Perpustakaan. Saat siswa meminjam buku, tabel perantara tidak hanya mencatat ID, tapi juga logika khusus seperti 'Tanggal Jatuh Tempo' dan 'Denda'.",
+    "categories": ["model", "pivot", "relationship"],
+    "code": "public function books(): BelongsToMany {\n    return $this->belongsToMany(Book::class)\n                ->using(LibraryPivot::class)\n                ->withPivot('due_date');\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#defining-custom-intermediate-table-models"
+  },
+  {
+    "id": "Model-022",
+    "title": "Preventing Lazy Loading (Safety)",
+    "description": "Analogi: Larangan Lupa Bawa Buku. Memaksa aplikasi untuk error jika kita lupa melakukan Eager Loading, demi menjaga performa server agar tidak lambat saat diakses banyak orang.",
+    "categories": ["model", "performance", "debug"],
+    "code": "// Biasanya diletakkan di AppServiceProvider\nModel::preventLazyLoading(! app()->isProduction());",
+    "link": "https://laravel.com/docs/12.x/eloquent#preventing-lazy-loading"
+  },
+  {
+    "id": "Model-023",
+    "title": "Model Replicating",
+    "description": "Analogi: Fotokopi Formulir. Memungkinkan kita menyalin data siswa yang sudah ada (cloning) untuk membuat data baru dengan cepat tanpa harus mengetik ulang semua field.",
+    "categories": ["model", "util", "cloning"],
+    "code": "$newStudent = $student->replicate()->fill([\n    'email' => 'new-email@school.com'\n]);\n$newStudent->save();",
+    "link": "https://laravel.com/docs/12.x/eloquent#replicating-models"
+  },
+  {
+    "id": "Model-024",
+    "title": "Dirty / Was Changed Check",
+    "description": "Analogi: Detektif Perubahan. Model bisa mendeteksi field mana saja yang diubah sebelum disimpan, berguna untuk mencatat log audit (siapa mengubah nilai Matematika dari 70 ke 90).",
+    "categories": ["model", "audit", "security"],
+    "code": "if ($student->isDirty('grade')) {\n    // Jalankan logika log audit\n}\n\n// Setelah save:\nif ($student->wasChanged('address')) {\n    // Kirim notifikasi ke kurir\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#is-dirty"
+  },
+  
+  {
+    "id": "Model-025",
+    "title": "Database Views as Models",
+    "description": "Analogi: Laporan Rangkuman Raport. Terkadang kita tidak membaca tabel asli, melainkan sebuah 'Tampilan Virtual' (View) yang menggabungkan banyak tabel (Siswa, Nilai, Absensi) agar lebih cepat dibaca.",
+    "categories": ["model", "database-view", "read-only"],
+    "code": "class StudentReport extends Model {\n    public $table = 'v_student_academic_reports';\n    public $timestamps = false;\n    // Model ini bersifat read-only (hanya untuk baca laporan).\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#introduction"
+  },
+  {
+    "id": "Model-026",
+    "title": "Encryption Casting",
+    "description": "Analogi: Brankas Data Pribadi. Secara otomatis mengenkripsi data sensitif (seperti Nomor HP Orang Tua atau NIK) saat disimpan ke DB, dan melakukan dekripsi saat dibaca.",
+    "categories": ["model", "security", "encryption"],
+    "code": "protected $casts = [\n    'parent_phone' => 'encrypted',\n    'national_id' => 'encrypted',\n];",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#encrypted-casting"
+  },
+  {
+    "id": "Model-027",
+    "title": "Serializing Dates (Timezone Handling)",
+    "description": "Analogi: Jam Dinding Global. Memastikan format waktu yang dikirim ke Frontend React selalu konsisten (ISO 8601), sehingga tidak ada perbedaan waktu antara server dan browser siswa.",
+    "categories": ["model", "serialization", "datetime"],
+    "code": "protected function serializeDate(\\DateTimeInterface $date): string {\n    return $date->format('Y-m-d H:i:s');\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-serialization#date-serialization"
+  },
+  {
+    "id": "Model-028",
+    "title": "Custom Casts (Value Objects)",
+    "description": "Analogi: Label Warna Status. Membuat logika casting sendiri, misalnya mengubah string 'A' di database menjadi objek CSS 'text-green-500' secara otomatis di Model.",
+    "categories": ["model", "casting", "custom"],
+    "code": "protected $casts = [\n    'options' => AsCollection::class,\n    'address' => AddressCaster::class, // Class custom untuk format alamat\n];",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#custom-casts"
+  },
+  {
+    "id": "Model-029",
+    "title": "Touching Parent Timestamps",
+    "description": "Analogi: Update Papan Pengumuman Kelas. Jika ada satu siswa yang datanya berubah, kita ingin tabel 'Classroom' juga ikut memperbarui kolom `updated_at`-nya secara otomatis.",
+    "categories": ["model", "timestamp", "relationship"],
+    "code": "protected $touches = ['classroom'];\n\n// Setiap kali model Student disimpan, updated_at di Classroom akan ikut terupdate.",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#touching-parent-timestamps"
+  },
+  {
+    "id": "Model-030",
+    "title": "Hiding Attributes Globally (Security)",
+    "description": "Analogi: Tinta Tak Terlihat. Menghapus field internal (seperti `api_token` atau `internal_note`) dari output JSON secara permanen agar tidak pernah bocor ke sisi klien.",
+    "categories": ["model", "security", "json"],
+    "code": "protected $hidden = ['secret_key', 'internal_notes'];",
+    "link": "https://laravel.com/docs/12.x/eloquent-serialization#hiding-attributes-from-json"
+  },
+  {
+  "id": "Model-031",
+  "title": "Rangkuman Arsitektur Model Laravel 12 (Indeks Referensi)",
+  "description": "Analogi: Pusat Kendali Sekolah. Ini adalah peta besar yang menyatukan 30 instrumen cerdas untuk mengelola data sekolah secara profesional. Berikut adalah rincian fungsi dari setiap bagian yang telah kita buat:\n\n1.  **Pilar Keamanan & Privasi (ID 001, 005, 011, 019, 024, 026, 030):** Menjaga data sensitif melalui penghapusan lunak (Soft Deletes), perlindungan mass-assignment (Fillable/Guarded), penggunaan kode unik (UUID) agar tidak mudah ditebak, enkripsi otomatis untuk data pribadi, serta deteksi perubahan data (Dirty Check) untuk kebutuhan audit.\n\n2.  **Jaringan Relasi & Konektivitas (ID 002, 003, 010, 013, 020, 021, 029):** Membangun 'ekosistem sosial' antar model, seperti hubungan Siswa ke Kelas, pengumuman fleksibel (Polimorfik), hingga sinkronisasi waktu pembaruan (Touching Parents) agar data antar tabel selalu harmonis.\n\n3.  **Optimalisasi & Performa (ID 008, 012, 014, 018, 022, 025):** Memastikan aplikasi tetap kencang dengan pemuatan data awal (Eager Loading), pembersihan otomatis data sampah (Pruning), pembagian halaman (Pagination), hingga penggunaan Database View untuk laporan yang kompleks.\n\n4.  **Logika & Transformasi Data (ID 004, 006, 007, 009, 015, 016, 017, 023, 027, 028):** Mengatur bagaimana data berperilaku, seperti mengubah format jam otomatis (Casting), memfilter data aktif secara global (Global Scopes), otomatisasi aksi lewat Events, hingga memastikan integritas data melalui Database Transactions.\n\nDengan indeks ini, kamu memiliki sistem yang tidak hanya menyimpan data, tapi juga melindungi dan mengoptimalkannya secara otomatis.",
+  "categories": ["summary", "index", "indonesia", "architecture"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Model-032",
+    "title": "Immutable Models (Read-Only Protection)",
+    "description": "Analogi: Prasasti Sejarah. Model khusus untuk data yang TIDAK BOLEH diubah setelah dibuat (seperti Log Transaksi atau Sertifikat Lulus). Jika ada kode yang mencoba mengeditnya, Laravel akan langsung menolak.",
+    "categories": ["model", "security", "integrity"],
+    "code": "protected static function booted(): void {\n    static::updating(fn ($model) => throw new \\Exception('Data ini permanen!'));\n    static::deleting(fn ($model) => throw new \\Exception('Data ini tidak boleh dihapus!'));\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#events"
+  },
+  {
+    "id": "Model-033",
+    "title": "Strict Loading (Anti-N+1 Protection)",
+    "description": "Analogi: Alarm Kelalaian. Memaksa aplikasi untuk 'berteriak' (error) saat kamu lupa melakukan Eager Loading di local, tapi tetap berjalan aman di production. Ini menjaga performa agar tetap kencang.",
+    "categories": ["model", "performance", "debug"],
+    "code": "// Di AppServiceProvider.php\nModel::preventLazyLoading(! app()->isProduction());\nModel::handleLazyLoadingViolationUsing(function ($model, $relation) {\n    Log::warning(\"N+1 Detected in {$model} for {$relation}\");\n});",
+    "link": "https://laravel.com/docs/12.x/eloquent#preventing-lazy-loading"
+  },
+  {
+    "id": "Model-034",
+    "title": "Database Level Encryption (Blind Indexing)",
+    "description": "Analogi: Mencari Orang di Daftar Berkode. Teknik menyimpan data terenkripsi (seperti NIK) tapi tetap bisa dicari dengan cepat tanpa harus mendekripsi seluruh database (menggunakan hashing tambahan).",
+    "categories": ["model", "security", "search"],
+    "code": "protected $casts = ['nik' => 'encrypted'];\n// Gunakan hashing terpisah untuk kolom pencarian\npublic static function findByNik($nik) { ... }",
+    "link": ""
+  },
+  {
+    "id": "Model-035",
+    "title": "Multi-Tenant Scope (School Isolation)",
+    "description": "Analogi: Dinding Antar Kelas. Memastikan Admin Sekolah A tidak akan pernah bisa melihat data Siswa Sekolah B secara tidak sengaja, karena filter 'school_id' dipasang otomatis di level Model.",
+    "categories": ["model", "security", "multi-tenancy"],
+    "code": "protected static function booted(): void {\n    static::addGlobalScope('tenant', function (Builder $builder) {\n        $builder->where('school_id', auth()->user()->school_id);\n    });\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-036",
+    "title": "Asynchronous Model Pruning",
+    "description": "Analogi: Jadwal Buang Sampah Otomatis. Menghapus jutaan log absensi lama secara bertahap di background (Queue) agar database tidak terbebani saat proses penghapusan massal.",
+    "categories": ["model", "maintenance", "performance"],
+    "code": "use Illuminate\\Database\\Eloquent\\MassPrunable;\n\nclass ActivityLog extends Model {\n    use MassPrunable;\n    public function prunable() { return static::where('created_at', '<', now()->subYear()); }\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#pruning-models"
+  },
+  {
+    "id": "Model-037",
+    "title": "Searchable Attribute (Laravel Scout)",
+    "description": "Analogi: Indeks Pintar. Menghubungkan Model langsung ke mesin pencari seperti Meilisearch atau Algolia agar fitur cari nama siswa tetap instan meski jumlah data mencapai jutaan.",
+    "categories": ["model", "search", "performance"],
+    "code": "use Laravel\\Scout\\Searchable;\n\nclass Student extends Model {\n    use Searchable;\n    public function toSearchableArray() { return ['name' => $this->full_name]; }\n}",
+    "link": "https://laravel.com/docs/12.x/scout"
+  },
+  {
+    "id": "Model-038",
+    "title": "Computed Attributes (Virtual Property)",
+    "description": "Analogi: Label Status Dinamis. Menambahkan properti 'is_eligible' yang dihitung secara *real-time* berdasarkan nilai-nilai siswa, tanpa harus menyimpannya di kolom database.",
+    "categories": ["model", "logic", "attribute"],
+    "code": "protected $appends = ['is_honor_roll'];\n\nprotected function isHonorRoll(): Attribute {\n    return Attribute::make(get: fn () => $this->gpa >= 3.8);\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#appending-values-to-json"
+  },
+  {
+    "id": "Model-039",
+    "title": "Foreign Key Shadowing (Performance)",
+    "description": "Analogi: Denah Saku. Menyimpan salinan nama kelas di tabel siswa agar saat menampilkan daftar siswa, kita tidak perlu melakukan 'Join' ke tabel kelas (Denormalization untuk kecepatan).",
+    "categories": ["model", "optimization", "database"],
+    "code": "protected static function booted() {\n    static::saving(fn($student) => $student->classroom_name = $student->classroom->name);\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-040",
+    "title": "Secure File Attribute (S3 Logic)",
+    "description": "Analogi: Brankas Foto. Secara otomatis menghasilkan URL yang punya 'masa berlaku' (Temporary URL) untuk foto profil siswa, sehingga link foto tidak bisa disebar orang luar.",
+    "categories": ["model", "security", "storage"],
+    "code": "protected function photoUrl(): Attribute {\n    return Attribute::make(get: fn ($v) => Storage::disk('s3')->temporaryUrl($v, now()->addMinutes(15)));\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-041",
+    "title": "Model Versioning (Revision History)",
+    "description": "Analogi: Jejak Digital Perubahan. Setiap kali alamat siswa diubah, Model secara otomatis mencatat versi lamanya ke tabel sejarah untuk kebutuhan verifikasi di masa depan.",
+    "categories": ["model", "audit", "compliance"],
+    "code": "protected static function booted() {\n    static::updated(fn($m) => $m->revisions()->create(['old_data' => $m->getOriginal()]));\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-042",
+    "title": "Dynamic Relationship (Subquery Selects)",
+    "description": "Analogi: Kalkulator Tersembunyi. Menambahkan kolom 'last_login_at' ke Model Siswa menggunakan *Subquery SQL* yang sangat efisien, menghindari beban memori saat data banyak.",
+    "categories": ["model", "performance", "advanced"],
+    "code": "public function scopeWithLastLogin($query) {\n    $query->addSelect(['last_login_at' => LoginLog::select('created_at')->...]);\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#subquery-selects"
+  },
+  {
+    "id": "Model-043",
+    "title": "Model Caching (Remember Forever)",
+    "description": "Analogi: Buku Pintar di Meja. Secara otomatis menyimpan data profil sekolah di RAM (Redis) agar server tidak perlu terus-menerus bertanya ke Database untuk data yang jarang berubah.",
+    "categories": ["model", "performance", "cache"],
+    "code": "public static function getCachedSettings() {\n    return Cache::rememberForever('settings', fn() => static::first());\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-044",
+    "title": "API Rate Limit Guard in Model",
+    "description": "Analogi: Pembatas Pendaftaran. Menambahkan logika di level Model untuk menolak penyimpanan data jika jumlah pendaftaran dari IP tersebut sudah melewati batas harian.",
+    "categories": ["model", "security", "anti-spam"],
+    "code": "protected static function booted() {\n    static::creating(function ($model) {\n         if (RateLimiter::tooManyAttempts('reg-'.request()->ip(), 5)) abort(429);\n    });\n}",
+    "link": ""
+  },
+  {
+    "id": "Model-045",
+    "title": "Rangkuman Arsitektur Model (Elite Protection)",
+    "description": "Analogi: Konstitusi Digital Sekolah. Poin 32-44 mengunci sistemmu dari kesalahan manusia dan serangan luar. \n\n1. **Data Integrity (032, 035, 041):** Memastikan data tidak bisa dimanipulasi dan tetap terisolasi.\n2. **Extreme Speed (033, 036, 037, 039, 042, 043):** Menghilangkan lag dengan teknik caching, subquery, dan pruning.\n3. **Advanced Security (034, 040, 044):** Melindungi privasi siswa dengan enkripsi buta, link kadaluwarsa, dan anti-spam.",
+    "categories": ["summary", "index", "indonesia", "elite-architecture"],
+    "code": "",
+    "link": ""
+  }
+
+]

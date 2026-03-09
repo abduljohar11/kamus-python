@@ -1,0 +1,1009 @@
+[
+  {
+    "id": "Service-001",
+    "title": "PHP: Strict Types Declaration",
+    "description": "Analogi: Aturan Seragam Ketat. Memaksa sistem agar menolak tipe data yang salah (misal: memasukkan teks 'A' ke kolom nilai Matematika yang butuh angka). Ini mencegah bug fatal di logika perhitungan.",
+    "categories": ["php", "security", "types"],
+    "code": "declare(strict_types=1);\n\nnamespace App\\Services;\n// Harus diletakkan di baris paling atas (baris pertama) file PHP",
+    "link": "https://www.php.net/manual/en/language.types.declarations.php"
+  },
+  {
+    "id": "Service-002",
+    "title": "PHP: Constructor Property Promotion",
+    "description": "Analogi: Formulir Singkat. Cara cepat dan modern mendaftarkan staf (dependency) ke dalam ruang tata usaha (Service) tanpa menulis kode berulang-ulang.",
+    "categories": ["php", "oop", "clean-code"],
+    "code": "class StudentService {\n    // PHP 8+ Modern Way\n    public function __construct(\n        private readonly StudentRepository $repository,\n        private readonly NotificationService $notifier\n    ) {}\n}",
+    "link": "https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion"
+  },
+  {
+    "id": "Service-003",
+    "title": "PHP: Data Transfer Object (DTO)",
+    "description": "Analogi: Map Berkas Standar. Daripada Controller melempar data pendaftaran secara acak (Array), kita membungkusnya dalam satu map resmi (DTO) agar isi data selalu pasti dan tidak bisa disisipi file ilegal oleh hacker.",
+    "categories": ["php", "architecture", "security", "dto"],
+    "code": "class StudentRegistrationDTO {\n    public function __construct(\n        public readonly string $name,\n        public readonly string $email,\n        public readonly int $classroomId\n    ) {}\n}",
+    "link": "https://stitcher.io/blog/data-transfer-objects-in-php"
+  },
+  {
+    "id": "Service-004",
+    "title": "PHP: Nullsafe Operator (?->)",
+    "description": "Analogi: Cek Berlapis Ruang Kelas. Mengecek apakah siswa punya wali kelas, dan apakah wali kelas itu punya nomor HP, tanpa membuat aplikasi crash jika salah satunya kosong (Null).",
+    "categories": ["php", "syntax", "safety"],
+    "code": "// Jika teacher null, tidak akan error, langsung return null\n$teacherPhone = $student->classroom?->teacher?->phone_number;",
+    "link": "https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.nullsafe"
+  },
+  {
+    "id": "Service-005",
+    "title": "PHP: Match Expression",
+    "description": "Analogi: Mesin Pemilah Nilai. Pengganti 'Switch-Case' yang lebih aman dan ketat untuk menentukan predikat siswa berdasarkan nilai huruf secara instan.",
+    "categories": ["php", "logic", "clean-code"],
+    "code": "$predikat = match($nilaiHuruf) {\n    'A' => 'Sangat Baik',\n    'B' => 'Baik',\n    'C' => 'Cukup',\n    default => 'Perlu Perbaikan',\n};",
+    "link": "https://www.php.net/manual/en/control-structures.match.php"
+  },
+  {
+    "id": "Service-006",
+    "title": "PHP: Enums (Backed)",
+    "description": "Analogi: Stempel Resmi Sekolah. Memastikan status siswa hanya boleh 'Aktif', 'Lulus', atau 'Skorsing'. Jika ada input teks lain, sistem otomatis menolaknya di level bahasa PHP.",
+    "categories": ["php", "types", "security"],
+    "code": "enum StudentStatus: string {\n    case ACTIVE = 'active';\n    case GRADUATED = 'graduated';\n    case SUSPENDED = 'suspended';\n}",
+    "link": "https://www.php.net/manual/en/language.enumerations.php"
+  },
+  {
+    "id": "Service-007",
+    "title": "PHP: Named Arguments",
+    "description": "Analogi: Menyebut Nama Saat Mengabsen. Memanggil fungsi tanpa harus hafal urutan parameternya, membuat kode lebih mudah dibaca dan mengurangi risiko salah input.",
+    "categories": ["php", "syntax", "clean-code"],
+    "code": "$this->studentService->registerStudent(\n    email: 'budi@sekolah.com',\n    classroomId: 5,\n    name: 'Budi Santoso'\n);",
+    "link": "https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments"
+  },
+  {
+    "id": "Service-008",
+    "title": "PHP: Custom Exceptions",
+    "description": "Analogi: Surat Peringatan Spesifik. Membuat jenis error sendiri agar kita tahu persis apa yang salah (misal: 'Error Kuota Kelas Penuh') daripada sekadar error sistem umum.",
+    "categories": ["php", "exception", "error-handling"],
+    "code": "class ClassroomFullException extends \\Exception {}\n\n// Di dalam Service:\nif ($classroom->students()->count() >= 30) {\n    throw new ClassroomFullException('Maaf, kuota kelas ini sudah penuh.');\n}",
+    "link": "https://www.php.net/manual/en/language.exceptions.extending.php"
+  },
+  {
+    "id": "Service-009",
+    "title": "PHP: Interfaces (Contracts)",
+    "description": "Analogi: Standar Operasional (SOP). Dokumen yang memaksa setiap kelas Service Pembayaran (misal: Bank, E-Wallet) untuk memiliki fungsi 'bayarSPP', sehingga sistem inti tidak peduli alat bayar apa yang dipakai.",
+    "categories": ["php", "oop", "architecture"],
+    "code": "interface PaymentGatewayInterface {\n    public function processPayment(int $amount, string $reference): bool;\n}",
+    "link": "https://www.php.net/manual/en/language.oop5.interfaces.php"
+  },
+  {
+    "id": "Service-010",
+    "title": "PHP: Traits",
+    "description": "Analogi: Modul Ekstrakurikuler. Kumpulan kemampuan yang bisa disuntikkan ke berbagai Service berbeda tanpa harus melakukan inheritance (pewarisan) kelas yang rumit.",
+    "categories": ["php", "oop", "reusability"],
+    "code": "trait HasAuditLogging {\n    protected function logAction(string $action, array $data) {\n        // Logika mencatat ke tabel audit\n    }\n}",
+    "link": "https://www.php.net/manual/en/language.oop5.traits.php"
+  },
+  {
+    "id": "Service-011",
+    "title": "Basic Create Service (Domain Logic)",
+    "description": "Analogi: Staf Tata Usaha Mendaftar Siswa. Fungsi utama menerima DTO, mengecek aturan, menyimpan ke database, dan mengembalikan data siswa ke Controller.",
+    "categories": ["service", "crud", "create"],
+    "code": "public function registerNewStudent(StudentRegistrationDTO $dto): Student {\n    // Logika bisnis bisa kompleks di sini\n    return Student::create([\n        'name' => $dto->name,\n        'email' => $dto->email,\n        'classroom_id' => $dto->classroomId\n    ]);\n}",
+    "link": "https://laravel.com/docs/12.x/controllers#defining-controllers"
+  },
+  {
+    "id": "Service-012",
+    "title": "Database Transactions in Service",
+    "description": "Analogi: Pembayaran SPP Utuh. Memastikan jika pembuatan data Siswa berhasil tapi pembuatan Akun User gagal, maka kedua proses dibatalkan agar tidak ada data 'setengah jadi'.",
+    "categories": ["service", "database", "security"],
+    "code": "public function enrollStudent(array $data) {\n    return DB::transaction(function () use ($data) {\n        $student = Student::create($data);\n        $student->user()->create(['email' => $data['email'], 'password' => Hash::make('12345')]);\n        return $student;\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/database#database-transactions"
+  },
+  {
+    "id": "Service-013",
+    "title": "Business Logic Validation",
+    "description": "Analogi: Pengecekan Syarat Khusus. FormRequest (Satpam Depan) mengecek teks/angka, sedangkan Service (Staf Ahli) mengecek apakah siswa punya tunggakan SPP sebelum diizinkan pindah kelas.",
+    "categories": ["service", "logic", "validation"],
+    "code": "public function promoteToNextClass(Student $student): void {\n    if ($student->hasUnpaidBills()) {\n        throw new \\DomainException('Siswa tidak bisa naik kelas karena ada tunggakan SPP.');\n    }\n    $student->increment('grade_level');\n}",
+    "link": "https://laravel.com/docs/12.x/errors"
+  },
+  {
+    "id": "Service-014",
+    "title": "Event Dispatching",
+    "description": "Analogi: Pengumuman Speaker. Setelah siswa lulus, Service berteriak 'Siswa Lulus!', membiarkan departemen lain (Email, Sertifikat) merespon teriakan itu tanpa Service harus mengurusnya sendiri.",
+    "categories": ["service", "events", "architecture"],
+    "code": "public function graduateStudent(Student $student) {\n    $student->update(['status' => StudentStatus::GRADUATED]);\n    StudentGraduated::dispatch($student);\n}",
+    "link": "https://laravel.com/docs/12.x/events"
+  },
+  {
+    "id": "Service-015",
+    "title": "Queueing Jobs inside Service",
+    "description": "Analogi: Kurir Pengiriman Surat. Mengirim email tagihan SPP butuh waktu 3 detik. Service melempar tugas ini ke 'Kurir' (Job Queue) agar aplikasi tidak macet menunggu email terkirim.",
+    "categories": ["service", "queue", "performance"],
+    "code": "public function generateMonthlyBills() {\n    $students = Student::active()->get();\n    foreach ($students as $student) {\n        SendSpamBillJob::dispatch($student)->onQueue('emails');\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/queues"
+  },
+  {
+    "id": "Service-016",
+    "title": "Atomic Locks (Race Condition Prevention)",
+    "description": "Analogi: Rebutan Buku Perpustakaan. Mencegah bug keamanan di mana dua siswa mengklik tombol 'Pinjam Buku Terakhir' di milidetik yang sama. Kunci memastikan hanya 1 yang lolos.",
+    "categories": ["service", "security", "cache", "concurrency"],
+    "code": "use Illuminate\\Support\\Facades\\Cache;\n\npublic function borrowBook(Student $student, Book $book) {\n    $lock = Cache::lock('borrow_book_'.$book->id, 10);\n    if ($lock->get()) {\n        // Logika pinjam buku\n        $lock->release();\n    } else {\n        throw new \\Exception('Buku sedang diproses siswa lain.');\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/cache#atomic-locks"
+  },
+  {
+    "id": "Service-017",
+    "title": "Caching Complex Queries",
+    "description": "Analogi: Mading Pengumuman. Daripada menghitung ulang peringkat 1 sampai 1000 setiap kali ada yang bertanya, Service menghitungnya sekali, menempelkannya di Mading (Cache) selama 1 jam.",
+    "categories": ["service", "performance", "cache"],
+    "code": "public function getTopTenStudents() {\n    return Cache::remember('top_ten_students', 3600, function () {\n        return Student::orderByDesc('average_score')->limit(10)->get();\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/cache"
+  },
+  {
+    "id": "Service-018",
+    "title": "Calling External API (Http Client)",
+    "description": "Analogi: Telepon ke Dinas Pendidikan. Service bisa berkomunikasi dengan server luar sekolah, seperti mensinkronkan data NISN menggunakan sistem keamanan Bearer Token.",
+    "categories": ["service", "api", "integration"],
+    "code": "use Illuminate\\Support\\Facades\\Http;\n\npublic function syncWithNationalDatabase(Student $student) {\n    $response = Http::withToken(config('services.dinas.token'))\n                    ->post('https://api.kemdikbud.go.id/sync', $student->toArray());\n    return $response->successful();\n}",
+    "link": "https://laravel.com/docs/12.x/http-client"
+  },
+  {
+    "id": "Service-019",
+    "title": "Dependency Injection Resolution (App::make)",
+    "description": "Analogi: Memanggil Tenaga Ahli Darurat. Terkadang kita butuh alat khusus di tengah proses bisnis tanpa memasukkannya ke Constructor. Kita bisa meminta Laravel membuatkannya secara instan.",
+    "categories": ["service", "container", "advanced"],
+    "code": "public function processComplicatedTax() {\n    // Hanya panggil TaxCalculator jika benar-benar butuh\n    $calculator = app()->make(ComplexTaxCalculatorService::class);\n    return $calculator->calculate();\n}",
+    "link": "https://laravel.com/docs/12.x/container#make-method"
+  },
+  {
+    "id": "Service-020",
+    "title": "Data Sanitization (HTML Purifier)",
+    "description": "Analogi: Sensor Mading. Mencegah serangan XSS (Cross-Site Scripting) dengan membersihkan teks yang diinput siswa (misal: di kolom biografi) dari script jahat sebelum disimpan ke DB.",
+    "categories": ["service", "security", "sanitization"],
+    "code": "public function updateBiography(Student $student, string $htmlInput) {\n    // Membutuhkan package Mews\\Purifier\n    $cleanHtml = clean($htmlInput);\n    $student->update(['biography' => $cleanHtml]);\n}",
+    "link": "https://laravel.com/docs/12.x/validation"
+  },
+  {
+    "id": "Service-021",
+    "title": "Service Binding via Service Provider",
+    "description": "Analogi: Penunjukan Pemenang Tender. Mengatur di tingkat global bahwa jika ada yang meminta 'Alat Kirim Pesan', sistem selalu memberikan 'Vendor WhatsApp' bukan 'Vendor SMS'.",
+    "categories": ["php", "architecture", "providers"],
+    "code": "// Di AppServiceProvider.php\npublic function register(): void {\n    $this->app->bind(NotificationServiceInterface::class, WhatsAppNotificationService::class);\n}",
+    "link": "https://laravel.com/docs/12.x/providers#the-register-method"
+  },
+  {
+    "id": "Service-022",
+    "title": "Handling File Streams",
+    "description": "Analogi: Fotokopi Dokumen Rahasia. Memindahkan file tugas siswa yang besar (Video/PDF) antar folder tanpa memuatnya penuh ke RAM agar server tidak jebol (Out of Memory).",
+    "categories": ["service", "files", "performance"],
+    "code": "use Illuminate\\Support\\Facades\\Storage;\n\npublic function moveExamFile(string $oldPath, string $newPath) {\n    Storage::disk('local')->move($oldPath, $newPath);\n}",
+    "link": "https://laravel.com/docs/12.x/filesystem"
+  },
+  {
+    "id": "Service-023",
+    "title": "Soft Delete Restoration Logic",
+    "description": "Analogi: Pemulihan Siswa Skorsing. Mengaktifkan kembali siswa yang terhapus sementara, sekaligus memulihkan relasinya seperti akun login agar ia bisa masuk ke sekolah lagi.",
+    "categories": ["service", "logic", "restore"],
+    "code": "public function restoreStudent(int $id) {\n    $student = Student::withTrashed()->findOrFail($id);\n    $student->restore();\n    $student->user()->restore();\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#restoring-soft-deleted-models"
+  },
+  {
+    "id": "Service-024",
+    "title": "Pagination Wrapper in Service",
+    "description": "Analogi: Bundel Laporan. Memisahkan logika Query yang panjang (pencarian, filter status, pengurutan) ke dalam Service dan mengembalikan objek LengthAwarePaginator ke Controller.",
+    "categories": ["service", "query", "pagination"],
+    "code": "public function getPaginatedStudents(array $filters, int $perPage = 15) {\n    return Student::query()\n        ->when($filters['search'] ?? null, fn($q, $search) => $q->where('name', 'like', \"%$search%\"))\n        ->paginate($perPage);\n}",
+    "link": "https://laravel.com/docs/12.x/pagination"
+  },
+  {
+    "id": "Service-025",
+    "title": "Rate Limiting inside Logic",
+    "description": "Analogi: Batas Permintaan Surat Keterangan. Mencegah siswa melakukan spam klik tombol 'Generate Raport PDF' menggunakan Rate Limiter khusus di dalam logika bisnis.",
+    "categories": ["service", "security", "rate-limiting"],
+    "code": "use Illuminate\\Support\\Facades\\RateLimiter;\n\npublic function generateReportPdf(User $user) {\n    if (RateLimiter::tooManyAttempts('generate-report:'.$user->id, 3)) {\n        throw new \\Exception('Terlalu banyak percobaan. Coba lagi nanti.');\n    }\n    RateLimiter::hit('generate-report:'.$user->id, 3600); // Batas 1 jam\n    // Logika generate PDF...\n}",
+    "link": "https://laravel.com/docs/12.x/rate-limiting"
+  },
+  {
+    "id": "Service-026",
+    "title": "Action Classes (Single Responsibility)",
+    "description": "Analogi: Staf Spesialis Khusus. Daripada membuat StudentService yang gemuk, kita memecahnya menjadi kelas-kelas kecil yang hanya punya 1 tugas, misal: 'UpdateStudentGradeAction'.",
+    "categories": ["php", "architecture", "actions"],
+    "code": "class PromoteStudentAction {\n    public function execute(Student $student): bool {\n        return $student->update(['is_graduated' => true]);\n    }\n}",
+    "link": "https://stitcher.io/blog/laravel-beyond-crud-actions"
+  },
+  {
+    "id": "Service-027",
+    "title": "Returning Macros / Responses",
+    "description": "Analogi: Standar Amplop Surat. Menggunakan class Service pembantu untuk selalu menstandarkan format response (Success/Error) yang dikirim kembali ke Inertia.",
+    "categories": ["service", "response", "standardization"],
+    "code": "public function formatApiResponse(bool $success, string $message, array $data = []) {\n    return ['status' => $success, 'message' => $message, 'payload' => $data];\n}",
+    "link": "https://laravel.com/docs/12.x/responses#macros"
+  },
+  {
+    "id": "Service-028",
+    "title": "Data Hashing & Cryptography",
+    "description": "Analogi: Brankas Dokumen. Saat memproses reset PIN perpustakaan, Service bertanggung jawab mengenkripsi PIN baru sebelum masuk ke database, jangan pernah percaya input mentah.",
+    "categories": ["service", "security", "cryptography"],
+    "code": "use Illuminate\\Support\\Facades\\Hash;\n\npublic function resetLibraryPin(Student $student, string $newPin) {\n    $student->update([\n        'library_pin' => Hash::make($newPin)\n    ]);\n}",
+    "link": "https://laravel.com/docs/12.x/hashing"
+  },
+  {
+    "id": "Service-029",
+    "title": "Pipeline Pattern in Service",
+    "description": "Analogi: Ban Berjalan (Assembly Line). Memproses pendaftaran siswa melalui serangkaian filter berurutan (Cek Dokumen -> Hitung Biaya -> Buat Akun -> Kirim Email).",
+    "categories": ["php", "architecture", "pipeline"],
+    "code": "use Illuminate\\Support\\Facades\\Pipeline;\n\npublic function processEnrollment($dto) {\n    return Pipeline::send($dto)\n        ->through([\n            ValidateDocuments::class,\n            CalculateFees::class,\n            CreateStudentRecord::class,\n        ])->thenReturn();\n}",
+    "link": "https://laravel.com/docs/12.x/helpers#pipeline"
+  },
+  {
+    "id": "Service-030",
+    "title": "Generators (yield) for Massive Data",
+    "description": "Analogi: Membaca Laporan Per Baris. Jika harus mengekspor 100.000 data nilai siswa ke sistem lain, gunakan 'yield' agar RAM server tidak penuh, data diproses satu per satu.",
+    "categories": ["php", "performance", "generators"],
+    "code": "public function getMassiveStudentData() {\n    foreach (Student::cursor() as $student) {\n        yield $this->formatStudentData($student);\n    }\n}",
+    "link": "https://www.php.net/manual/en/language.generators.overview.php"
+  },
+  {
+  "id": "Service-031",
+  "title": "Rangkuman Otak Logika Aplikasi (Fase 1)",
+  "description": "Analogi: Kantor Tata Usaha & Staf Ahli Sekolah. 30 poin di atas adalah persenjataan lengkap seorang Senior Programmer. \n\n1. **PHP Mastery (001 - 010):** Kita membentengi logika menggunakan bahasa PHP yang ketat (Strict Types, Match, DTO, Enums) agar tidak ada celah untuk bug konyol atau manipulasi tipe data.\n2. **Manajemen Operasional & Performa (014, 015, 017, 022, 024, 030):** Cara kita membuat sekolah (aplikasi) tidak macet saat mengurus ribuan siswa dengan metode Queue (Antrean), Cache (Hafalan), dan Generator.\n3. **Protokol Keamanan Tingkat Tinggi (012, 016, 020, 025, 028):** Melindungi data sekolah dari kerusakan di tengah jalan (DB Transaction), serangan peretasan kompetitif (Atomic Locks), injeksi skrip mading (HTML Purifier), hingga mencegah spam cetak dokumen (Rate Limiting).\n\nIni baru Fase 1 dari arsitektur Enterprise.",
+  "categories": ["summary", "index", "indonesia", "service-layer"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Service-032",
+    "title": "Repository Pattern",
+    "description": "Analogi: Kepala Perpustakaan. Staf Tata Usaha (Service) tidak pernah mencari berkas sendiri ke gudang (Database). Ia menyuruh Kepala Perpustakaan (Repository) untuk mengambilkan data. Ini membuat Service fokus pada aturan bisnis, bukan query SQL.",
+    "categories": ["architecture", "design-pattern", "pro"],
+    "code": "class StudentService {\n    public function __construct(private StudentRepositoryInterface $repository) {}\n\n    public function getActiveStudents() {\n        return $this->repository->findAllActive();\n    }\n}",
+    "link": "https://designpatternsphp.readthedocs.io/en/latest/More/Repository/README.html"
+  },
+  {
+    "id": "Service-033",
+    "title": "Strategy Pattern",
+    "description": "Analogi: Jalur Pendaftaran Fleksibel. Ada jalur Zonasi, Prestasi, dan Pindahan. Daripada menggunakan banyak 'if-else' yang membingungkan, kita membuat 'Strategi' terpisah untuk masing-masing jalur agar kode lebih bersih.",
+    "categories": ["architecture", "design-pattern", "logic"],
+    "code": "interface AdmissionStrategy {\n    public function calculateScore(Student $student): int;\n}\n\nclass AdmissionService {\n    public function process(Student $student, AdmissionStrategy $strategy) {\n        return $strategy->calculateScore($student);\n    }\n}",
+    "link": "https://designpatternsphp.readthedocs.io/en/latest/Behavioral/Strategy/README.html"
+  },
+  {
+    "id": "Service-034",
+    "title": "Adapter Pattern (Payment Gateways)",
+    "description": "Analogi: Colokan Listrik Universal. Jika sekolah pakai Midtrans dan Stripe untuk bayar SPP, Adapter menyamakan colokannya. Sistem inti sekolah tidak peduli bank apa yang dipakai, cara manggilnya tetap sama.",
+    "categories": ["architecture", "design-pattern", "integration"],
+    "code": "class MidtransAdapter implements PaymentGatewayInterface {\n    public function charge(int $amount): bool {\n        // Logika spesifik API Midtrans\n        return MidtransAPI::createTransaction($amount);\n    }\n}",
+    "link": "https://designpatternsphp.readthedocs.io/en/latest/Structural/Adapter/README.html"
+  },
+  {
+    "id": "Service-035",
+    "title": "Decorator Pattern (Caching/Logging)",
+    "description": "Analogi: Jaket Tambahan. Menambahkan fitur 'Catat Log' atau 'Hafalkan Data' (Cache) pada sebuah Service tanpa harus membongkar atau mengubah kode asli dari Service tersebut.",
+    "categories": ["architecture", "design-pattern", "performance"],
+    "code": "class CachedStudentRepository implements StudentRepositoryInterface {\n    public function __construct(private StudentRepository $baseRepo) {}\n\n    public function find(int $id) {\n        return Cache::remember('student_'.$id, 3600, fn() => $this->baseRepo->find($id));\n    }\n}",
+    "link": "https://designpatternsphp.readthedocs.io/en/latest/Structural/Decorator/README.html"
+  },
+  {
+    "id": "Service-036",
+    "title": "PHP 8.2: Readonly Classes",
+    "description": "Analogi: Surat Keputusan (SK) Lulus Berseterika. Begitu data (DTO) dibuat, isinya mutlak tidak bisa diubah (Immutable) oleh siapapun di tengah jalan. Ini adalah teknik keamanan tingkat tinggi melawan manipulasi memori.",
+    "categories": ["php", "security", "dto", "advanced"],
+    "code": "readonly class StudentGradeDTO {\n    public function __construct(\n        public string $studentId,\n        public int $finalScore\n    ) {}\n}",
+    "link": "https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.readonly"
+  },
+  {
+    "id": "Service-037",
+    "title": "PHP 8.0: Attributes (Annotations)",
+    "description": "Analogi: Stempel Prioritas Dokumen. Memberikan metadata pada fungsi (misal stempel 'Hanya Admin') yang nantinya bisa dibaca otomatis oleh sistem tanpa harus menulis kode if-else di dalamnya.",
+    "categories": ["php", "metadata", "clean-code"],
+    "code": "#[RequiresRole('admin')]\npublic function deleteStudentRecords(int $id) {\n    // Fungsi akan dicek oleh middleware/reflektor sebelum dijalankan\n}",
+    "link": "https://www.php.net/manual/en/language.attributes.overview.php"
+  },
+  {
+    "id": "Service-038",
+    "title": "PHP 8.1: First-Class Callable Syntax",
+    "description": "Analogi: Mandat Langsung. Mendelegasikan tugas dari satu staf ke staf lain dengan sintaks yang sangat singkat dan aman, sangat berguna saat berhadapan dengan fungsi array (map/filter).",
+    "categories": ["php", "syntax", "functional"],
+    "code": "$grades = [80, 90, 75];\n// Menggunakan method formatGrade dari class ini sendiri\n$formatted = array_map($this->formatGrade(...), $grades);",
+    "link": "https://www.php.net/manual/en/functions.first_class_callable_syntax.php"
+  },
+  {
+    "id": "Service-039",
+    "title": "PHP 8.1: Intersection Types",
+    "description": "Analogi: Syarat Jabatan Ganda. Memaksa bahwa parameter yang masuk harus mewarisi 2 sifat sekaligus (misal: Dia harus seorang 'Guru' DAN juga 'Pengurus Lab').",
+    "categories": ["php", "types", "security"],
+    "code": "public function assignLabKey(TeacherInterface & LabManagerInterface $staff) {\n    $staff->giveKey('LAB_01');\n}",
+    "link": "https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.intersection"
+  },
+  {
+    "id": "Service-040",
+    "title": "PHP 8.0: Union Types",
+    "description": "Analogi: Opsi Pembayaran Fleksibel. Menyatakan secara eksplisit bahwa fungsi ini menerima data bertipe 'Angka' ATAU 'Teks' (misal: ID Siswa bisa berupa angka 102 atau UUID string).",
+    "categories": ["php", "types", "flexibility"],
+    "code": "public function findStudent(int|string $identifier): ?Student {\n    return Student::where('id', $identifier)\n        ->orWhere('uuid', $identifier)->first();\n}",
+    "link": "https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.union"
+  },
+  {
+    "id": "Service-041",
+    "title": "PHP 8.1: The 'never' Return Type",
+    "description": "Analogi: Jalur Evakuasi Darurat. Memberitahu sistem dan programmer lain bahwa fungsi ini pasti akan menghentikan aplikasi (membunuh proses) dan tidak akan pernah mengembalikan nilai apapun.",
+    "categories": ["php", "types", "error-handling"],
+    "code": "public function haltSystemForSecurityBreach(): never {\n    Log::emergency('Security breach detected!');\n    abort(403, 'Akses ilegal terdeteksi.');\n}",
+    "link": "https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.never"
+  },
+  {
+    "id": "Service-042",
+    "title": "PHP 8.0: WeakMap for Memory Management",
+    "description": "Analogi: Loker Penitipan Sementara. Menyimpan cache data siswa di memori server. Hebatnya, jika data siswa dihapus, loker ini otomatis kosong sendiri tanpa membuat RAM bocor (Memory Leak).",
+    "categories": ["php", "memory", "performance"],
+    "code": "private WeakMap $cache;\n\npublic function getStudentStats(Student $student) {\n    return $this->cache[$student] ??= $this->calculateHeavyStats($student);\n}",
+    "link": "https://www.php.net/manual/en/class.weakmap.php"
+  },
+  {
+    "id": "Service-043",
+    "title": "Webhook Receiver Logic",
+    "description": "Analogi: Kotak Pos Otomatis 24 Jam. Service ini bertugas menerima laporan dari bank (Midtrans/Stripe) saat ada siswa yang mentransfer SPP di tengah malam, memverifikasi tanda tangannya (Security), dan mencatat lunas.",
+    "categories": ["service", "webhooks", "api", "security"],
+    "code": "public function handleMidtransWebhook(array $payload, string $signature) {\n    if (!$this->verifySignature($payload, $signature)) throw new Exception('Invalid Signature');\n    if ($payload['transaction_status'] === 'settlement') {\n        // Update tagihan SPP menjadi lunas\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/routing#defining-routes"
+  },
+  {
+    "id": "Service-044",
+    "title": "Process Facade (Executing OS Commands)",
+    "description": "Analogi: Memanggil Kontraktor Luar. Jika PHP tidak kuat memproses video tugas siswa, Service bisa memerintahkan Sistem Operasi (Linux) untuk memanggil program spesialis (seperti FFmpeg atau NodeJS) di latar belakang.",
+    "categories": ["service", "process", "advanced"],
+    "code": "use Illuminate\\Support\\Facades\\Process;\n\npublic function generateHeavyPdfReport() {\n    $result = Process::run('node generate-report.js --student=123');\n    if ($result->successful()) return $result->output();\n}",
+    "link": "https://laravel.com/docs/12.x/processes"
+  },
+  {
+    "id": "Service-045",
+    "title": "Lazy Collections for Million Records",
+    "description": "Analogi: Membaca Buku Halaman per Halaman. Daripada membawa 100.000 raport siswa sekaligus yang bikin meja patah (Server Out of Memory), kita proses satu-satu secara efisien menggunakan 'Lazy'.",
+    "categories": ["service", "collections", "memory", "performance"],
+    "code": "public function exportAllStudents() {\n    Student::cursor()->filter(function ($student) {\n        return $student->is_active;\n    })->each(function ($student) {\n        // Tulis ke file CSV satu per satu\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/collections#lazy-collections"
+  },
+  {
+    "id": "Service-046",
+    "title": "ChunkById for Mass Updates",
+    "description": "Analogi: Pemanggilan per Kelas. Saat menaikkan kelas seluruh siswa, jangan panggil 5.000 anak sekaligus. Panggil per 100 anak agar database tidak terkunci (Deadlock) dan proses berjalan mulus.",
+    "categories": ["service", "database", "optimization"],
+    "code": "public function promoteAllStudents() {\n    Student::where('status', 'active')->chunkById(100, function ($students) {\n        foreach ($students as $student) {\n            $student->update(['grade_level' => clone $student->grade_level + 1]);\n        }\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/queries#chunking-results"
+  },
+  {
+    "id": "Service-047",
+    "title": "Contextual Binding",
+    "description": "Analogi: Guru Spesialis untuk Kelas Khusus. Mengatur agar Controller Kelas A otomatis mendapat 'Service Matematika Mudah', sementara Controller Kelas B otomatis mendapat 'Service Matematika Sulit' tanpa mengubah kode.",
+    "categories": ["architecture", "container", "dependency-injection"],
+    "code": "// Di AppServiceProvider\n$this->app->when(PremiumClassController::class)\n          ->needs(ReportServiceInterface::class)\n          ->give(DetailedReportService::class);",
+    "link": "https://laravel.com/docs/12.x/container#contextual-binding"
+  },
+  {
+    "id": "Service-048",
+    "title": "Security: Preventing SQL Injection in Raw Queries",
+    "description": "Analogi: Mesin X-Ray Surat. Jika terpaksa menggunakan query manual (Raw SQL) untuk laporan yang super kompleks, Service wajib menggunakan Data Binding (?) agar script jahat dari hacker tidak bisa menembus database.",
+    "categories": ["service", "security", "database"],
+    "code": "use Illuminate\\Support\\Facades\\DB;\n\npublic function searchVulnerable(string $keyword) {\n    // BUKAN INI: DB::select(\"SELECT * FROM students WHERE name = '$keyword'\");\n    // TAPI HARUS INI (Secure Binding):\n    return DB::select('SELECT * FROM students WHERE name = ?', [$keyword]);\n}",
+    "link": "https://laravel.com/docs/12.x/database#running-a-select-query"
+  },
+  {
+    "id": "Service-049",
+    "title": "Formatting Inertia Shared Data in Service",
+    "description": "Analogi: Penerjemah Format Raport. Service bertugas merapikan data kalender akademik atau jadwal pelajaran sekolah menjadi format JSON yang sangat ramah dan mudah dibaca oleh komponen React di Frontend.",
+    "categories": ["service", "inertia", "react", "frontend"],
+    "code": "public function getReactFormattedSchedule(Student $student): array {\n    return $student->schedules->map(fn($schedule) => [\n        'day' => $schedule->day_name,\n        'subject' => $schedule->subject->name,\n        'time' => $schedule->start_time->format('H:i')\n    ])->toArray();\n}",
+    "link": "https://inertiajs.com/responses"
+  },
+  {
+    "id": "Service-050",
+    "title": "Custom Facades for Services",
+    "description": "Analogi: Tombol Pintas Darurat. Membuat tombol ajaib (Facade) agar fitur sekolah yang paling sering dipakai (seperti 'Sistem SMS') bisa dipanggil dari mana saja hanya dengan satu baris kode statis.",
+    "categories": ["architecture", "facade", "pro"],
+    "code": "// Membuat Facade: class Sms extends Facade { protected static function getFacadeAccessor() { return 'sms'; } }\n// Cara pakainya di mana saja:\nSms::sendToParent($student, 'Anak anda bolos.');",
+    "link": "https://laravel.com/docs/12.x/facades"
+  },
+  {
+    "id": "Service-051",
+    "title": "Idempotent Operations (API Security)",
+    "description": "Analogi: Cek Resi Ganda. Memastikan jika aplikasi siswa (di HP lemot) mengirim permintaan 'Bayar SPP' dua kali berturut-turut karena lag, sistem hanya akan memprosesnya satu kali saja untuk menghindari saldo terpotong dua kali.",
+    "categories": ["service", "api", "security", "idempotency"],
+    "code": "public function processPayment(string $transactionId, int $amount) {\n    if (Payment::where('tx_id', $transactionId)->exists()) {\n        return response()->json(['message' => 'Sudah diproses sebelumnya.']);\n    }\n    // Lanjut proses bayar...\n}",
+    "link": "https://restfulapi.net/idempotent-rest-apis/"
+  },
+  {
+  "id": "Service-052",
+  "title": "Rangkuman Otak Logika Aplikasi (Fase 2 - Enterprise Level)",
+  "description": "Analogi: Gelar Master Arsitektur Sekolah Digital. Dengan mencapai poin 51, kamu tidak lagi sekadar merakit kode, tapi mendesain sistem yang tahan banting, anti-hacker, dan sanggup menampung jutaan data. \n\n1. **Design Patterns (032-035, 047, 050):** Menggunakan pola Repository, Strategy, dan Adapter agar aplikasi bisa dibongkar-pasang tanpa merusak fitur lain (Highly Scalable).\n2. **Advanced PHP 8.x (036-042):** Menerapkan Readonly, Union Types, dan WeakMap. Ini adalah standar koding tertinggi yang menjamin ketatnya memori dan tipe data, mencegah 90% bug sebelum kode dijalankan.\n3. **Proses Masif & OS Level (044-046):** Menangani jutaan baris data absensi atau video menggunakan Lazy Collections, Chunking, dan Process Facade tanpa membuat server meledak (OOM).\n4. **Security & Integrasi (043, 048, 051):** Mengamankan Webhooks dari bank, memblokir SQL Injection pada query kompleks, dan memastikan transaksi API tidak ganda (Idempotency).\n\nKamus ini sekarang adalah 'Kitab Suci' bagi seorang Lead Backend Engineer dalam ekosistem Laravel 12 dan Inertia React.",
+  "categories": ["summary", "index", "indonesia", "service-layer-pro"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Service-053",
+    "title": "Inertia Direct Data Refresh (Partial Reload)",
+    "description": "Analogi: Update Papan Skor. Daripada mengirim ulang seluruh data satu sekolah yang berat, Service ini hanya mengirim data 'Jumlah Siswa Hadir' saat diminta oleh React, menghemat bandwidth hingga 80%.",
+    "categories": ["laravel", "inertia", "performance"],
+    "code": "return inertia('Dashboard', [\n    'stats' => inertia()->lazy(fn () => $this->service->getLiveStats()),\n]);",
+    "link": "https://inertiajs.com/partial-reloads"
+  },
+  {
+    "id": "Service-054",
+    "title": "Eloquent: API Resources for Inertia",
+    "description": "Analogi: Filter Privasi Berkas. Memastikan data sensitif seperti 'Password' atau 'Hobi Rahasia' tidak sengaja terkirim ke browser (React) saat kita memanggil `User::all()`. Hanya data yang diizinkan yang boleh keluar.",
+    "categories": ["laravel", "security", "json"],
+    "code": "class StudentResource extends JsonResource {\n    public function toArray($request) {\n        return [\n            'id' => $this->id,\n            'name' => $this->name,\n            'email' => $this->when($request->user()->isAdmin(), $this->email),\n        ];\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-resources"
+  },
+  {
+    "id": "Service-055",
+    "title": "Laravel 12: New Database Concurrency (Preventing Overbook)",
+    "description": "Analogi: Tiket Kursi Bus. Menggunakan fitur `DB::transactional()` terbaru di Laravel 12 untuk memastikan pendaftaran kelas tidak melebihi kuota meskipun 1000 orang menekan tombol 'Daftar' secara bersamaan.",
+    "categories": ["laravel", "database", "security"],
+    "code": "DB::transactional(fn () => {\n    $course = Course::lockForUpdate()->find($id);\n    if ($course->isFull()) throw new Exception('Kamar Penuh!');\n    $course->students()->attach($studentId);\n});",
+    "link": "https://laravel.com/docs/12.x/database"
+  },
+  {
+    "id": "Service-056",
+    "title": "Service: Policy-Based Authorization",
+    "description": "Analogi: Kunci Pintu Per Ruangan. Jangan mengecek peran (Role) di Controller. Service harus memanggil Policy untuk memastikan 'Apakah Guru A boleh mengedit Nilai Siswa B?', bukan cuma sekadar 'Apakah dia Guru?'.",
+    "categories": ["laravel", "security", "authorization"],
+    "code": "public function updateGrade(User $user, Student $student) {\n    Gate::authorize('update-grade', $student);\n    // Logika update...\n}",
+    "link": "https://laravel.com/docs/12.x/authorization"
+  },
+  {
+    "id": "Service-057",
+    "title": "Laravel: Number & Currency Facade",
+    "description": "Analogi: Mesin Kasir Otomatis. Menggunakan Facade `Number` bawaan Laravel untuk memformat biaya SPP menjadi Rupiah (Rp) secara konsisten di seluruh aplikasi tanpa perlu ribet dengan fungsi manual.",
+    "categories": ["laravel", "utility", "localization"],
+    "code": "use Illuminate\\Support\\Number;\n\n$formatted = Number::currency(500000, in: 'IDR', locale: 'id'); // Hasil: Rp500.000",
+    "link": "https://laravel.com/docs/12.x/helpers#method-number-currency"
+  },
+  {
+    "id": "Service-058",
+    "title": "Advanced File Validation (MIME Check)",
+    "description": "Analogi: Detektor Bom di Gerbang. Jangan hanya percaya ekstensi `.jpg`. Service wajib mengecek isi file (Magic Bytes) untuk memastikan siswa tidak mencoba mengunggah virus berbahaya yang disamar-samarkan.",
+    "categories": ["security", "files", "validation"],
+    "code": "$request->validate([\n    'photo' => ['required', 'file', 'mimetypes:image/jpeg,image/png', 'max:2048'],\n]);",
+    "link": "https://laravel.com/docs/12.x/validation#rule-mimetypes"
+  },
+  {
+    "id": "Service-059",
+    "title": "Batching Jobs (Mass Student Import)",
+    "description": "Analogi: Rombongan Bus Sekolah. Saat mengimpor 10.000 siswa dari Excel, jangan buat 10.000 antrean terpisah. Gabungkan dalam satu 'Batch' agar kita bisa memantau progres (0% - 100%) secara real-time di React.",
+    "categories": ["laravel", "queue", "performance"],
+    "code": "$batch = Bus::batch([\n    new ImportStudentJob($data1),\n    new ImportStudentJob($data2),\n])->dispatch();",
+    "link": "https://laravel.com/docs/12.x/queues#job-batching"
+  },
+  {
+    "id": "Service-060",
+    "title": "Encryption for PII (Personal Identifiable Information)",
+    "description": "Analogi: Tulisan Rahasia (Enkripsi). Data sensitif seperti Nomor HP Orang Tua atau Alamat Rumah harus dienkripsi di database agar jika database bocor, hacker tidak bisa membaca data aslinya.",
+    "categories": ["security", "database", "encryption"],
+    "code": "protected $casts = [\n    'parent_phone' => 'encrypted',\n    'home_address' => 'encrypted',\n];",
+    "link": "https://laravel.com/docs/12.x/eloquent-mutators#encrypted-casting"
+  },
+  {
+    "id": "Service-061",
+    "title": "Laravel 12: Context (Log Tracing)",
+    "description": "Analogi: Rekaman CCTV Terintegrasi. Fitur baru Laravel 12 yang menempelkan ID Unik pada setiap log. Jika terjadi error saat bayar SPP, kita bisa melihat 'jejak kaki' user tersebut dari awal login sampai error terjadi.",
+    "categories": ["laravel", "debugging", "security"],
+    "code": "Context::add('student_id', $student->id);\nLog::info('Siswa mencoba akses rapor.'); // Log otomatis berisi student_id",
+    "link": "https://laravel.com/docs/12.x/logging#context"
+  },
+  {
+    "id": "Service-062",
+    "title": "Database Indexing Strategy",
+    "description": "Analogi: Daftar Isi Buku. Service yang melakukan pencarian NISN atau Email wajib memastikan kolom tersebut memiliki 'Index' di database agar pencarian di 1 juta data selesai dalam 0.001 detik.",
+    "categories": ["database", "performance", "sql"],
+    "code": "// Di Migration:\n$table->string('nisn')->index();\n$table->unique('email');",
+    "link": "https://laravel.com/docs/12.x/migrations#creating-indexes"
+  },
+  {
+    "id": "Service-063",
+    "title": "Eloquent: Preventing N+1 with with()",
+    "description": "Analogi: Sekali Jalan Ambil Semua. Saat menampilkan daftar 50 siswa beserta nama kelasnya, gunakan `Eager Loading` agar database tidak dipanggil 51 kali (yang bisa membuat server lambat/hang).",
+    "categories": ["laravel", "database", "performance"],
+    "code": "$students = Student::with('classroom.teacher')->get();",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#eager-loading"
+  },
+  {
+    "id": "Service-064",
+    "title": "Laravel: Custom Validation Rules",
+    "description": "Analogi: Tes Buta Warna Khusus. Membuat aturan validasi sendiri (misal: mengecek apakah format NISN sesuai dengan rumus algoritma khusus sekolah) agar Controller tetap bersih.",
+    "categories": ["laravel", "validation", "clean-code"],
+    "code": "public function rules(): array {\n    return ['nisn' => [new ValidNisnRule()]];\n}",
+    "link": "https://laravel.com/docs/12.x/validation#custom-validation-rules"
+  },
+  {
+    "id": "Service-065",
+    "title": "Service: Socialite Integration (SSO)",
+    "description": "Analogi: Masuk Pakai Kartu Google. Mengizinkan siswa login menggunakan akun Google atau Microsoft agar mereka tidak perlu menghafal banyak password (dan meningkatkan keamanan akun).",
+    "categories": ["laravel", "auth", "integration"],
+    "code": "return Socialite::driver('google')->redirect();",
+    "link": "https://laravel.com/docs/12.x/socialite"
+  },
+  {
+    "id": "Service-066",
+    "title": "Middleware: Sanitize Input Strings",
+    "description": "Analogi: Cuci Tangan Sebelum Masuk. Secara otomatis memotong spasi kosong di awal/akhir (Trim) dan mengubah string kosong menjadi NULL agar data di database tetap rapi dan konsisten.",
+    "categories": ["laravel", "middleware", "data-integrity"],
+    "code": "// Sudah ada di Laravel secara default: \n// \\App\\Http\\Middleware\\TrimStrings::class",
+    "link": "https://laravel.com/docs/12.x/middleware"
+  },
+  {
+    "id": "Service-067",
+    "title": "Laravel: Notification Channel (Multiple)",
+    "description": "Analogi: Pengumuman Serentak. Mengirim notifikasi kelulusan ke Siswa melalui Email, Dashboard (Database), dan WhatsApp secara bersamaan hanya dengan satu perintah.",
+    "categories": ["laravel", "notifications"],
+    "code": "$student->notify(new GraduationNotification($student));",
+    "link": "https://laravel.com/docs/12.x/notifications"
+  },
+  {
+    "id": "Service-068",
+    "title": "Security: Rate Limiting per Action",
+    "description": "Analogi: Jatah Bertanya di Kelas. Membatasi siswa agar tidak bisa menekan tombol 'Lupa Password' lebih dari 3 kali dalam 1 jam untuk mencegah serangan Brute Force.",
+    "categories": ["security", "auth", "laravel"],
+    "code": "RateLimiter::for('password-reset', function (Request $request) {\n    return Limit::perHour(3)->by($request->ip());\n});",
+    "link": "https://laravel.com/docs/12.x/rate-limiting"
+  },
+  {
+    "id": "Service-069",
+    "title": "Service: PDF Generation (Stream)",
+    "description": "Analogi: Cetak Rapor Instan. Mengubah data nilai siswa menjadi file PDF profesional secara langsung di memori server dan mengirimkannya ke browser tanpa perlu menyimpan file fisik (menghemat storage).",
+    "categories": ["laravel", "pdf", "utility"],
+    "code": "$pdf = Pdf::loadView('reports.student', $data);\nreturn $pdf->stream('rapor.pdf');",
+    "link": "https://github.com/barryvdh/laravel-dompdf"
+  },
+  {
+    "id": "Service-070",
+    "title": "Laravel: Data Pruning (Auto-Cleanup)",
+    "description": "Analogi: Petugas Kebersihan Otomatis. Menghapus log absensi atau data sampah yang sudah berusia lebih dari 5 tahun secara otomatis setiap malam agar database tidak 'obesitas'.",
+    "categories": ["laravel", "database", "maintenance"],
+    "code": "use Illuminate\\Database\\Eloquent\\Prunable;\n\npublic function prunable() {\n    return static::where('created_at', '<=', now()->subYears(5));\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#pruning-models"
+  },
+  {
+    "id": "Service-071",
+    "title": "Global Scopes for Multi-Tenancy",
+    "description": "Analogi: Sekat Antar Kelas. Memastikan Guru dari Kelas A tidak akan pernah bisa melihat data Siswa Kelas B secara tidak sengaja karena sistem otomatis menambahkan `WHERE classroom_id = X` pada setiap query.",
+    "categories": ["laravel", "security", "database"],
+    "code": "protected static function booted() {\n    static::addGlobalScope('classroom', function (Builder $builder) {\n        $builder->where('classroom_id', auth()->user()->classroom_id);\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent#global-scopes"
+  },
+  {
+    "id": "Service-072",
+    "title": "Laravel: Prevent Lazy Loading in Production",
+    "description": "Analogi: Alarm Pemborosan. Memaksa aplikasi untuk Error di mode Development jika kita lupa memakai `with()`, sehingga kita terbiasa menulis kode yang cepat sebelum naik ke Production.",
+    "categories": ["laravel", "performance", "debugging"],
+    "code": "Model::preventLazyLoading(! app()->isProduction());",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#preventing-lazy-loading"
+  },
+  {
+    "id": "Service-073",
+    "title": "Security: Signed URLs for Private Files",
+    "description": "Analogi: Tiket Sekali Pakai. Membuat link unduhan Ijazah yang hanya berlaku selama 5 menit. Jika link disebar ke orang lain setelah 5 menit, link tersebut tidak bisa dibuka.",
+    "categories": ["security", "laravel", "files"],
+    "code": "return URL::temporarySignedRoute('download.ijazah', now()->addMinutes(5), ['user' => 1]);",
+    "link": "https://laravel.com/docs/12.x/urls#signed-urls"
+  },
+  {
+    "id": "Service-074",
+    "title": "Laravel: Vite Integration (Asset Bundling)",
+    "description": "Analogi: Pengepakan Barang Efisien. Memastikan CSS dan JS React dikompres sekecil mungkin dan diberi nama unik (Versioning) agar browser siswa tidak menyimpan cache versi lama saat kita update aplikasi.",
+    "categories": ["laravel", "frontend", "performance"],
+    "code": "@vite(['resources/js/app.jsx', \"resources/js/Pages/{$page['component']}.jsx\"])",
+    "link": "https://laravel.com/docs/12.x/vite"
+  },
+  {
+    "id": "Service-075",
+    "title": "Rangkuman Arsitektur Backend & Security (Fase 3)",
+    "description": "Analogi: Benteng Pertahanan Sekolah Digital. Dengan mencapai poin 74, kamu telah membangun 'Tembok Berlin' di Backend-mu.\n\n1. **Data Integrity (054, 060, 066, 071):** Data dipastikan bersih, aman terenkripsi, dan terisolasi antar user.\n2. **Extreme Performance (053, 059, 062, 063, 072):** Aplikasi sanggup menangani lonjakan trafik saat ujian atau pendaftaran tanpa membuat server lemot.\n3. **Modern UX via Backend (057, 067, 069, 074):** Memberikan kenyamanan bagi user melalui format uang yang benar, notifikasi cepat, dan PDF instan.\n4. **Cyber Security Hardening (055, 056, 058, 061, 068, 073):** Menutup celah Brute Force, Race Condition, manipulasi URL, hingga pelacakan log untuk audit forensik jika terjadi pembobolan.\n\nBackend-mu kini sudah siap untuk audit tingkat korporasi.",
+    "categories": ["summary", "index", "indonesia", "fullstack-pro"],
+    "code": "",
+    "link": ""
+  },
+  
+  {
+    "id": "Service-076",
+    "title": "Pest: Functional Testing (Feature Test)",
+    "description": "Analogi: Ujian Simulasi Nasional. Sebelum aplikasi dirilis ke siswa, robot (Pest) akan mencoba login dan mengisi rapor secara otomatis. Jika ada error, robot akan berteriak 'Gagal!' sehingga kita tidak malu di depan klien.",
+    "categories": ["testing", "pest", "laravel"],
+    "code": "it('allows a teacher to update student grades', function () {\n    $teacher = User::factory()->teacher()->create();\n    $student = Student::factory()->create();\n\n    actingAs($teacher)\n        ->patch(\"/grades/{$student->id}\", ['score' => 90])\n        ->assertStatus(302);\n});",
+    "link": "https://pestphp.com/"
+  },
+  {
+    "id": "Service-077",
+    "title": "Pest: Architecture Testing",
+    "description": "Analogi: Aturan Kostum Sekolah. Memastikan tidak ada folder 'Controller' yang isinya kode acak-acakan. Robot akan mengecek: 'Pastikan semua Service harus Readonly' atau 'Controller tidak boleh panggil DB langsung'.",
+    "categories": ["testing", "pest", "architecture"],
+    "code": "test('controllers should not use Eloquent models directly')\n    ->expect('App\\Http\\Controllers')\n    ->not->toUse('App\\Models');",
+    "link": "https://pestphp.com/docs/arch-testing"
+  },
+  {
+    "id": "Service-078",
+    "title": "Laravel Reverb: Real-time WebSockets",
+    "description": "Analogi: Speaker Pengumuman Langsung. Fitur baru Laravel untuk mengirim notifikasi detik itu juga (seperti chat atau status ujian selesai) ke layar React siswa tanpa perlu mereka refresh halaman.",
+    "categories": ["laravel", "websockets", "real-time"],
+    "code": "php artisan reverb:start\n// Di Service:\nNotificationSent::dispatch($message);",
+    "link": "https://laravel.com/docs/12.x/reverb"
+  },
+  {
+    "id": "Service-079",
+    "title": "Redis for Session & Cache",
+    "description": "Analogi: Meja Kerja Sangat Cepat. Memindahkan penyimpanan 'Siapa yang sedang Login' dari file ke memori (RAM) menggunakan Redis. Hasilnya? Aplikasi 10x lebih cepat saat diakses ribuan siswa bersamaan.",
+    "categories": ["laravel", "redis", "performance"],
+    "code": "SESSION_DRIVER=redis\nCACHE_DRIVER=redis",
+    "link": "https://laravel.com/docs/12.x/redis"
+  },
+  {
+    "id": "Service-080",
+    "title": "S3 / Cloud Storage for Assets",
+    "description": "Analogi: Gudang Pusat di Awan. Jangan simpan foto siswa di server sendiri (bisa penuh!). Gunakan Amazon S3 atau DigitalOcean Spaces agar file aman, tidak hilang saat server di-reset, dan cepat diakses.",
+    "categories": ["laravel", "cloud", "storage"],
+    "code": "Storage::disk('s3')->put('ijazah/siswa-01.pdf', $fileContents);",
+    "link": "https://laravel.com/docs/12.x/filesystem#s3-driver-configuration"
+  },
+  {
+    "id": "Service-081",
+    "title": "Laravel Sail (Dockerized Development)",
+    "description": "Analogi: Sekolah di Dalam Kontainer. Membungkus seluruh sistem (PHP, MySQL, Redis) dalam Docker. Teman timmu cukup ketik satu perintah dan aplikasi langsung jalan di laptop mereka tanpa perlu instal XAMPP.",
+    "categories": ["devops", "docker", "laravel"],
+    "code": "./vendor/bin/sail up -d",
+    "link": "https://laravel.com/docs/12.x/sail"
+  },
+  {
+    "id": "Service-082",
+    "title": "GitHub Actions: CI/CD Pipeline",
+    "description": "Analogi: Robot Pengirim Berkas. Setiap kali kamu 'Push' kode, GitHub akan otomatis menjalankan Testing (Pest), mengecek keamanan, dan jika lulus, langsung mengirimnya ke Server Production.",
+    "categories": ["devops", "ci-cd", "automation"],
+    "code": "on: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps: [run-pest-tests]",
+    "link": "https://laravel.com/docs/12.x/deployment#introduction"
+  },
+  {
+    "id": "Service-083",
+    "title": "Horizon: Dashboard for Queues",
+    "description": "Analogi: Menara Pengawas Kurir. Dashboard visual untuk melihat berapa banyak email SPP yang sedang antre, mana yang gagal, dan berapa kecepatan pengiriman tiap detiknya.",
+    "categories": ["laravel", "queues", "monitoring"],
+    "code": "php artisan horizon",
+    "link": "https://laravel.com/docs/12.x/horizon"
+  },
+  {
+    "id": "Service-084",
+    "title": "Telescope: Debugging Companion",
+    "description": "Analogi: Rekaman Blackbox Pesawat. Mencatat setiap request, query database yang lambat, hingga notifikasi yang keluar. Sangat berguna untuk mencari tahu kenapa aplikasi error di tengah malam.",
+    "categories": ["laravel", "debugging", "utility"],
+    "code": "php artisan telescope:install",
+    "link": "https://laravel.com/docs/12.x/telescope"
+  },
+  {
+    "id": "Service-085",
+    "title": "Laravel Pulse: Real-time Monitoring",
+    "description": "Analogi: Monitor Detak Jantung Server. Melihat secara live siapa user yang paling sering 'menyiksa' server dan query mana yang paling lambat agar bisa segera dioptimasi.",
+    "categories": ["laravel", "monitoring", "performance"],
+    "code": "php artisan pulse:check",
+    "link": "https://laravel.com/docs/12.x/pulse"
+  },
+  {
+    "id": "Service-086",
+    "title": "Security: SQL Injection Prevention (Eloquent)",
+    "description": "Analogi: Filter Anti-Racun. Menggunakan Eloquent secara benar otomatis membentengi database dari input teks jahat yang mencoba menghapus seluruh data sekolah.",
+    "categories": ["security", "database"],
+    "code": "Student::where('id', $request->id)->first(); // Otomatis terproteksi",
+    "link": "https://laravel.com/docs/12.x/eloquent"
+  },
+  {
+    "id": "Service-087",
+    "title": "Security: XSS Protection (Inertia)",
+    "description": "Analogi: Sensor Mading. Laravel dan Inertia secara otomatis melakukan 'Escaping' pada teks, sehingga jika ada siswa iseng mengetik skrip `<script>alert('Hacked')</script>`, skrip itu hanya akan tampil sebagai teks biasa.",
+    "categories": ["security", "frontend-bridge"],
+    "code": "{{ $student->bio }} // Blade/Inertia otomatis aman",
+    "link": "https://inertiajs.com/security"
+  },
+  {
+    "id": "Service-088",
+    "title": "Laravel 12: New String & Collection Methods",
+    "description": "Analogi: Pisau Swiss Army Baru. Memanfaatkan fungsi-fungsi terbaru Laravel 12 untuk memanipulasi teks nama siswa atau data nilai dengan baris kode yang jauh lebih sedikit.",
+    "categories": ["laravel", "clean-code"],
+    "code": "str('Budi Santoso')->slug(); // budi-santoso",
+    "link": "https://laravel.com/docs/12.x/strings"
+  },
+  {
+    "id": "Service-089",
+    "title": "Advanced Eloquent: Subquery Selects",
+    "description": "Analogi: Laporan dalam Laporan. Mengambil data kelas sekaligus menghitung rata-rata nilai siswa di dalamnya hanya dalam satu tarikan query database yang sangat efisien.",
+    "categories": ["database", "eloquent", "performance"],
+    "code": "Classroom::addSelect(['avg_score' => Student::selectRaw('avg(score)')...])->get();",
+    "link": "https://laravel.com/docs/12.x/eloquent#subquery-selects"
+  },
+  {
+    "id": "Service-090",
+    "title": "Service: PDF Bulk Export (Queue)",
+    "description": "Analogi: Mesin Fotokopi Massal. Jika admin ingin mencetak 1000 rapor, Service akan mengerjakannya di background dan mengirim link download ke email admin saat sudah selesai.",
+    "categories": ["service", "queue", "pdf"],
+    "code": "GenerateBulkPdf::dispatch($classroomId)->onQueue('heavy');",
+    "link": ""
+  },
+  {
+    "id": "Service-091",
+    "title": "API Versioning Strategy",
+    "description": "Analogi: Evolusi Kurikulum. Mengatur agar aplikasi mobile versi lama tetap jalan (v1) sementara kita membangun fitur baru untuk aplikasi versi terbaru (v2).",
+    "categories": ["api", "architecture"],
+    "code": "Route::prefix('v1')->group(base_path('routes/api_v1.php'));",
+    "link": ""
+  },
+  {
+    "id": "Service-092",
+    "title": "CORS Policy for External Access",
+    "description": "Analogi: Izin Masuk Tamu. Mengatur website mana saja (misal: domain mitra sekolah) yang boleh mengambil data dari API kita secara aman.",
+    "categories": ["security", "api"],
+    "code": "'allowed_origins' => ['https://mitra-sekolah.com'],",
+    "link": "https://laravel.com/docs/12.x/routing#cors"
+  },
+  {
+    "id": "Service-093",
+    "title": "Database Seeders with Factories",
+    "description": "Analogi: Siswa Figuran. Membuat 1000 data siswa bohong-bohongan dalam 1 detik untuk mengetes apakah tabel pencarian kita kuat menampung data banyak.",
+    "categories": ["database", "testing"],
+    "code": "Student::factory()->count(1000)->create();",
+    "link": "https://laravel.com/docs/12.x/seeding"
+  },
+  {
+    "id": "Service-094",
+    "title": "Laravel: Maintenance Mode (Secret Bypass)",
+    "description": "Analogi: Renovasi Sekolah. Menutup aplikasi untuk publik tapi mengizinkan Guru (via Token rahasia) masuk untuk mengecek apakah perbaikan sudah oke.",
+    "categories": ["laravel", "devops"],
+    "code": "php artisan down --secret=\"kunci-rahasia\"",
+    "link": "https://laravel.com/docs/12.x/configuration#maintenance-mode"
+  },
+  {
+    "id": "Service-095",
+    "title": "Environment Variable Security (.env)",
+    "description": "Analogi: Brankas Rahasia. Menyimpan kunci API bank dan password database di file terpisah yang tidak boleh diunggah ke GitHub agar tidak dicuri orang.",
+    "categories": ["security", "devops"],
+    "code": "DB_PASSWORD=super-secret-password",
+    "link": "https://laravel.com/docs/12.x/configuration#environment-configuration"
+  },
+  {
+    "id": "Service-096",
+    "title": "Middleware: Check For Suspicious IPs",
+    "description": "Analogi: Daftar Hitam Satpam. Memblokir otomatis alamat IP yang mencoba menyerang server kita berkali-kali (Brute Force/DDOS).",
+    "categories": ["security", "middleware"],
+    "code": "if (in_array($request->ip(), $blacklisted)) abort(403);",
+    "link": ""
+  },
+  {
+    "id": "Service-097",
+    "title": "Eloquent: Virtual Columns (As-Generated)",
+    "description": "Analogi: Kalkulator Otomatis Tabel. Kolom database yang otomatis menghitung 'Nilai Akhir' berdasarkan 'Nilai Tugas' dan 'Ujian' tanpa kita perlu menghitungnya manual di PHP.",
+    "categories": ["database", "mysql"],
+    "code": "$table->decimal('total')->virtualAs('tugas + ujian');",
+    "link": "https://laravel.com/docs/12.x/migrations#column-modifiers"
+  },
+  {
+    "id": "Service-098",
+    "title": "Laravel: Sanitizing HTML (Strip Tags)",
+    "description": "Analogi: Mesin Pencuci Teks. Membuang semua kode HTML berbahaya dari kolom Nama Siswa agar tidak merusak tampilan website.",
+    "categories": ["security", "utility"],
+    "code": "$cleanName = strip_tags($request->name);",
+    "link": "https://www.php.net/manual/en/function.strip-tags.php"
+  },
+  {
+    "id": "Service-099",
+    "title": "Laravel: Vite SSR (Server Side Rendering)",
+    "description": "Analogi: Masak Sebelum Disajikan. Merender halaman React di server Laravel sehingga Google Search (SEO) bisa membaca isi konten sekolahmu dengan mudah.",
+    "categories": ["laravel", "react", "seo"],
+    "code": "php artisan inertia:start-ssr",
+    "link": "https://inertiajs.com/server-side-rendering"
+  },
+  {
+    "id": "Service-100",
+    "title": "MASTERPIECE SUMMARY: The Enterprise Backend",
+    "description": "Analogi: Gedung Pusat Komando Sekolah. Kamu telah menyelesaikan 100 poin Backend Service. \n\n1. **Advanced Logic (001-050):** Otak PHP 8 yang cerdas.\n2. **Security & Data (051-075):** Benteng database yang kokoh.\n3. **Modern Operations (076-100):** Sistem yang bisa memantau diri sendiri, mengetes diri sendiri, dan berjalan otomatis di awan.\n\nSelamat, kamu adalah seorang Architect Senior sekarang.",
+    "categories": ["summary", "index", "backend"],
+    "code": "echo 'Sistem Enterprise Siap Dijalankan!';",
+    "link": ""
+  },
+  
+  {
+    "id": "Service-101",
+    "title": "Dual-Factor Authentication (2FA) Service",
+    "description": "Analogi: Kunci Ganda Brankas. Service khusus untuk mengintegrasikan Google Authenticator atau OTP via WhatsApp. Guru tidak bisa masuk ke sistem nilai hanya dengan password; mereka butuh kode dari HP mereka.",
+    "categories": ["security", "auth", "laravel"],
+    "code": "use Laravel\\Fortify\\Features;\n// Mengaktifkan fitur Two-Factor Authentication bawaan Fortify\nFeatures::twoFactorAuthentication(['confirm' => true]);",
+    "link": "https://laravel.com/docs/12.x/fortify#two-factor-authentication"
+  },
+  {
+    "id": "Service-102",
+    "title": "Database Read/Write Splitting",
+    "description": "Analogi: Kasir Khusus & Stokis Khusus. Memisahkan server database: satu server khusus untuk menulis data (Simpan Nilai), dan beberapa server 'Replica' khusus untuk membaca data (Tampil Rapor). Ini membuat website tidak akan lag meski diakses 50.000 siswa sekaligus.",
+    "categories": ["database", "performance", "infrastructure"],
+    "code": "'mysql' => [\n    'read' => ['host' => ['192.168.1.10']],\n    'write' => ['host' => ['192.168.1.11']],\n    'driver' => 'mysql', ...\n],",
+    "link": "https://laravel.com/docs/12.x/database#read-and-write-connections"
+  },
+  {
+    "id": "Service-103",
+    "title": "Advanced API Documentation (Scribe/L5-Swagger)",
+    "description": "Analogi: Buku Panduan Lengkap Sekolah. Menghasilkan dokumentasi API interaktif secara otomatis dari kode kita. Sangat penting jika sekolahmu ingin bekerja sama dengan aplikasi pihak ketiga (misal: Bank atau Gojek).",
+    "categories": ["api", "documentation"],
+    "code": "/** @queryParam user_id integer required ID Siswa. Example: 1 */\npublic function getGrades($user_id) { ... }",
+    "link": "https://scribe.knuckles.wtf/laravel"
+  },
+  {
+    "id": "Service-104",
+    "title": "Audit Trail (Activity Logs)",
+    "description": "Analogi: Buku Tamu Digital Permanen. Mencatat setiap perubahan data secara mendetail: 'Siapa, Kapan, Mengubah Nilai dari 70 ke 90, dari IP mana'. Jika ada manipulasi nilai, pelakunya langsung ketahuan.",
+    "categories": ["security", "audit", "laravel"],
+    "code": "activity()->performedOn($student)->causedBy($user)->log('Mengubah nilai Matematika');",
+    "link": "https://spatie.be/docs/laravel-activitylog/v4/introduction"
+  },
+  {
+    "id": "Service-105",
+    "title": "Laravel 12: New Defer() Helper",
+    "description": "Analogi: 'Nanti Saja' yang Terjadwal. Fitur baru Laravel 12 untuk menjalankan tugas berat (seperti kirim notifikasi ke Telegram) sesaat SETELAH user menerima jawaban sukses, sehingga user merasa aplikasi sangat cepat.",
+    "categories": ["laravel", "performance"],
+    "code": "defer(fn () => $this->notifyAdmin($report));\nreturn response()->json(['message' => 'Laporan dikirim!']);",
+    "link": "https://laravel.com/docs/12.x/helpers#method-defer"
+  },
+  {
+    "id": "Service-106",
+    "title": "Security: Hashids for Obfuscation",
+    "description": "Analogi: Nama Samaran di URL. Mengubah URL `/student/1` menjadi `/student/jR8kN2`. Ini mencegah siswa usil mengganti angka di URL untuk melihat data teman mereka (ID Insecure Direct Object Reference).",
+    "categories": ["security", "api"],
+    "code": "$id = Hashids::encode($student->id); // Hasil: 'jR8kN2'",
+    "link": "https://github.com/vinkla/laravel-hashids"
+  },
+  {
+    "id": "Service-107",
+    "title": "Integration: Open AI / Gemini API",
+    "description": "Analogi: Guru Asisten Virtual. Service untuk mengirim data jawaban siswa ke AI guna mendapatkan saran perbaikan otomatis bagi guru dalam memberikan feedback.",
+    "categories": ["service", "ai", "integration"],
+    "code": "$result = OpenAI::chat()->create(['model' => 'gpt-4', 'messages' => [... ]]);",
+    "link": "https://github.com/openai-php/laravel"
+  },
+  {
+    "id": "Service-108",
+    "title": "Health Check Endpoint",
+    "description": "Analogi: Lampu Indikator Mesin. Sebuah URL khusus (`/health`) yang dipantau oleh server lain untuk memastikan Database, Redis, dan Storage sekolahmu sedang 'Sehat' atau 'Sakit'.",
+    "categories": ["devops", "monitoring"],
+    "code": "Health::configure()->add(DatabaseCheck::new(), RedisCheck::new());",
+    "link": "https://spatie.be/docs/laravel-health/v1/introduction"
+  },
+  {
+    "id": "Service-109",
+    "title": "Eloquent: UUID / ULID as Primary Key",
+    "description": "Analogi: Barcode Unik Dunia. Menggunakan kode acak panjang (bukan angka 1, 2, 3) sebagai ID utama agar database lebih aman dari tebakan hacker dan lebih mudah digabung dengan server lain di masa depan.",
+    "categories": ["database", "security"],
+    "code": "$table->uuid('id')->primary();",
+    "link": "https://laravel.com/docs/12.x/eloquent#uuid-and-ulid-keys"
+  },
+  {
+    "id": "Service-110",
+    "title": "Rate Limiting: Dynamic Throttling",
+    "description": "Analogi: Antrean Prioritas. Guru boleh kirim 100 request/menit, tapi Siswa hanya boleh 10 request/menit. Ini mencegah sistem 'down' karena spam dari pihak yang tidak berwenang.",
+    "categories": ["security", "api"],
+    "code": "RateLimiter::for('api', function (Request $request) {\n    return $request->user()->isAdmin() ? Limit::none() : Limit::perMinute(60);\n});",
+    "link": "https://laravel.com/docs/12.x/routing#rate-limiting"
+  },
+  {
+    "id": "Service-111",
+    "title": "Security: IP Whitelisting for Admin Page",
+    "description": "Analogi: Akses Kantor Hanya dari WiFi Sekolah. Memastikan halaman Admin hanya bisa dibuka jika user terhubung ke IP internet resmi milik kantor pusat sekolah.",
+    "categories": ["security", "middleware"],
+    "code": "if (!in_array($request->ip(), ['123.123.123.123'])) abort(403);",
+    "link": ""
+  },
+  {
+    "id": "Service-112",
+    "title": "Laravel: Custom Artisan Commands",
+    "description": "Analogi: Tombol Reset Otomatis. Membuat perintah terminal sendiri (misal: `php artisan school:promote`) untuk menaikkan kelas semua siswa secara otomatis setiap akhir tahun ajaran.",
+    "categories": ["laravel", "automation"],
+    "code": "protected $signature = 'school:promote';\npublic function handle() { ... }",
+    "link": "https://laravel.com/docs/12.x/artisan#writing-commands"
+  },
+  {
+    "id": "Service-113",
+    "title": "Full-Text Search (Laravel Scout + Meilisearch)",
+    "description": "Analogi: Google Internal Sekolah. Fitur pencarian super cepat yang bisa mencari nama siswa, judul buku, atau isi pengumuman meski ada salah ketik (typo).",
+    "categories": ["database", "search", "performance"],
+    "code": "Student::search('Budi Sntoso')->get();",
+    "link": "https://laravel.com/docs/12.x/scout"
+  },
+  {
+    "id": "Service-114",
+    "title": "Middleware: Force JSON Response",
+    "description": "Analogi: Bahasa Komunikasi Seragam. Memastikan server SELALU menjawab dalam format JSON, bukan halaman error HTML yang berantakan, agar React tidak bingung saat terjadi error.",
+    "categories": ["api", "middleware"],
+    "code": "$request->headers->set('Accept', 'application/json');",
+    "link": ""
+  },
+  {
+    "id": "Service-115",
+    "title": "Laravel: Data Encapsulation with Value Objects",
+    "description": "Analogi: Standar Ukuran Seragam. Membuat class khusus untuk 'Email' atau 'Nomor HP' agar formatnya selalu sama dan tidak perlu divalidasi berulang-ulang di banyak file.",
+    "categories": ["php", "architecture", "clean-code"],
+    "code": "public function updateEmail(EmailValueObject $email) { ... }",
+    "link": ""
+  },
+  {
+    "id": "Service-116",
+    "title": "Security: Security Headers (Spatie)",
+    "description": "Analogi: Tameng Radiasi Website. Secara otomatis menambahkan proteksi `HSTS`, `X-Frame-Options`, dan `X-Content-Type-Options` agar website tidak bisa dibajak melalui teknik 'Clickjacking'.",
+    "categories": ["security", "middleware"],
+    "code": "// Menggunakan Spatie Laravel Security Headers",
+    "link": "https://github.com/spatie/laravel-csp"
+  },
+  {
+    "id": "Service-117",
+    "title": "Job Chaining",
+    "description": "Analogi: Efek Domino Tugas. Jika 'Buat Rapor' sukses, lanjut otomatis ke 'Upload ke Cloud', lalu lanjut otomatis ke 'Kirim WhatsApp ke Orang Tua'. Jika salah satu gagal, sisanya berhenti.",
+    "categories": ["laravel", "queue"],
+    "code": "Bus::chain([new CreateReport, new UploadToS3, new NotifyParent])->dispatch();",
+    "link": "https://laravel.com/docs/12.x/queues#job-chaining"
+  },
+  {
+    "id": "Service-118",
+    "title": "Service: Database Transactions (Savepoints)",
+    "description": "Analogi: Pos Simpan Game. Memungkinkan kita membatalkan (rollback) sebagian proses pendaftaran jika ada error kecil, tanpa harus membatalkan seluruh pendaftaran dari awal.",
+    "categories": ["database", "advanced"],
+    "code": "DB::beginTransaction(); ... DB::rollBack();",
+    "link": ""
+  },
+  {
+    "id": "Service-119",
+    "title": "Laravel 12: New Validation Rules (Proximity)",
+    "description": "Analogi: Cek Alamat Zonasi. Aturan validasi baru untuk mengecek koordinat GPS siswa apakah benar berada dalam radius zonasi sekolah sebelum diizinkan mendaftar.",
+    "categories": ["laravel", "validation", "geo"],
+    "code": "'location' => 'required|proximity:latitude,longitude,max_distance'",
+    "link": ""
+  },
+  {
+    "id": "Service-120",
+    "title": "Dynamic Content Caching (Tagging)",
+    "description": "Analogi: Label Rak Gudang. Mengelompokkan cache (misal: semua data kelas 10). Jika ada satu nilai kelas 10 berubah, kita cukup hapus cache berlabel 'kelas-10' tanpa mengganggu data kelas 11 & 12.",
+    "categories": ["performance", "cache"],
+    "code": "Cache::tags(['students', 'class-10'])->put($key, $data);",
+    "link": "https://laravel.com/docs/12.x/cache#cache-tags"
+  },
+  {
+    "id": "Service-121",
+    "title": "Advanced Error Pages (Inertia)",
+    "description": "Analogi: Papan Informasi Cantik. Menghandle error 404 (Halaman Tidak Ada) atau 500 (Server Rusak) dengan tampilan React yang sangat ramah user, bukan halaman putih yang menakutkan.",
+    "categories": ["inertia", "ux", "laravel"],
+    "code": "// Di Handler.php render() ke Inertia Page 'Error'",
+    "link": "https://inertiajs.com/error-handling"
+  },
+  {
+    "id": "Service-122",
+    "title": "Environment: Production Debugger (Sentry)",
+    "description": "Analogi: Telepon Darurat dari Server. Jika ada siswa yang mengalami error di HP-nya saat ujian, server akan otomatis mengirim laporan ke Slack-mu lengkap dengan baris kodenya.",
+    "categories": ["devops", "monitoring"],
+    "code": "Sentry\\Laravel\\Integration::init();",
+    "link": "https://sentry.io/for/laravel/"
+  },
+  {
+    "id": "Service-123",
+    "title": "Service: Export to Excel (FastExcel)",
+    "description": "Analogi: Cetak Kilat Data. Mengekspor ribuan data nilai ke Excel dengan penggunaan memori yang sangat kecil (satu per satu per baris).",
+    "categories": ["service", "excel", "performance"],
+    "code": "(new FastExcel(Student::all()))->export('file.xlsx');",
+    "link": "https://github.com/rap2hpoutre/fast-excel"
+  },
+  {
+    "id": "Service-124",
+    "title": "Security: Anti-Automation (Turnstile/Recaptcha)",
+    "description": "Analogi: Tes 'Bukan Robot'. Memasang Cloudflare Turnstile pada halaman pendaftaran siswa untuk mencegah 'Bot' mendaftar ribuan kali secara otomatis (Spamming).",
+    "categories": ["security", "frontend-bridge"],
+    "code": "// Verifikasi token Turnstile di Controller/Service",
+    "link": "https://www.cloudflare.com/products/turnstile/"
+  },
+  {
+    "id": "Service-125",
+    "title": "THE FINAL GATEWAY: Zero-Trust Infrastructure",
+    "description": "Analogi: Keamanan Presiden. Selamat! Kamu telah mencapai 125 poin Backend. Di level ini, kita mengasumsikan bahwa 'Setiap request berbahaya sampai terbukti aman'. \n\n1. **High Availability (102, 108, 120):** Sistem tidak boleh mati meski diserang trafik tinggi.\n2. **Extreme Security (101, 104, 106, 111, 116, 124):** Data terlindungi dengan enkripsi, audit log, dan proteksi bot.\n3. **Modern Intelligence (105, 107, 113, 119):** Aplikasi sudah terintegrasi dengan AI, pencarian cerdas, dan geolokasi.",
+    "categories": ["summary", "index", "ultimate"],
+    "code": "echo 'Sistem Full-Stack Sempurna Berhasil Disusun!';",
+    "link": ""
+  }
+
+
+
+]

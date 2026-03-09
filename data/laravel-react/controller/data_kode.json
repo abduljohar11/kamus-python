@@ -1,0 +1,329 @@
+[
+  {
+    "id": "Controller-001",
+    "title": "Basic Inertia Controller Structure",
+    "description": "Analogi: Resepsionis Sekolah. Tugas utamanya adalah menyambut tamu (Request), bertanya apa keperluannya, dan mengarahkan mereka ke ruangan yang tepat (Inertia Render).",
+    "categories": ["controller", "inertia", "react"],
+    "code": "namespace App\\Http\\Controllers;\n\nuse Inertia\\Inertia;\nuse Inertia\\Response;\n\nclass StudentController extends Controller {\n    public function index(): Response {\n        return Inertia::render('Students/Index', [\n            'students' => Student::all()\n        ]);\n    }\n}",
+    "link": "https://inertiajs.com/responses"
+  },
+  {
+    "id": "Controller-002",
+    "title": "Invoking CRUD Service",
+    "description": "Analogi: Delegasi Tugas. Resepsionis tidak mendaftarkan siswa sendiri, tapi memberikan dokumen ke 'Bagian Pendaftaran' (Service). Controller hanya memanggil Service tersebut.",
+    "categories": ["controller", "service-layer", "crud"],
+    "code": "public function __construct(\n    protected StudentService $studentService\n) {}\n\npublic function store(StudentRequest $request) {\n    $this->studentService->create($request->validated());\n    return redirect()->back()->with('success', 'Siswa berhasil didaftarkan!');\n}",
+    "link": "https://laravel.com/docs/12.x/container#constructor-injection"
+  },
+  {
+    "id": "Controller-003",
+    "title": "Dependency Injection (The Pro Way)",
+    "description": "Analogi: Standar Alat Kerja. Setiap resepsionis otomatis dibekali komputer dan telepon (Dependency) saat mereka mulai bekerja, tanpa harus merakitnya sendiri.",
+    "categories": ["controller", "dependency-injection", "best-practice"],
+    "code": "// Selalu gunakan type-hinting pada constructor atau method\npublic function show(Student $student) {\n    return Inertia::render('Students/Show', compact('student'));\n}",
+    "link": "https://laravel.com/docs/12.x/controllers#dependency-injection-and-controllers"
+  },
+  {
+    "id": "Controller-004",
+    "title": "Validation & Security Check",
+    "description": "Analogi: Pemeriksaan Barang Bawaan. Sebelum tamu masuk, satpam (FormRequest) memeriksa apakah barang bawaannya aman dan sesuai aturan agar tidak ada 'senjata' (malicious code) yang masuk.",
+    "categories": ["controller", "security", "validation"],
+    "code": "public function update(UpdateStudentRequest $request, Student $student) {\n    // Otomatis tervalidasi sebelum masuk ke body method\n    $student->update($request->validated());\n}",
+    "link": "https://laravel.com/docs/12.x/validation#form-request-validation"
+  },
+  {
+    "id": "Controller-005",
+    "title": "Authorization (Policy Check)",
+    "description": "Analogi: Kartu Izin Akses. Memastikan hanya 'Kepala Sekolah' yang boleh menghapus data siswa, sementara 'Guru' hanya boleh melihat atau mengedit saja.",
+    "categories": ["controller", "security", "authorization"],
+    "code": "public function destroy(Student $student) {\n    $this->authorize('delete', $student);\n    $student->delete();\n}",
+    "link": "https://laravel.com/docs/12.x/authorization#authorizing-actions-via-controller-helpers"
+  },
+  {
+    "id": "Controller-006",
+    "title": "API Resource Transformation",
+    "description": "Analogi: Filter Informasi Raport. Sebelum memberikan data ke Frontend, Controller membungkusnya dalam 'Resource' agar data sensitif (seperti password) tidak ikut terkirim.",
+    "categories": ["controller", "api-resource", "json"],
+    "code": "return Inertia::render('Students/Index', [\n    'students' => StudentResource::collection($students)\n]);",
+    "link": "https://laravel.com/docs/12.x/eloquent-resources"
+  },
+  {
+    "id": "Controller-007",
+    "title": "Flash Messages for React",
+    "description": "Analogi: Papan Pengumuman Instan. Memberikan notifikasi kecil (Berhasil/Gagal) yang akan muncul sekejap di layar user setelah aksi dilakukan.",
+    "categories": ["controller", "session", "inertia"],
+    "code": "return to_route('students.index')->with([\n    'message' => 'Data berhasil diperbarui',\n    'type' => 'success'\n]);",
+    "link": "https://inertiajs.com/shared-data#flash-messages"
+  },
+  {
+    "id": "Controller-008",
+    "title": "Filtering & Searching Logic",
+    "description": "Analogi: Buku Pencarian Tamu. Controller menerima input filter (nama/kelas) dan memberikannya ke database agar hanya menampilkan tamu yang dicari.",
+    "categories": ["controller", "query", "filter"],
+    "code": "$students = Student::query()\n    ->when($request->search, fn($q, $s) => $q->where('name', 'like', \"%{$s}%\"))\n    ->paginate(10);",
+    "link": "https://laravel.com/docs/12.x/queries#conditional-clauses"
+  },
+
+  {
+    "id": "Controller-009",
+    "title": "Handling File Uploads (Profile Pictures)",
+    "description": "Analogi: Bagian Dokumentasi Foto. Controller bertugas menerima file fisik foto siswa, menyimpannya di gudang aman (Storage), dan mencatat 'alamat' lokasinya di buku induk.",
+    "categories": ["controller", "file-upload", "storage"],
+    "code": "public function store(StudentRequest $request) {\n    $path = $request->file('photo')->store('students/photos', 'public');\n    $this->studentService->create(array_merge($request->validated(), ['photo' => $path]));\n}",
+    "link": "https://laravel.com/docs/12.x/requests#storing-uploaded-files"
+  },
+  {
+    "id": "Controller-010",
+    "title": "Try-Catch & Error Handling",
+    "description": "Analogi: Prosedur Darurat. Jika terjadi kesalahan saat pendaftaran (misal: koneksi mati), Controller memastikan sekolah tidak 'hang' dan memberikan pesan sopan kepada tamu bahwa ada masalah teknis.",
+    "categories": ["controller", "exception", "error-handling"],
+    "code": "try {\n    $this->studentService->processEnrollment($request->all());\n} catch (\\Exception $e) {\n    return back()->withErrors(['error' => 'Gagal mendaftarkan siswa: ' . $e->getMessage()]);\n}",
+    "link": "https://laravel.com/docs/12.x/errors"
+  },
+  {
+    "id": "Controller-011",
+    "title": "Bulk Actions (Mass Delete/Update)",
+    "description": "Analogi: Operasi Massal. Alih-alih mengurus siswa satu per satu, Controller bisa memproses 'Satu Angkatan' sekaligus, misalnya meluluskan semua siswa kelas 12 dalam satu klik.",
+    "categories": ["controller", "bulk-action", "optimization"],
+    "code": "public function bulkDelete(Request $request) {\n    Student::whereIn('id', $request->ids)->delete();\n    return back()->with('success', 'Data terpilih berhasil dihapus');\n}",
+    "link": "https://laravel.com/docs/12.x/queries#delete-statements"
+  },
+  {
+    "id": "Controller-012",
+    "title": "Exporting Data (Excel/PDF)",
+    "description": "Analogi: Cetak Laporan Tahunan. Controller mengambil data dari database dan merubahnya menjadi format dokumen yang bisa dibawa pulang oleh orang tua siswa.",
+    "categories": ["controller", "export", "download"],
+    "code": "public function export() {\n    return Storage::download('reports/students_list.xlsx');\n    // Atau menggunakan library seperti Laravel Excel\n}",
+    "link": "https://laravel.com/docs/12.x/responses#file-downloads"
+  },
+  {
+    "id": "Controller-013",
+    "title": "Rate Limiting (Brute Force Protection)",
+    "description": "Analogi: Penjaga Antrean. Membatasi berapa kali seseorang bisa mencoba login atau menekan tombol 'Submit' dalam satu menit agar server tidak tumbang karena serangan.",
+    "categories": ["controller", "security", "rate-limiting"],
+    "code": "// Biasanya diatur di Route, tapi bisa di-handle di Controller untuk logic khusus\n$this->middleware('throttle:5,1')->only('store');",
+    "link": "https://laravel.com/docs/12.x/routing#rate-limiting"
+  },
+  {
+    "id": "Controller-014",
+    "title": "Partial Reloads (Inertia)",
+    "description": "Analogi: Update Papan Skor. Daripada mengganti seluruh halaman, Inertia hanya memperbarui data tertentu (misal: daftar nilai) sehingga navigasi terasa instan seolah menggunakan aplikasi mobile.",
+    "categories": ["controller", "inertia", "optimization"],
+    "code": "return Inertia::render('Students/Index', [\n    'students' => Inertia::lazy(fn () => Student::all()),\n]);",
+    "link": "https://inertiajs.com/partial-reloads"
+  },
+  
+  {
+    "id": "Controller-015",
+    "title": "Global Alert Shared Data",
+    "description": "Analogi: Speaker Pusat Sekolah. Middleware ini bertugas menangkap pengumuman (Flash Message) dari Controller mana pun dan menyiarkannya ke seluruh ruangan (Komponen React) secara otomatis.",
+    "categories": ["middleware", "inertia", "alert", "shared-data"],
+    "code": "// Di Middleware/HandleInertiaRequests.php\npublic function share(Request $request): array {\n    return array_merge(parent::share($request), [\n        'flash' => [\n            'message' => fn () => $request->session()->get('message'),\n            'type' => fn () => $request->session()->get('type'),\n            'alert' => fn () => $request->session()->get('alert'),\n        ],\n    ]);\n}",
+    "link": "https://inertiajs.com/shared-data"
+  },
+  {
+    "id": "Controller-016",
+    "title": "Controller Alert Dispatch",
+    "description": "Analogi: Memo Resepsionis. Cara Controller mengirimkan instruksi spesifik agar Frontend memunculkan Alert dengan warna tertentu (Success/Error/Warning).",
+    "categories": ["controller", "alert", "notification"],
+    "code": "return redirect()->back()->with([\n    'alert' => 'Konfirmasi: Apakah Anda yakin ingin meluluskan siswa ini?',\n    'type' => 'warning'\n]);",
+    "link": "https://laravel.com/docs/12.x/redirects#redirecting-with-flashed-session-data"
+  },
+  {
+    "id": "Controller-017",
+    "title": "Transaction Rollback on Alert",
+    "description": "Analogi: Pembatalan Transaksi. Jika proses simpan gagal, kita membatalkan semua perubahan dan mengirim Alert 'Gagal' agar data tetap sinkron dan aman.",
+    "categories": ["controller", "database", "security", "transaction"],
+    "code": "DB::transaction(function () use ($request) {\n    $student = Student::create($request->validated());\n    $student->user()->create([...]);\n});\n\nreturn to_route('students.index')->with(['message' => 'Siswa berhasil ditambahkan', 'type' => 'success']);",
+    "link": "https://laravel.com/docs/12.x/database#database-transactions"
+  },
+
+  {
+    "id": "Controller-018",
+    "title": "Custom Route Key Binding",
+    "description": "Analogi: Pencarian Siswa via NIS, bukan Nomor Urut. Secara default, resepsionis mencari siswa berdasarkan ID (nomor urut), namun kita bisa mengubahnya agar mencari berdasarkan Nomor Induk Siswa (NIS) yang lebih unik dan aman dari tebakan hacker.",
+    "categories": ["controller", "routing", "security"],
+    "code": "public function show(Student $student) {\n    // Di Model Student: public function getRouteKeyName() { return 'nis'; }\n    return Inertia::render('Students/Show', compact('student'));\n}",
+    "link": "https://laravel.com/docs/12.x/routing#customizing-the-key"
+  },
+  {
+    "id": "Controller-019",
+    "title": "API/Inertia Versioning",
+    "description": "Analogi: Nomor Edisi Buku Induk. Memastikan bahwa jika ada perubahan besar pada sistem sekolah, pengguna yang masih menggunakan aplikasi versi lama tidak mengalami error mendadak karena perbedaan struktur data.",
+    "categories": ["controller", "versioning", "best-practice"],
+    "code": "// Di HandleInertiaRequests.php\npublic function version(Request $request): ?string {\n    return parent::version($request);\n}",
+    "link": "https://inertiajs.com/asset-versioning"
+  },
+  {
+  "id": "Controller-020",
+  "title": "Rangkuman Arsitektur Controller & Alert (Indeks Referensi)",
+  "description": "Analogi: Pusat Komando Sekolah Digital. Kamus ini adalah rangkuman dari 19 instrumen yang mengatur logika perjalanan data dari permintaan pengguna hingga tampil kembali di layar. Berikut adalah kegunaan dari seluruh fitur yang telah kita susun:\n\n1. **Sistem Komunikasi & Notifikasi (ID 007, 015, 016):** Mengatur jalur pengiriman pesan sukses atau peringatan (Alert) dari server ke komponen React melalui Middleware Shared Data, memastikan pengguna mendapatkan umpan balik yang jelas.\n\n2. **Manajemen Data & Delegasi (ID 001, 002, 003, 006, 008, 018):** Menerapkan pola 'Skinny Controller' dengan membagi tugas ke Service Layer, menggunakan pencarian canggih, serta memastikan data yang dikirim ke Frontend sudah difilter melalui API Resources.\n\n3. **Benteng Keamanan & Integritas (ID 004, 005, 013, 014, 017, 019):** Melindungi sistem dari input berbahaya (Validasi), membatasi akses (Authorization), mencegah serangan spam (Rate Limiting), serta menjamin keamanan data melalui sistem Transaksi yang bisa dibatalkan jika terjadi error.\n\n4. **Operasional Lanjutan (ID 009, 010, 011, 012):** Menangani proses teknis seperti unggah foto profil, ekspor laporan ke Excel/PDF, penanganan error darurat agar aplikasi tidak mati total, serta aksi massal untuk efisiensi admin sekolah.",
+  "categories": ["summary", "index", "indonesia", "final-architecture"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Controller-021",
+    "title": "Inertia Partial Component Reload (Lazy Data)",
+    "description": "Analogi: Pengiriman Buku Pesanan. Daripada mengirim seluruh perpustakaan saat siswa hanya ingin satu buku, Controller hanya mengirim data 'Nilai' saat komponen tersebut benar-benar muncul di layar (Scroll/Click).",
+    "categories": ["controller", "inertia", "performance"],
+    "code": "return Inertia::render('Students/Dashboard', [\n    'profile' => $student,\n    'statistics' => Inertia::lazy(fn () => $this->service->getHeavyStats())\n]);",
+    "link": "https://inertiajs.com/partial-reloads#lazy-data-evaluation"
+  },
+  {
+    "id": "Controller-022",
+    "title": "Polymorphic Resource Binding",
+    "description": "Analogi: Resepsionis Serba Bisa. Satu Controller yang bisa menerima 'Siswa', 'Guru', atau 'Staf' secara dinamis berdasarkan ID yang dikirim, tanpa perlu membuat 3 fungsi yang berbeda.",
+    "categories": ["controller", "oop", "clean-code"],
+    "code": "public function addComment(Request $request, string $type, int $id) {\n    $model = Relation::getMorphedModel($type)::findOrFail($id);\n    $model->comments()->create($request->all());\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#polymorphic-relationships"
+  },
+  {
+    "id": "Controller-023",
+    "title": "Controller-Level Cache Control",
+    "description": "Analogi: Fotokopi Dokumen Terakhir. Memberitahu browser: 'Jangan tanya saya lagi selama 5 menit, gunakan saja data yang sudah kamu simpan di saku (Browser Cache)'. Sangat ampuh mengurangi beban server.",
+    "categories": ["controller", "performance", "http"],
+    "code": "public function index() {\n    return Inertia::render('Public/News')\n        ->withViewData(['cache_control' => 'max-age=300']);\n}",
+    "link": "https://laravel.com/docs/12.x/responses#cache-control-middleware"
+  },
+  {
+    "id": "Controller-024",
+    "title": "Idempotency Key Validation",
+    "description": "Analogi: Stempel 'Sudah Bayar'. Mencegah Controller memproses pembayaran SPP dua kali jika siswa tidak sengaja menekan tombol 'Bayar' berkali-kali karena internet lemot.",
+    "categories": ["controller", "security", "api"],
+    "code": "public function store(Request $request) {\n    $key = $request->header('X-Idempotency-Key');\n    if (Cache::has($key)) return response()->json(['message' => 'Duplicate request'], 409);\n    Cache::put($key, true, 60);\n    // Proses data...\n}",
+    "link": "https://stripe.com/docs/api/idempotency"
+  },
+  {
+    "id": "Controller-025",
+    "title": "Resource-Based Conditional Rendering",
+    "description": "Analogi: Sensor Rahasia. Controller mengecek: 'Jika yang melihat adalah Orang Tua, sembunyikan kolom Catatan Guru'. Data disaring tepat sebelum menyentuh React.",
+    "categories": ["controller", "security", "inertia"],
+    "code": "return Inertia::render('Students/Show', [\n    'student' => new StudentResource($student),\n    'can_edit' => $request->user()->can('update', $student)\n]);",
+    "link": "https://inertiajs.com/responses#passing-data"
+  },
+  {
+    "id": "Controller-026",
+    "title": "Laravel 12: Contextual Logging in Controller",
+    "description": "Analogi: Rekaman Blackbox Perjalanan. Menempelkan data 'Siapa' dan 'Di Halaman Mana' pada setiap error yang terjadi, sehingga kita tahu persis kronologi sebelum aplikasi crash.",
+    "categories": ["controller", "debugging", "security"],
+    "code": "Context::add('request_id', Str::uuid());\nLog::info('User accessing sensitive records', ['user_id' => auth()->id()]);",
+    "link": "https://laravel.com/docs/12.x/logging#context"
+  },
+  {
+    "id": "Controller-027",
+    "title": "Graceful API Fallback",
+    "description": "Analogi: Jalur Alternatif. Jika Service utama (misal: Cek NISN ke Pusat) sedang mati, Controller otomatis mengalihkan permintaan ke data cadangan lokal agar aplikasi tetap bisa dipakai.",
+    "categories": ["controller", "error-handling", "availability"],
+    "code": "public function sync() {\n    return rescue(fn() => $this->service->syncRemote(), fn() => $this->localSync());\n}",
+    "link": "https://laravel.com/docs/12.x/helpers#method-rescue"
+  },
+  {
+    "id": "Controller-028",
+    "title": "Route Model Binding with Scoping",
+    "description": "Analogi: Verifikasi Hubungan Keluarga. Memastikan URL `/class/A/student/B` hanya bisa diakses jika siswa B benar-benar berada di kelas A. Mencegah hacker melihat data siswa di kelas lain.",
+    "categories": ["controller", "security", "routing"],
+    "code": "public function show(Classroom $classroom, Student $student) {\n    // Otomatis dicek apakah student milik classroom\n    return Inertia::render('Students/Detail', compact('student'));\n}",
+    "link": "https://laravel.com/docs/12.x/routing#implicit-model-binding-scoping"
+  },
+  {
+    "id": "Controller-029",
+    "title": "Fluent Redirects with Parameters",
+    "description": "Analogi: Pengalihan Tamu yang Sopan. Setelah mengedit data, Controller tidak hanya membuang user kembali, tapi membawa mereka ke tab yang tepat (misal: Tab Nilai) secara otomatis.",
+    "categories": ["controller", "ux", "inertia"],
+    "code": "return to_route('students.show', $id)->withFragment('grades-tab');",
+    "link": "https://laravel.com/docs/12.x/redirects"
+  },
+  {
+    "id": "Controller-030",
+    "title": "Atomic Locks in Controller",
+    "description": "Analogi: Satu Orang di Bilik Suara. Mencegah dua admin mengedit profil siswa yang sama di waktu yang hampir bersamaan (Race Condition). Siapa yang cepat, dia yang mengunci.",
+    "categories": ["controller", "concurrency", "security"],
+    "code": "public function update(Request $request, Student $student) {\n    return Cache::lock('edit-student-'.$student->id, 10)->get(function () {\n         // Logika update aman di sini\n    }) ?: abort(423, 'Data sedang diedit admin lain.');\n}",
+    "link": "https://laravel.com/docs/12.x/cache#atomic-locks"
+  },
+  {
+    "id": "Controller-031",
+    "title": "Streaming Large Responses",
+    "description": "Analogi: Air Keran. Alih-alih menunggu seluruh laporan (100MB) selesai dibuat baru dikirim, Controller mengirimnya per tetes (Stream) agar user tidak melihat layar putih terlalu lama.",
+    "categories": ["controller", "performance", "download"],
+    "code": "return response()->streamDownload(fn() => print($this->service->generateCsv()), 'report.csv');",
+    "link": "https://laravel.com/docs/12.x/responses#streamed-downloads"
+  },
+  {
+    "id": "Controller-032",
+    "title": "Force HTTPS/Secure Middleware",
+    "description": "Analogi: Jalur VIP Berpagar. Memastikan request yang masuk ke Controller sensitif (seperti Pembayaran) wajib melalui jalur terenkripsi HTTPS. Jika tidak, request ditolak mentah-mentah.",
+    "categories": ["controller", "security"],
+    "code": "public function __construct() {\n    $this->middleware('hpkp'); // Contoh middleware security\n}",
+    "link": ""
+  },
+  {
+    "id": "Controller-033",
+    "title": "Encrypted Request Parameters",
+    "description": "Analogi: Pesan Rahasia dalam Amplop. Menggunakan middleware untuk mendeskripsi parameter yang dienkripsi dari Frontend sebelum Controller membacanya, melindungi dari serangan sniffing.",
+    "categories": ["controller", "security", "cryptography"],
+    "code": "$decryptedId = Crypt::decryptString($request->encrypted_id);",
+    "link": "https://laravel.com/docs/12.x/encryption"
+  },
+  {
+    "id": "Controller-034",
+    "title": "Controller 'Always-On' Validation",
+    "description": "Analogi: Sensor Detektor Logika. Selain FormRequest, Controller melakukan pengecekan logika bisnis yang mustahil dicek satpam (misal: 'Siswa tidak bisa lulus jika belum ikut ujian akhir').",
+    "categories": ["controller", "logic", "validation"],
+    "code": "if ($student->exam_results()->count() < 1) {\n    return back()->withErrors(['exam' => 'Data ujian belum lengkap.']);\n}",
+    "link": ""
+  },
+  {
+    "id": "Controller-035",
+    "title": "Dynamic Meta Tag Injection",
+    "description": "Analogi: Label Bagasi Pesawat. Controller menyuntikkan judul halaman (Title) dan deskripsi SEO secara dinamis agar saat link rapor dibagikan ke WhatsApp, tampilannya profesional.",
+    "categories": ["controller", "seo", "inertia"],
+    "code": "return Inertia::render('Student/Rapor', [...])\n    ->withViewData(['meta_title' => \"Rapor - {$student->name}\"]);",
+    "link": "https://inertiajs.com/responses#root-template-data"
+  },
+  {
+    "id": "Controller-036",
+    "title": "Automated Response Logging",
+    "description": "Analogi: Fotokopi Kwitansi. Secara otomatis mencatat apa yang kita berikan kepada user ke dalam log audit untuk keperluan investigasi jika ada klaim 'Saya tidak menerima data tersebut'.",
+    "categories": ["controller", "audit", "compliance"],
+    "code": "Log::channel('audit')->info('Data Sent', ['payload' => $response->getData()]);",
+    "link": ""
+  },
+  {
+    "id": "Controller-037",
+    "title": "Multi-Step Form Progress Handling",
+    "description": "Analogi: Lembar Jawaban Berlanjut. Mengelola status pendaftaran yang memiliki 5 tahap (Biodata -> Ortu -> Berkas -> dst) dengan menyimpan progress sementara di Session/Database.",
+    "categories": ["controller", "ux", "logic"],
+    "code": "public function nextStep(Request $request) {\n    $request->session()->put('registration_step_1', $request->validated());\n    return to_route('register.step2');\n}",
+    "link": ""
+  },
+  {
+    "id": "Controller-038",
+    "title": "Inertia Bridge: External Redirects",
+    "description": "Analogi: Pintu Keluar Sekolah. Cara Controller mengarahkan user keluar dari aplikasi React (misal ke halaman Bank/Midtrans) tanpa merusak navigasi Inertia.",
+    "categories": ["controller", "inertia", "redirect"],
+    "code": "return Inertia::location('https://payment-gateway.com/pay/' . $token);",
+    "link": "https://inertiajs.com/redirects#external-redirects"
+  },
+  {
+    "id": "Controller-039",
+    "title": "Controller-Level Throttling (Custom Key)",
+    "description": "Analogi: Jatah Bertanya per ID. Membatasi penekanan tombol 'Kirim SMS' bukan berdasarkan IP, tapi berdasarkan ID Siswa, agar satu siswa tidak bisa membombardir sistem.",
+    "categories": ["controller", "security", "rate-limiting"],
+    "code": "RateLimiter::attempt('send-sms:'.$student->id, 3, function() {\n    // Kirim SMS\n});",
+    "link": "https://laravel.com/docs/12.x/rate-limiting"
+  },
+  {
+    "id": "Controller-040",
+    "title": "Rangkuman Controller Enterprise (Elite Phase)",
+    "description": "Analogi: Menara Kontrol Bandara Internasional. Dengan mencapai poin 40, Controller-mu kini bukan lagi sekadar pemindah data, melainkan pusat kendali yang mengutamakan keamanan, kecepatan (Performance), dan ketahanan (Resilience). \n\n1. **Advanced Performance (021, 023, 031):** Menggunakan Lazy Loading, Caching, dan Streaming.\n2. **Security Hardening (024, 028, 030, 032, 033, 039):** Memblokir Race Condition, Double Submit, hingga pengamanan URL.\n3. **Modern UX & SEO (025, 029, 035, 038):** Integrasi mendalam dengan Inertia untuk transisi halus dan ramah mesin pencari.",
+    "categories": ["summary", "index", "indonesia", "controller-pro"],
+    "code": "",
+    "link": ""
+  }
+
+
+
+]

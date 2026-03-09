@@ -1,0 +1,58 @@
+[
+  {
+    "id": "Middleware-001",
+    "title": "Role-Based Access Control (RBAC)",
+    "description": "Analogi: Kartu Izin Akses. Satpam memeriksa apakah tamu membawa kartu 'Admin', 'Guru', atau 'Siswa'. Jika kartu tidak sesuai dengan pintu yang dituju, tamu akan dipulangkan ke halaman utama.",
+    "categories": ["middleware", "security", "authorization"],
+    "code": "public function handle(Request $request, Closure $next, string $role): Response {\n    if ($request->user() && $request->user()->role !== $role) {\n        return redirect('/dashboard')->with('error', 'Akses ditolak!');\n    }\n    return $next($request);\n}",
+    "link": "https://laravel.com/docs/12.x/middleware#middleware-parameters"
+  },
+  {
+    "id": "Middleware-002",
+    "title": "Force Json Response for API",
+    "description": "Analogi: Standar Bahasa. Memastikan setiap percakapan antara server dan aplikasi mobile/frontend menggunakan bahasa yang sama (JSON), sehingga tidak terjadi salah paham saat error muncul.",
+    "categories": ["middleware", "api", "best-practice"],
+    "code": "public function handle(Request $request, Closure $next): Response {\n    $request->headers->set('Accept', 'application/json');\n    return $next($request);\n}",
+    "link": "https://laravel.com/docs/12.x/requests#content-negotiation"
+  },
+  {
+    "id": "Middleware-003",
+    "title": "Audit Log & Activity Tracker",
+    "description": "Analogi: CCTV Sekolah. Mencatat setiap gerak-gerik pengguna; siapa yang masuk, kapan, dan apa yang mereka ubah (misal: mengubah nilai siswa) sebagai bukti jika terjadi penyalahgunaan.",
+    "categories": ["middleware", "security", "logging"],
+    "code": "public function terminate(Request $request, Response $response): void {\n    if ($request->user()) {\n        ActivityLog::create([\n            'user_id' => $request->user()->id,\n            'action' => $request->method() . ' ' . $request->fullUrl(),\n            'payload' => $request->except(['password', 'token']),\n        ]);\n    }\n}",
+    "link": "https://laravel.com/docs/12.x/middleware#terminable-middleware"
+  },
+  {
+    "id": "Middleware-004",
+    "title": "Maintenance Mode / IP Whitelisting",
+    "description": "Analogi: Renovasi Gedung. Menutup akses sekolah untuk umum saat sedang diperbaiki, namun membiarkan 'Kontraktor' (Developer) tetap masuk melalui alamat IP khusus mereka.",
+    "categories": ["middleware", "devops", "security"],
+    "code": "public function handle(Request $request, Closure $next): Response {\n    $allowedIps = ['127.0.0.1', '1.2.3.4'];\n    if (app()->isDownForMaintenance() && !in_array($request->ip(), $allowedIps)) {\n        abort(503);\n    }\n    return $next($request);\n}",
+    "link": "https://laravel.com/docs/12.x/configuration#maintenance-mode"
+  },
+  {
+    "id": "Middleware-005",
+    "title": "Prevent Content Sniffing (Security Headers)",
+    "description": "Analogi: Pagar Berduri. Menambahkan lapisan keamanan pada 'kepala' dokumen agar browser tidak mencoba menebak tipe file yang bisa dimanfaatkan hacker untuk menjalankan script berbahaya.",
+    "categories": ["middleware", "security", "headers"],
+    "code": "public function handle(Request $request, Closure $next): Response {\n    $response = $next($request);\n    $response->headers->set('X-Content-Type-Options', 'nosniff');\n    $response->headers->set('X-Frame-Options', 'DENY');\n    $response->headers->set('Content-Security-Policy', \"default-src 'self'\");\n    return $response;\n}",
+    "link": "https://laravel.com/docs/12.x/responses#attaching-headers-to-responses"
+  },
+  {
+    "id": "Middleware-006",
+    "title": "Localization (Auto Language Switcher)",
+    "description": "Analogi: Penerjemah Bahasa. Mendeteksi apakah siswa menggunakan browser bahasa Indonesia atau Inggris, lalu secara otomatis menyajikan materi dalam bahasa yang paling mereka mengerti.",
+    "categories": ["middleware", "localization", "ux"],
+    "code": "public function handle(Request $request, Closure $next): Response {\n    $locale = $request->getPreferredLanguage(['id', 'en']);\n    app()->setLocale($locale);\n    return $next($request);\n}",
+    "link": "https://laravel.com/docs/12.x/localization"
+  },
+  {
+  "id": "Middleware-007",
+  "title": "Rangkuman Arsitektur Middleware (Indeks Referensi)",
+  "description": "Analogi: Lapisan Filter Keamanan Sekolah. Kamus ini merangkum sistem penyaringan data yang memastikan aplikasi aman, cepat, dan cerdas. Berikut kegunaannya:\n\n1. **Otoritas & Akses (ID 001, 004):** Mengontrol siapa yang boleh masuk berdasarkan peran (Role) dan membatasi akses selama perbaikan (Maintenance) hanya untuk tim internal.\n\n2. **Pertahanan Siber (ID 003, 005):** Mencatat log aktivitas pengguna sebagai jejak audit digital dan memperkuat header respon untuk mencegah eksploitasi browser oleh hacker.\n\n3. **Standarisasi & UX (ID 002, 006):** Menjamin format data tetap konsisten (JSON) untuk integrasi frontend/mobile dan memberikan pengalaman personal melalui pengaturan bahasa otomatis.\n\nDengan Middleware ini, Controller kamu tidak perlu lagi dipusingkan dengan urusan keamanan mentah, karena semua 'sampah' dan 'ancaman' sudah disaring di pintu depan.",
+  "categories": ["summary", "index", "indonesia", "middleware-pro"],
+  "code": "",
+  "link": ""
+}
+]

@@ -1,0 +1,198 @@
+[
+  {
+    "id": "Router-001",
+    "title": "Route Separation (Admin vs User)",
+    "description": "Analogi: Gerbang Masuk Sekolah. Kita memisahkan gerbang untuk 'Staf/Admin' dan gerbang untuk 'Siswa/User' agar arus lalu lintas data tidak bercampur dan lebih mudah dijaga satpam.",
+    "categories": ["router", "architecture", "config"],
+    "code": "// Di bootstrap/app.php (Laravel 12)\n->withRouting(\n    web: __DIR__.'/../routes/web.php',\n    commands: __DIR__.'/../routes/console.php',\n    health: '/up',\n    then: function () {\n        Route::middleware(['web', 'auth', 'role:admin'])\n            ->prefix('admin')\n            ->name('admin.')\n            ->group(base_path('routes/admin.php'));\n\n        Route::middleware(['web', 'auth', 'role:user'])\n            ->prefix('user')\n            ->name('user.')\n            ->group(base_path('routes/user.php'));\n    },\n)",
+    "link": "https://laravel.com/docs/12.x/routing#routing-customization"
+  },
+  {
+    "id": "Router-002",
+    "title": "Route Grouping & Middleware",
+    "description": "Analogi: Lorong Kelas. Di dalam gedung Admin, kita mengelompokkan ruangan yang memiliki tingkat keamanan yang sama, sehingga satpam tidak perlu mengecek ID di setiap pintu ruangan.",
+    "categories": ["router", "middleware", "grouping"],
+    "code": "// Di routes/admin.php\nRoute::controller(StudentController::class)->prefix('students')->name('students.')->group(function () {\n    Route::get('/', 'index')->name('index');\n    Route::post('/store', 'store')->name('store');\n    Route::delete('/{student}', 'destroy')->name('destroy')->middleware('can:delete-student');\n});",
+    "link": "https://laravel.com/docs/12.x/routing#route-group-middleware"
+  },
+  {
+    "id": "Router-003",
+    "title": "Global Middleware Registration",
+    "description": "Analogi: Pos Penjagaan Utama. Mendaftarkan 'Satpam Global' di pusat sistem (Bootstrap) yang akan memeriksa setiap tamu yang datang sebelum mereka bisa melihat peta gedung.",
+    "categories": ["middleware", "bootstrap", "security"],
+    "code": "// Di bootstrap/app.php\n->withMiddleware(function (Middleware $middleware) {\n    $middleware->alias([\n        'role' => \\App\\Http\\Middleware\\CheckRole::class,\n        'log_activity' => \\App\\Http\\Middleware\\AuditLog::class,\n    ]);\n})",
+    "link": "https://laravel.com/docs/12.x/middleware#registering-middleware"
+  },
+  {
+    "id": "Router-004",
+    "title": "Route Model Binding (Security Focus)",
+    "description": "Analogi: Verifikasi Kunci Ruangan. Router secara otomatis mencocokkan kunci (ID) yang dibawa tamu dengan pintu ruangan (Model) yang sah. Jika tidak cocok, tamu langsung ditolak (404).",
+    "categories": ["router", "security", "binding"],
+    "code": "// Menggunakan UUID untuk keamanan tambahan agar ID tidak mudah ditebak\nRoute::get('/profile/{user:uuid}', [UserController::class, 'show']);",
+    "link": "https://laravel.com/docs/12.x/routing#route-model-binding"
+  },
+  {
+    "id": "Router-005",
+    "title": "Inertia Route Helper",
+    "description": "Analogi: Papan Petunjuk Arah Digital. Router yang langsung mengarahkan tamu ke ruangan visual (Komponen React) tanpa perlu mampir ke meja resepsionis (Controller) untuk data yang statis.",
+    "categories": ["router", "inertia", "shorthand"],
+    "code": "Route::inertia('/about', 'Static/AboutPage');",
+    "link": "https://inertiajs.com/routing"
+  },
+  
+  {
+    "id": "Router-007",
+    "title": "Fallback Routes (Custom 404)",
+    "description": "Analogi: Petugas Penunjuk Jalan. Jika seorang siswa tersesat masuk ke lorong yang tidak ada pintunya, petugas ini akan mengarahkan mereka kembali ke halaman utama sekolah agar tidak bingung melihat error.",
+    "categories": ["router", "security", "user-experience"],
+    "code": "Route::fallback(function () {\n    return Inertia::render('Errors/NotFound', [\n        'message' => 'Halaman sekolah yang Anda cari tidak ditemukan.'\n    ]);\n});",
+    "link": "https://laravel.com/docs/12.x/routing#fallback-routes"
+  },
+  {
+    "id": "Router-008",
+    "title": "Signed URLs for Private Documents",
+    "description": "Analogi: Surat Undangan Berstempel Khusus. Digunakan untuk tautan unduh raport digital yang dikirim via email. Tautan ini memiliki 'tanda tangan' digital yang akan hangus jika diubah atau sudah kadaluwarsa.",
+    "categories": ["router", "security", "advanced"],
+    "code": "// Membuat URL di Controller\n$url = URL::temporarySignedRoute('report.download', now()->addMinutes(30), ['student' => $id]);\n\n// Proteksi di Route\nRoute::get('/download-report/{student}', function() { ... })->name('report.download')->middleware('signed');",
+    "link": "https://laravel.com/docs/12.x/urls#signed-urls"
+  },
+  {
+    "id": "Router-009",
+    "title": "Resourceful Routes (Standardization)",
+    "description": "Analogi: Prosedur Operasional Standar (SOP). Menggunakan satu baris perintah untuk menciptakan semua jalur layanan (Lihat, Tambah, Edit, Hapus) secara otomatis agar seragam di seluruh departemen.",
+    "categories": ["router", "crud", "best-practice"],
+    "code": "Route::resource('teachers', TeacherController::class)->only([\n    'index', 'create', 'store', 'edit', 'update'\n]);",
+    "link": "https://laravel.com/docs/12.x/controllers#resource-controllers"
+  },
+  {
+    "id": "Router-010",
+    "title": "Middleware Priority (Bootstrapping)",
+    "description": "Analogi: Urutan Pemeriksaan Keamanan. Mengatur agar satpam 'Pemeriksa Login' bekerja lebih dulu sebelum satpam 'Pemeriksa Izin Hapus', sehingga urutan keamanan tidak terbalik.",
+    "categories": ["middleware", "config", "bootstrap"],
+    "code": "// Di bootstrap/app.php\n->withMiddleware(function (Middleware $middleware) {\n    $middleware->priority([\n        \\Illuminate\\Session\\Middleware\\StartSession::class,\n        \\Illuminate\\View\\Middleware\\ShareErrorsFromSession::class,\n        \\App\\Http\\Middleware\\Authenticate::class,\n        \\App\\Http\\Middleware\\CheckRole::class,\n    ]);\n})",
+    "link": "https://laravel.com/docs/12.x/middleware#sorting-middleware"
+  },
+  {
+    "id": "Router-011",
+    "title": "Route Caching for Production",
+    "description": "Analogi: Menghafal Denah. Dalam mode produksi, Laravel 'menghafal' seluruh jalur rute ke dalam memori agar proses pencarian alamat menjadi secepat kilat tanpa harus membaca file PHP berulang kali.",
+    "categories": ["performance", "deployment"],
+    "code": "// Perintah di Terminal Server\nphp artisan route:cache\n\n// Untuk menghapus:\nphp artisan route:clear",
+    "link": "https://laravel.com/docs/12.x/routing#route-caching"
+  },
+  {
+  "id": "Router-012",
+  "title": "Rangkuman Arsitektur Router & Middleware Pro (Indeks Referensi)",
+  "description": "Analogi: Infrastruktur Keamanan Sekolah Modern. Kamus ini melengkapi sistem navigasi aplikasi kamu dengan fitur keamanan dan performa kelas dunia. Berikut kegunaan dari 11 fitur yang telah kita bangun:\n\n1. **Pemisahan Jalur & Organisasi (ID 001, 002, 009):** Mengorganisir rute ke dalam file berbeda (Admin vs User), mengelompokkan layanan serupa, dan menggunakan standar 'Resource' agar kode mudah dikelola tim besar.\n\n2. **Sistem Pertahanan Berlapis (ID 003, 008, 010):** Mendaftarkan Middleware secara terpusat, mengatur prioritas pemeriksaan keamanan, serta menggunakan Signed URLs untuk melindungi dokumen sensitif dari akses ilegal.\n\n3. **Optimasi Performa & User Experience (ID 005, 007, 011):** Memastikan transisi halaman React yang mulus (Inertia), menangani rute salah alamat (Fallback), dan mempercepat respon server melalui Route Caching.\n\n4. **Keamanan Data & Binding (ID 004):** Melindungi basis data dari serangan 'tebak ID' dengan menghubungkan router langsung ke model secara aman (Model Binding).",
+  "categories": ["summary", "index", "indonesia", "pro-architecture"],
+  "code": "",
+  "link": ""
+},
+
+  {
+    "id": "Router-013",
+    "title": "API Versioning (Side-by-Side)",
+    "description": "Analogi: Renovasi Gedung Tanpa Menutup Sekolah. Kita menyediakan dua jalur (v1 dan v2). Siswa dengan aplikasi HP lama tetap lewat jalur v1, sementara aplikasi baru lewat jalur v2 yang lebih canggih.",
+    "categories": ["router", "api", "best-practice"],
+    "code": "Route::prefix('api/v1')->group(base_path('routes/api_v1.php'));\nRoute::prefix('api/v2')->group(base_path('routes/api_v2.php'));",
+    "link": "https://laravel.com/docs/12.x/routing#route-prefixes"
+  },
+  {
+    "id": "Router-014",
+    "title": "Dynamic Rate Limiting (Cyber Shield)",
+    "description": "Analogi: Gerbang Otomatis Pintar. Jika seseorang mencoba 'mengetuk pintu' (login) terlalu cepat (misal 5x dalam 1 menit), gerbang akan terkunci otomatis untuk orang tersebut selama 15 menit (Anti-Brute Force).",
+    "categories": ["middleware", "security", "rate-limiting"],
+    "code": "// Di bootstrap/app.php\n$middleware->throttle('login', [\n    'limit' => 5,\n    'expires' => 15,\n]);\n\n// Di routes/web.php\nRoute::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');",
+    "link": "https://laravel.com/docs/12.x/routing#rate-limiting"
+  },
+  {
+    "id": "Router-015",
+    "title": "Localization Middleware (Multi-Language)",
+    "description": "Analogi: Penerjemah di Meja Informasi. Satpam ini mengecek bahasa pilihan siswa (Indo/English) dan menyesuaikan semua tulisan di aplikasi secara otomatis sebelum siswa masuk kelas.",
+    "categories": ["middleware", "localization", "ux"],
+    "code": "public function handle($request, $next) {\n    App::setLocale($request->header('Accept-Language', 'id'));\n    return $next($request);\n}",
+    "link": "https://laravel.com/docs/12.x/localization"
+  },
+  {
+    "id": "Router-016",
+    "title": "Domain-Specific Routing (SaaS Style)",
+    "description": "Analogi: Alamat Cabang Sekolah. Memisahkan rute berdasarkan sub-domain. Contoh: `jakarta.sekolah.com` akan diarahkan ke data cabang Jakarta, sedangkan `bandung.sekolah.com` ke cabang Bandung.",
+    "categories": ["router", "saas", "advanced"],
+    "code": "Route::domain('{branch}.sekolah.com')->group(function () {\n    Route::get('/dashboard', [BranchController::class, 'index']);\n});",
+    "link": "https://laravel.com/docs/12.x/routing#route-group-subdomain-routing"
+  },
+  {
+    "id": "Router-017",
+    "title": "Middleware: Maintenance Mode Bypass",
+    "description": "Analogi: Kunci Duplikat Kepala Sekolah. Saat sekolah sedang direnovasi (Maintenance Mode), hanya IP milik 'Developer' yang diizinkan masuk untuk mengecek hasil renovasi.",
+    "categories": ["middleware", "devops", "security"],
+    "code": "// Di bootstrap/app.php\n$middleware->preventRequestsDuringMaintenance(except: [\n    'admin/*', \n    '123.123.123.123' // IP Developer\n]);",
+    "link": "https://laravel.com/docs/12.x/configuration#maintenance-mode"
+  },
+  {
+    "id": "Router-018",
+    "title": "Secure Headers Middleware (HSTS/CSP)",
+    "description": "Analogi: Kaca Film Anti-Intip. Menambahkan lapisan pelindung pada setiap jawaban (Response) server agar browser siswa menolak perintah jahat dari hacker (XSS/Clickjacking).",
+    "categories": ["middleware", "security", "headers"],
+    "code": "return $next($request)->withHeaders([\n    'X-Frame-Options' => 'DENY',\n    'X-Content-Type-Options' => 'nosniff',\n    'Content-Security-Policy' => \"default-src 'self'\",\n]);",
+    "link": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP"
+  },
+  {
+    "id": "Router-019",
+    "title": "Canonical Redirects (SEO)",
+    "description": "Analogi: Papan Petunjuk Jalan Utama. Memastikan jika siswa mengetik `sekolah.com/profil/`, mereka otomatis diarahkan ke `sekolah.com/profil` (tanpa slash) agar mesin pencari tidak bingung (SEO Friendly).",
+    "categories": ["router", "seo", "ux"],
+    "code": "$middleware->append(\\Illuminate\\Http\\Middleware\\HandleCors::class);\n$middleware->redirectTrailingSlashWith(301);",
+    "link": ""
+  },
+  {
+    "id": "Router-020",
+    "title": "Global ID Obfuscation (Hashids)",
+    "description": "Analogi: Nama Samaran Siswa. Middleware yang otomatis mengubah ID asli di database (seperti 1, 2, 3) menjadi kode acak (jR8kN2) di URL agar jumlah siswa tidak bisa diketahui kompetitor.",
+    "categories": ["middleware", "security", "obfuscation"],
+    "code": "// Logic didefinisikan di middleware untuk decrypt Hashids sebelum sampai ke Controller",
+    "link": "https://github.com/vinkla/laravel-hashids"
+  },
+  {
+    "id": "Router-021",
+    "title": "AB Testing Middleware",
+    "description": "Analogi: Uji Coba Seragam Baru. Mengarahkan 50% siswa ke tampilan dashboard versi A, dan 50% lainnya ke versi B untuk melihat mana yang lebih disukai siswa.",
+    "categories": ["middleware", "marketing", "ux"],
+    "code": "if (auth()->id() % 2 === 0) {\n    config(['app.theme' => 'new-look']);\n}",
+    "link": ""
+  },
+  {
+    "id": "Router-022",
+    "title": "Request Sanitization Middleware",
+    "description": "Analogi: Sterilisasi Barang Bawaan. Secara otomatis membersihkan spasi berlebih atau tag HTML berbahaya dari semua input formulir siswa sebelum data tersebut disimpan ke database.",
+    "categories": ["middleware", "security", "clean-code"],
+    "code": "$middleware->trimStrings();\n$middleware->convertEmptyStringsToNull();",
+    "link": "https://laravel.com/docs/12.x/middleware#trimming-strings"
+  },
+  {
+    "id": "Router-023",
+    "title": "Force HTTPS in Production",
+    "description": "Analogi: Wajib Jalur Terenkripsi. Middleware yang menolak permintaan jika tidak menggunakan HTTPS (Sertifikat SSL), menjamin data nilai siswa tidak bisa disadap di tengah jalan.",
+    "categories": ["middleware", "security", "ssl"],
+    "code": "// Di AppServiceProvider.php\nif (app()->isProduction()) {\n    URL::forceScheme('https');\n}",
+    "link": "https://laravel.com/docs/12.x/urls#forcing-https"
+  },
+  {
+    "id": "Router-024",
+    "title": "Health Check Routing (Uptime Monitoring)",
+    "description": "Analogi: Dokter Sekolah 24 Jam. Jalur khusus `/up` yang digunakan oleh server pemantau untuk mengecek apakah aplikasi sekolah masih hidup atau sedang 'pingsan'.",
+    "categories": ["router", "devops", "monitoring"],
+    "code": "->withRouting(\n    health: '/up', // Default Laravel 11/12\n)",
+    "link": "https://laravel.com/blog/laravel-11-health-endpoint"
+  },
+  {
+    "id": "Router-025",
+    "title": "Rangkuman Arsitektur Traffic (Elite Phase)",
+    "description": "Analogi: Menara Kontrol Bandara Internasional. Dengan poin 13-24, sistem komunikasimu kini memiliki standar keamanan militer. \n\n1. **High Availability (016, 017, 024):** Mendukung multi-cabang, bypass maintenance, dan monitoring otomatis.\n2. **Cyber Defense (014, 018, 022, 023):** Melindungi dari Brute Force, XSS, Sniffing, dan Input berbahaya.\n3. **Modern Experience (013, 015, 019, 021):** Mendukung versi API, banyak bahasa, SEO, hingga uji coba fitur (A/B testing).",
+    "categories": ["summary", "index", "indonesia", "elite-router"],
+    "code": "",
+    "link": ""
+  }
+
+
+]

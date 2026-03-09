@@ -1,0 +1,115 @@
+[
+  {
+    "id": "Seeder-001",
+    "title": "Basic Student Seeder",
+    "description": "Analogi: Formulir Pendaftaran Manual. Memasukkan satu per satu nama siswa ke dalam buku induk secara manual untuk memastikan sistem pendaftaran berfungsi dengan benar.",
+    "categories": ["seeder", "database", "insert"],
+    "code": "public function run(): void {\n    Student::create([\n        'full_name' => 'Budi Santoso',\n        'email' => 'budi@school.com',\n        'status' => 'active'\n    ]);\n}",
+    "link": "https://laravel.com/docs/12.x/seeding#writing-seeders"
+  },
+  {
+    "id": "Seeder-002",
+    "title": "Mass Student Factory",
+    "description": "Analogi: Mesin Fotokopi Siswa. Membuat ribuan data siswa fiktif dengan identitas acak (nama, email, alamat) dalam sekejap untuk menguji seberapa kuat 'ruang kelas' (database) menampung beban.Penggunaan fake()->unique() sangat penting agar data dummy tidak bentrok dengan Unique Constraint (seperti email) yang sudah kita buat di Migration.",
+    "categories": ["factory", "faker", "testing"],
+    "code": "public function definition(): array {\n    return [\n        'full_name' => fake()->name(),\n        'email' => fake()->unique()->safeEmail(),\n        'address' => fake()->address(),\n        'status' => 'active'\n    ];\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#defining-factories"
+  },
+  {
+    "id": "Seeder-003",
+    "title": "Relationship Seeding (Classroom)",
+    "description": "Analogi: Pembagian Kelas Otomatis. Saat membuat siswa baru, sistem secara otomatis menempatkan mereka ke dalam kelas yang sudah ada, memastikan tidak ada siswa yang tidak punya kelas.",
+    "categories": ["factory", "relationship", "eloquent"],
+    "code": "public function run(): void {\n    Classroom::factory()\n        ->has(Student::factory()->count(30))\n        ->create();\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#has-many-relationships"
+  },
+  {
+    "id": "Seeder-004",
+    "title": "Sequence State (Alternating Status)",
+    "description": "Analogi: Variasi Status Siswa. Membuat daftar siswa di mana sebagian berstatus 'Aktif' dan sebagian lagi 'Lulus' secara selang-seling untuk menguji filter laporan.",
+    "categories": ["factory", "sequence", "logic"],
+    "code": "Student::factory()\n    ->count(10)\n    ->state(new Sequence(\n        ['status' => 'active'],\n        ['status' => 'graduated'],\n    ))\n    ->create();",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#sequences"
+  },
+  {
+    "id": "Seeder-005",
+    "title": "Calling Other Seeders",
+    "description": "Analogi: Bel Sekolah. Satu perintah yang membunyikan seluruh tanda untuk memulai aktivitas; menjalankan Seeder Guru, Seeder Kelas, dan Seeder Siswa secara berurutan.",
+    "categories": ["seeder", "orchestration"],
+    "code": "public function run(): void {\n    $this->call([\n        TeacherSeeder::class,\n        ClassroomSeeder::class,\n        StudentSeeder::class,\n    ]);\n}",
+    "link": "https://laravel.com/docs/12.x/seeding#calling-additional-seeders"
+  },
+  {
+    "id": "Seeder-006",
+    "title": "Unique Security Role Seeding",
+    "description": "Analogi: Pembuatan Akun Kepala Sekolah. Menjamin hanya ada satu akun 'Principal' dengan kredensial yang sudah ditentukan untuk keamanan akses awal sistem.angan pernah lupa menggunakan Hash::make. Menyimpan password plain text di seeder adalah celah keamanan fatal jika file tersebut bocor ke repositori publik.",
+    "categories": ["seeder", "security", "auth"],
+    "code": "User::create([\n    'name' => 'Admin Utama',\n    'email' => 'admin@school.com',\n    'password' => Hash::make('secret123'),\n    'role' => 'principal'\n]);",
+    "link": "https://laravel.com/docs/12.x/seeding#writing-seeders"
+  },
+  {
+    "id": "Seeder-007",
+    "title": "Recycle Model Factory",
+    "description": "Analogi: Hemat Fasilitas. Saat membuat banyak data absensi, sistem tidak perlu membuat siswa baru terus-menerus, melainkan menggunakan 'Siswa' yang sudah ada secara berulang.",
+    "categories": ["factory", "recycle", "performance"],
+    "code": "Attendance::factory()\n    ->count(50)\n    ->recycle(Student::all())\n    ->create();",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#recycling-models"
+  },
+  
+  {
+    "id": "Seeder-008",
+    "title": "Faker Localization (Indonesian Data)",
+    "description": "Analogi: Identitas Lokal. Mengatur mesin pembuat data agar menghasilkan nama-nama khas Indonesia (seperti 'Siti', 'Agus') dan alamat di Indonesia, bukan nama asing, agar simulasi terasa nyata.",
+    "categories": ["factory", "faker", "localization"],
+    "code": "// Di config/app.php atau AppServiceProvider\n'faker_locale' => 'id_ID',\n\n// Maka fake()->name() akan menghasilkan nama Indonesia.",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#faker-localization"
+  },
+  {
+    "id": "Seeder-009",
+    "title": "Factory for Media/Images",
+    "description": "Analogi: Foto Kartu Pelajar. Menyiapkan data dummy berupa URL gambar atau placeholder agar tampilan dashboard sekolah di React tidak terlihat kosong dan membosankan.",
+    "categories": ["factory", "media", "ui"],
+    "code": "public function definition(): array {\n    return [\n        'profile_picture' => 'https://i.pravatar.cc/150?u=' . fake()->uuid(),\n    ];\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#defining-factories"
+  },
+  {
+    "id": "Seeder-010",
+    "title": "Database Silent Mode",
+    "description": "Analogi: Pengisian Diam-diam. Menjalankan proses pengisian data tanpa memicu 'CCTV' (Events/Observers) agar proses seeding ribuan data absensi menjadi jauh lebih cepat dan tidak mengirim email notifikasi palsu.",
+    "categories": ["seeder", "performance", "events"],
+    "code": "Student::withoutEvents(function () {\n    Student::factory()->count(100)->create();\n});",
+    "link": "https://laravel.com/docs/12.x/eloquent#suppressing-events"
+  },
+  {
+    "id": "Seeder-011",
+    "title": "Environment Protection",
+    "description": "Analogi: Segel Pengaman. Memasang kunci pengaman agar Seeder data dummy tidak sengaja dijalankan di server 'Production' yang asli, yang bisa menghapus data siswa yang sebenarnya.",
+    "categories": ["seeder", "security", "production"],
+    "code": "public function run(): void {\n    if (app()->isProduction()) {\n        return;\n    }\n    // Jalankan seeder dummy di sini\n}",
+    "link": "https://laravel.com/docs/12.x/seeding#writing-seeders"
+  },
+  {
+    "id": "Seeder-012",
+    "title": "Factory Callbacks (AfterCreating)",
+    "description": "Analogi: Seragam dan Atribut. Setelah siswa 'dibuat' oleh mesin factory, kita memberikan tugas tambahan secara otomatis, seperti langsung membuatkan satu folder laporan untuk siswa tersebut.",
+    "categories": ["factory", "hooks", "automation"],
+    "code": "public function configure(): static {\n    return $this->afterCreating(function (Student $student) {\n        // Logika setelah data tersimpan\n    });\n}",
+    "link": "https://laravel.com/docs/12.x/eloquent-factories#factory-callbacks"
+  },
+  {
+    "id": "Seeder-013",
+    "title": "Pivot Table Seeding",
+    "description": "Analogi: Pendaftaran Klub Ekstrakurikuler. Mengisi tabel perantara yang menghubungkan Siswa dengan banyak Klub sekaligus dengan atribut tambahan (seperti tahun bergabung).",
+    "categories": ["seeder", "relationship", "many-to-many"],
+    "code": "$student->clubs()->attach($clubId, ['joined_at' => now()]);",
+    "link": "https://laravel.com/docs/12.x/eloquent-relationships#attaching-detaching"
+  },{
+  "id": "Seeder-014",
+  "title": "Rangkuman Arsitektur Seeding Laravel 12 (Indeks Referensi)",
+  "description": "Analogi: Gladi Resik Sekolah. Kamus Seeder dan Factory ini adalah metode untuk menghidupkan sistem kita dengan data simulasi yang cerdas sebelum sekolah benar-benar dibuka. Berikut adalah kegunaan dari 14 fitur yang telah kita susun:\n\n1. **Otomasi Produksi Massal (ID 002, 003, 007, 010):** Menggunakan mesin 'Factory' untuk mencetak ribuan data siswa, hubungan kelas, hingga foto profil secara instan dan efisien.\n\n2. **Keamanan & Integritas (ID 006, 009, 012):** Melindungi sistem dengan password yang aman (Hash), melokalisasi data agar sesuai dengan wilayah (Indonesia), dan memberikan 'segel pengaman' agar data dummy tidak merusak server asli (Production).\n\n3. **Logika Alur Kerja (ID 001, 004, 005, 013, 014):** Mengatur skenario pendaftaran manual, variasi status siswa (Aktif/Lulus), urutan pemanggilan data, hingga pengisian otomatis tabel hubungan kompleks (Pivot).\n\n4. **Optimasi Kecepatan (ID 011):** Mematikan fitur pelacakan (Events) saat melakukan pengisian data dalam jumlah besar agar server tidak terbebani proses yang tidak perlu.",
+  "categories": ["summary", "index", "indonesia", "seeder"],
+  "code": "",
+  "link": ""
+}
+
+]
