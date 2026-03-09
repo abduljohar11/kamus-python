@@ -6,7 +6,7 @@
       "folders": [
         {
           "name": "migration",
-          "files": ["data_kode.json", "data_kode1.json", "data_kode2.json"]
+          "files": ["data_kode.json", "data_kode1.json", "data_kode_extra.json"]
         },
         {
           "name": "model",
