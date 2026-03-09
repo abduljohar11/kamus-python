@@ -12,6 +12,13 @@
         .tag-active { background: #3b82f6 !important; color: white !important; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* Properti Webkit (Lama) */
+    line-clamp: 2;         /* Properti Standar (Baru) */
+    overflow: hidden;
+}
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -20,19 +27,22 @@
         <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-blue-600 p-2 rounded-lg text-white font-bold">🎓</div>
-                <h1 class="text-xl font-black text-white italic uppercase">Snippet<span class="text-blue-500">School</span></h1>
+                <h1 class="text-xl font-black text-white italic uppercase tracking-tighter">Snippet<span class="text-blue-500">School</span></h1>
             </div>
-            <div id="statusIndicator" class="text-[10px] font-bold px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50">READY</div>
+            <div id="statusIndicator" class="text-[10px] font-bold px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50 flex items-center gap-2">
+                <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                <span id="statusText">READY</span>
+            </div>
         </div>
     </nav>
 
     <div class="flex flex-1 max-w-[1600px] mx-auto w-full overflow-hidden">
         <aside class="w-72 border-r border-slate-800 bg-[#0b1120] hidden lg:flex flex-col py-6 overflow-y-auto">
             <div id="sidebarMenu">
-                <p class="px-8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4 italic">Loading Folders...</p>
+                <p class="px-8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4 italic">Initializing Directory...</p>
             </div>
             <div class="mt-auto px-8 pt-8 border-t border-slate-800">
-                <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-4">Categories</p>
+                <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-4">Quick Filters</p>
                 <div id="categoryCloud" class="flex flex-wrap gap-2 pb-8"></div>
             </div>
         </aside>
@@ -40,10 +50,10 @@
         <main class="flex-1 overflow-y-auto p-6 lg:p-12">
             <div class="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
                 <div>
-                    <p id="breadcrumb" class="text-blue-500 font-mono text-[10px] font-bold uppercase mb-1">ROOT / ...</p>
-                    <h2 id="currentTitle" class="text-5xl font-black text-white tracking-tight italic uppercase">SELECT FOLDER</h2>
+                    <p id="breadcrumb" class="text-blue-500 font-mono text-[10px] font-bold uppercase mb-1">DATA / ...</p>
+                    <h2 id="currentTitle" class="text-5xl font-black text-white tracking-tight italic uppercase">Snippets</h2>
                 </div>
-                <input type="text" id="searchInput" placeholder="Search logic..." class="w-full xl:w-96 bg-[#161e31] border border-slate-800 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="searchInput" placeholder="Search logic..." class="w-full xl:w-96 bg-[#161e31] border border-slate-800 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-blue-500 transition shadow-2xl">
             </div>
 
             <div class="bg-[#111827] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl">
@@ -51,30 +61,36 @@
                     <thead>
                         <tr class="bg-slate-900/50 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-800">
                             <th class="p-6">ID</th>
-                            <th class="p-6">Snippet Info</th>
+                            <th class="p-6">Logic Description</th>
                             <th class="p-6 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody id="dataTable" class="divide-y divide-slate-800/50">
-                        <tr><td colspan="3" class="p-20 text-center italic text-slate-600">Pilih folder untuk memuat data.</td></tr>
+                        <tr><td colspan="3" class="p-20 text-center italic text-slate-600 text-sm">Select a folder to synchronize code snippets.</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <div id="codeModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+    <div id="codeModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 bg-black/95 backdrop-blur-md">
         <div class="bg-[#111827] w-full max-w-5xl rounded-[2.5rem] border border-slate-800 shadow-2xl flex flex-col max-h-[90vh]">
             <div class="p-8 border-b border-slate-800 flex justify-between items-center">
-                <div><span id="mId" class="text-blue-500 font-mono text-xs font-bold"></span><h3 id="mTitle" class="text-2xl font-black text-white italic uppercase"></h3></div>
-                <button onclick="closeModal()" class="text-slate-500 hover:text-white text-4xl">&times;</button>
+                <div><span id="mId" class="text-blue-500 font-mono text-xs font-bold uppercase"></span><h3 id="mTitle" class="text-2xl font-black text-white italic uppercase mt-1"></h3></div>
+                <button onclick="closeModal()" class="text-slate-500 hover:text-white text-4xl transition">&times;</button>
             </div>
             <div class="p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1 space-y-6">
                     <p id="mDesc" class="text-slate-400 text-sm leading-relaxed border-l-2 border-blue-500 pl-4 italic"></p>
                     <div id="mTags" class="flex flex-wrap gap-2"></div>
+                    <div id="mLinkContainer" class="pt-4">
+                        <a id="mLink" href="#" target="_blank" class="text-[10px] text-blue-400 underline uppercase font-bold hover:text-blue-300">View Documentation →</a>
+                    </div>
                 </div>
-                <div class="lg:col-span-2 bg-[#050914] p-6 rounded-2xl border border-slate-800"><pre id="mCode" class="text-blue-400 text-sm font-mono overflow-x-auto"></pre></div>
+                <div class="lg:col-span-2 bg-[#050914] p-6 rounded-2xl border border-slate-800 shadow-inner relative">
+                    <button onclick="copyCode()" class="absolute top-4 right-4 text-[10px] bg-slate-800 text-slate-400 px-3 py-1 rounded hover:bg-blue-600 hover:text-white transition">COPY</button>
+                    <pre id="mCode" class="text-blue-400 text-sm font-mono overflow-x-auto leading-relaxed"></pre>
+                </div>
             </div>
         </div>
     </div>
@@ -83,7 +99,6 @@
         let fullData = [];
         let activeCategory = null;
 
-        // KONFIGURASI MANUAL SESUAI STRUKTUR REPO GITHUB KAMU
         const config = {
             "languages": [
                 {
@@ -93,12 +108,11 @@
                         { "name": "migration", "files": ["data_kode.json"] },
                         { "name": "model", "files": ["data_kode.json"] },
                         { "name": "controller", "files": ["data_kode.json"] },
-                        {"name":"service", "files": ["data_kode.json"]},
+                        { "name": "service", "files": ["data_kode.json"] },
                         { "name": "middleware", "files": ["data_kode.json"] },
                         { "name": "router", "files": ["data_kode.json"] },
-                        { "name": "react", "files": ["data_kode.json"]},
-                        {"name":"seeder","files": ["data_kode.json"]}
-
+                        { "name": "react", "files": ["data_kode.json"] },
+                        { "name": "seeder", "files": ["data_kode.json"] }
                     ]
                 }
             ]
@@ -113,7 +127,7 @@
                         <button onclick="loadData('${lang.slug}', '${f.name}', ${JSON.stringify(f.files)})" 
                                 id="btn-${f.name}" 
                                 class="folder-btn w-full text-left px-8 py-3 text-sm transition hover:bg-slate-800/50 flex items-center gap-3">
-                            <span>📂</span> ${f.name}
+                            <span>📂</span> <span class="uppercase tracking-tight font-semibold">${f.name}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -121,43 +135,59 @@
         }
 
         async function loadData(lang, folder, files) {
+            updateStatus('CONNECTING...', 'yellow');
             activeCategory = null;
             document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active-folder'));
-            document.getElementById(`btn-${folder}`).classList.add('active-folder');
+            document.getElementById(`btn-${folder}`)?.classList.add('active-folder');
             document.getElementById('currentTitle').innerText = folder;
-            document.getElementById('breadcrumb').innerText = `DATA / ${lang} / ${folder}`;
+            document.getElementById('breadcrumb').innerText = `DATA / ${lang.toUpperCase()} / ${folder.toUpperCase()}`;
 
             try {
-                // PATH PENTING: Menyesuaikan dengan struktur repo GitHub
                 const promises = files.map(file => fetch(`./data/${lang}/${folder}/${file}`).then(r => {
                     if(!r.ok) throw new Error("File not found");
                     return r.json();
                 }));
                 const results = await Promise.all(promises);
-                fullData = results.flat();
+                
+                // Normalisasi data: Pastikan selalu dalam bentuk Array
+                fullData = results.flat().map(item => Array.isArray(item) ? item : [item]).flat();
                 
                 renderUI(fullData);
                 renderCategories(fullData);
-                document.getElementById('statusIndicator').innerText = "CONNECTED";
+                updateStatus('CONNECTED', 'green');
             } catch (err) {
-                document.getElementById('dataTable').innerHTML = `<tr><td colspan="3" class="p-20 text-center text-red-500 font-mono">ERROR: Cek path folder data/${lang}/${folder}/</td></tr>`;
+                updateStatus('OFFLINE', 'red');
+                document.getElementById('dataTable').innerHTML = `<tr><td colspan="3" class="p-20 text-center text-red-500 font-mono text-xs uppercase">404: Path Not Found [data/${lang}/${folder}/]</td></tr>`;
             }
         }
 
         function renderUI(data) {
             const container = document.getElementById('dataTable');
+            if(!data || data.length === 0) {
+                container.innerHTML = `<tr><td colspan="3" class="p-20 text-center italic text-slate-600">No snippets found.</td></tr>`;
+                return;
+            }
             container.innerHTML = data.map(item => `
                 <tr class="hover:bg-blue-600/[0.03] cursor-pointer group transition" onclick="openModal('${item.id}')">
-                    <td class="p-6 font-mono text-blue-500 text-[10px] font-bold uppercase">${item.id}</td>
-                    <td class="p-6"><div class="text-white font-bold group-hover:text-blue-400 transition italic uppercase">${item.title}</div><div class="text-[11px] text-slate-500 italic mt-1">${item.description}</div></td>
-                    <td class="p-6 text-right"><button class="text-[10px] font-black border border-slate-700 px-4 py-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition uppercase">Read</button></td>
+                    <td class="p-6 font-mono text-blue-500 text-[10px] font-black uppercase tracking-tighter">${item.id}</td>
+                    <td class="p-6">
+                        <div class="text-white font-bold group-hover:text-blue-400 transition italic uppercase tracking-tight">${item.title}</div>
+                        <div class="text-[11px] text-slate-500 italic mt-1 line-clamp-2 leading-relaxed">${item.description}</div>
+                    </td>
+                    <td class="p-6 text-right">
+                        <button class="text-[10px] font-black border border-slate-700 px-5 py-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition uppercase tracking-widest">Read</button>
+                    </td>
                 </tr>
             `).join('');
         }
 
         function renderCategories(data) {
             const tags = new Set();
-            data.forEach(item => item.categories.forEach(c => tags.add(c)));
+            data.forEach(item => {
+                if(item.categories && Array.isArray(item.categories)) {
+                    item.categories.forEach(c => tags.add(c));
+                }
+            });
             document.getElementById('categoryCloud').innerHTML = Array.from(tags).map(tag => `
                 <button onclick="filterByCategory('${tag}')" id="tag-${tag}" class="tag-btn px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold hover:border-blue-500 transition">#${tag}</button>
             `).join('');
@@ -165,15 +195,19 @@
 
         function filterByCategory(tag) {
             document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('tag-active'));
-            if(activeCategory === tag) { activeCategory = null; } 
-            else { activeCategory = tag; document.getElementById(`tag-${tag}`).classList.add('tag-active'); }
+            if(activeCategory === tag) { 
+                activeCategory = null; 
+            } else { 
+                activeCategory = tag; 
+                document.getElementById(`tag-${tag}`).classList.add('tag-active'); 
+            }
             applyFilters();
         }
 
         function applyFilters() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = fullData.filter(item => {
-                const matchesSearch = item.title.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
+                const matchesSearch = (item.title + item.description + item.id).toLowerCase().includes(search);
                 const matchesCategory = activeCategory ? item.categories.includes(activeCategory) : true;
                 return matchesSearch && matchesCategory;
             });
@@ -182,18 +216,44 @@
 
         function openModal(id) {
             const item = fullData.find(i => i.id === id);
+            if(!item) return;
+            
             document.getElementById('mId').innerText = item.id;
             document.getElementById('mTitle').innerText = item.title;
             document.getElementById('mDesc').innerText = item.description;
-            document.getElementById('mCode').innerText = item.code;
-            document.getElementById('mTags').innerHTML = item.categories.map(c => `<span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20">#${c}</span>`).join('');
+            
+            // SECURITY: Menggunakan textContent agar kode tidak di-eksekusi sebagai HTML
+            document.getElementById('mCode').textContent = item.code;
+            
+            if(item.link) {
+                document.getElementById('mLink').href = item.link;
+                document.getElementById('mLinkContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('mLinkContainer').classList.add('hidden');
+            }
+
+            document.getElementById('mTags').innerHTML = (item.categories || []).map(c => `
+                <span class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20 font-bold uppercase tracking-widest">#${c}</span>
+            `).join('');
+            
             document.getElementById('codeModal').classList.remove('hidden');
         }
 
         function closeModal() { document.getElementById('codeModal').classList.add('hidden'); }
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        
+        function updateStatus(text, color) {
+            const colors = { green: 'bg-green-500', yellow: 'bg-yellow-500', red: 'bg-red-500', gray: 'bg-slate-500' };
+            document.getElementById('statusText').innerText = text;
+            document.getElementById('statusDot').className = `w-2 h-2 rounded-full ${colors[color]} shadow-[0_0_8px_${color}]`;
+        }
 
-        // Langsung jalankan sidebar
+        function copyCode() {
+            const code = document.getElementById('mCode').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Code copied to clipboard!');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
         renderSidebar();
     </script>
 </body>
