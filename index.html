@@ -3,162 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snippet School | Dashboard</title>
+    <title>Snippet School | Master v3.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .modal-active { overflow: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b1120; }
+        .active-folder { 
+            background-color: rgba(37, 99, 235, 0.1); 
+            color: #60a5fa; 
+            border-left: 4px solid #3b82f6;
+            font-weight: 700;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen">
+<body class="text-slate-300 min-h-screen flex flex-col">
 
-    <nav class="border-b border-slate-800 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">🏫</span>
-                <h1 class="font-bold text-xl tracking-tight text-white">Snippet<span class="text-blue-500">School</span></h1>
+    <nav class="border-b border-slate-800/60 bg-[#0f172a]/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20 text-xl">🎓</div>
+                <h1 class="font-bold text-xl tracking-tighter text-white uppercase italic">Snippet<span class="text-blue-500">School</span></h1>
             </div>
-            <div class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">
-                Laporan Akademik: Laravel-React
+            <div id="connectionStatus" class="flex items-center gap-2 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-500/20 bg-slate-500/10 text-slate-400">
+                <span id="statusDot" class="h-2 w-2 rounded-full bg-slate-500"></span> <span id="statusText">READY</span>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-4 py-8">
-        
-        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-                <h2 class="text-3xl font-bold text-white mb-2">Halo, Master! 👋</h2>
-                <p class="text-slate-400">Pencarian multi-keyword aktif (contoh: 'migration student').</p>
+    <div class="flex flex-1 max-w-[1600px] mx-auto w-full overflow-hidden">
+        <aside class="w-80 border-r border-slate-800/50 bg-[#0b1120] hidden lg:flex flex-col py-6 overflow-y-auto">
+            <div id="sidebarContent">
+                <p class="px-8 text-slate-500 text-[10px] font-black uppercase tracking-widest italic">Indexing...</p>
             </div>
-            <div class="relative w-full md:w-80">
-                <input type="text" id="searchInput" placeholder="Cari materi sekolah..." 
-                class="w-full bg-[#1e293b] border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition text-sm">
+            <div class="mt-auto px-8 pt-8 border-t border-slate-800/50">
+                <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-4">Quick Filters</p>
+                <div id="tagCloud" class="flex flex-wrap gap-2 pb-8"></div>
             </div>
-        </div>
+        </aside>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-800 shadow-xl">
-                <p class="text-slate-400 text-sm mb-1 uppercase tracking-wider font-semibold">Total Koleksi</p>
-                <div class="flex items-end gap-2">
-                    <span id="totalCount" class="text-4xl font-bold text-white">0</span>
-                    <span class="text-slate-500 mb-1">Snippets</span>
+        <main class="flex-1 overflow-y-auto p-6 lg:p-12">
+            <div class="mb-12 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-blue-500 font-mono text-[10px] font-bold uppercase">
+                        <span id="breadcrumb">root / ...</span>
+                    </div>
+                    <h2 id="currentFolderName" class="text-5xl font-black text-white tracking-tight italic uppercase">Select Category</h2>
+                </div>
+                <div class="relative w-full xl:w-96">
+                    <input type="text" id="searchInput" placeholder="Search multi-keyword..." class="w-full bg-[#161e31] border border-slate-800 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition text-white">
                 </div>
             </div>
-            <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-800 shadow-xl">
-                <p class="text-slate-400 text-sm mb-1 uppercase tracking-wider font-semibold">Status Jurusan</p>
-                <div class="text-xl font-bold text-blue-400">Laravel-React</div>
-                <p class="text-xs text-slate-500 mt-1">Kurikulum Aktif 2026</p>
-            </div>
-            <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-800 shadow-xl">
-                <p class="text-slate-400 text-sm mb-1 uppercase tracking-wider font-semibold">Sync Status</p>
-                <div class="flex items-center gap-2 text-green-400">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                    </span>
-                    <span class="text-xl font-bold">Cloud Connected</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-[#1e293b] rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
-            <div class="p-6 border-b border-slate-800 bg-slate-800/20">
-                <h3 class="font-bold text-lg text-white">📚 Inventaris Buku Panduan</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
+            <div class="bg-[#111827] rounded-[2.5rem] border border-slate-800/50 overflow-hidden shadow-3xl">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="text-slate-500 text-sm border-b border-slate-800">
-                            <th class="p-6 uppercase tracking-widest font-bold">ID</th>
-                            <th class="p-6 uppercase tracking-widest font-bold">Judul & Analogi</th>
-                            <th class="p-6 text-right">Aksi</th>
+                        <tr class="bg-slate-900/80 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-800">
+                            <th class="p-6">Index ID</th>
+                            <th class="p-6">Logic Description</th>
+                            <th class="p-6 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="tableContent" class="divide-y divide-slate-800">
-                        </tbody>
+                    <tbody id="tableContent" class="divide-y divide-slate-800/40 font-medium">
+                        <tr><td colspan="3" class="p-20 text-center text-slate-600 italic">Menunggu input dari Master...</td></tr>
+                    </tbody>
                 </table>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
-    <div id="codeModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="bg-[#1e293b] w-full max-w-2xl rounded-3xl border border-slate-700 shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                <h3 id="modalTitle" class="font-bold text-xl text-white">Detail Materi</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-6 overflow-y-auto">
-                <p id="modalDesc" class="text-sm text-slate-400 italic mb-4"></p>
-                <div class="bg-[#0f172a] p-4 rounded-xl border border-slate-800 relative group">
-                    <pre id="modalCode" class="text-blue-300 text-sm overflow-x-auto"></pre>
+    <div id="codeModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
+        <div class="bg-[#111827] w-full max-w-5xl rounded-[3rem] border border-slate-800 shadow-2xl flex flex-col max-h-[92vh] scale-95 transition-all duration-300" id="modalContainer">
+            <div class="p-10 border-b border-slate-800 flex justify-between items-start">
+                <div>
+                    <span id="modalId" class="text-blue-500 font-mono text-xs font-bold uppercase tracking-widest"></span>
+                    <h3 id="modalTitle" class="font-black text-3xl text-white mt-1 italic leading-tight"></h3>
                 </div>
+                <button onclick="closeModal()" class="text-slate-500 hover:text-white text-3xl">&times;</button>
             </div>
-            <div class="p-6 border-t border-slate-800 text-right">
-                <button onclick="closeModal()" class="bg-slate-700 px-6 py-2 rounded-xl text-sm font-bold">Tutup</button>
+            <div class="p-10 overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div class="lg:col-span-1 space-y-6">
+                    <p id="modalDesc" class="text-slate-400 text-sm leading-relaxed italic border-l-2 border-blue-500 pl-4"></p>
+                    <div id="modalTags" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div class="lg:col-span-2">
+                    <div class="bg-[#050914] p-8 rounded-[2rem] border border-slate-800 relative">
+                        <pre id="modalCode" class="text-blue-400 text-sm font-mono overflow-x-auto"></pre>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let allSnippets = [];
+        let currentData = [];
+        let config = null;
 
-        // 1. Ambil Data dari JSON (Sesuai Struktur Folder Kamu)
-        async function fetchData() {
+        async function loadConfig() {
             try {
-                const response = await fetch('data/laravel-react/migration/data_kode.json');
-                allSnippets = await response.json();
-                document.getElementById('totalCount').innerText = allSnippets.length;
-                renderTable(allSnippets);
+                const res = await fetch('./data/config.json');
+                config = await res.json();
+                renderSidebar();
+                updateStatus('SYSTEM READY', 'green');
             } catch (err) {
-                console.error("Gagal ambil data:", err);
+                updateStatus('CONFIG ERROR', 'red');
             }
         }
 
-        // 2. Fungsi Render Tabel
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebarContent');
+            let html = '';
+            config.languages.forEach(lang => {
+                html += `
+                <div class="mb-6">
+                    <p class="px-8 text-blue-500 text-[10px] font-black uppercase tracking-[0.2em] mb-2">${lang.name}</p>
+                    <div class="space-y-1">
+                        ${lang.folders.map(folder => `
+                            <button onclick="changeFolder('${lang.slug}', '${folder.name}', ${JSON.stringify(folder.files)})" 
+                                    id="btn-${lang.slug}-${folder.name}" 
+                                    class="folder-btn w-full flex items-center gap-3 px-8 py-3 text-sm font-semibold transition hover:bg-slate-800/40 group text-left">
+                                <span class="opacity-40 group-hover:opacity-100">📂</span> ${folder.name}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            sidebar.innerHTML = html;
+        }
+
+        // FUNGSI MULTI-FILE LOADER (The Core Update)
+        async function changeFolder(langSlug, folderName, filesArray) {
+            updateStatus('MERGING...', 'blue');
+            
+            // UI Active State
+            document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active-folder'));
+            document.getElementById(`btn-${langSlug}-${folderName}`).classList.add('active-folder');
+            document.getElementById('currentFolderName').innerText = folderName;
+            document.getElementById('breadcrumb').innerText = `root / ${langSlug} / ${folderName}`;
+
+            try {
+                // Membuat banyak request sekaligus menggunakan Promise.all
+                const requests = filesArray.map(file => fetch(`./data/${langSlug}/${folderName}/${file}`).then(r => r.json()));
+                
+                // Menunggu semua file selesai di-download
+                const results = await Promise.all(requests);
+                
+                // Menggabungkan (Flatten) semua array dari file yang berbeda menjadi satu
+                currentData = results.flat();
+
+                renderTable(currentData);
+                generateTags(currentData);
+                updateStatus('CONNECTED', 'green');
+            } catch (err) {
+                console.error(err);
+                updateStatus('LOAD ERROR', 'red');
+                document.getElementById('tableContent').innerHTML = `<tr><td colspan="3" class="p-20 text-center text-red-500">Gagal memuat satu atau lebih file JSON di folder ini.</td></tr>`;
+            }
+        }
+
         function renderTable(data) {
             const container = document.getElementById('tableContent');
-            container.innerHTML = data.map((item, index) => `
-                <tr class="hover:bg-slate-800/40 transition group cursor-pointer" onclick="openModal(${index})">
-                    <td class="p-6 font-mono text-blue-400 text-sm">${item.id}</td>
+            if(data.length === 0) {
+                container.innerHTML = `<tr><td colspan="3" class="p-20 text-center text-slate-600 italic font-mono uppercase">Data Empty</td></tr>`;
+                return;
+            }
+            container.innerHTML = data.map(item => `
+                <tr class="hover:bg-blue-600/[0.03] transition group cursor-pointer border-b border-slate-800/30" onclick="openModal('${item.id}')">
+                    <td class="p-6 font-mono text-blue-500 text-[10px] font-black italic uppercase tracking-tighter">${item.id}</td>
                     <td class="p-6 text-sm">
-                        <div class="font-semibold text-slate-100 group-hover:text-blue-300 transition">${item.title}</div>
-                        <div class="text-xs text-slate-500 mt-1 line-clamp-1">${item.description}</div>
+                        <div class="font-black text-slate-100 group-hover:text-blue-400 transition italic tracking-tight uppercase">${item.title}</div>
+                        <div class="text-[11px] text-slate-500 mt-1 line-clamp-1 italic">${item.description}</div>
                     </td>
                     <td class="p-6 text-right">
-                        <button class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-lg">Buka</button>
+                        <div class="bg-slate-900 text-slate-500 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 group-hover:bg-blue-600 group-hover:text-white transition uppercase">Read</div>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // 3. Logika Pencarian Multi-Keyword (Persis Python)
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const keywords = e.target.value.toLowerCase().split(' ').filter(x => x.length > 0);
-            const filtered = allSnippets.filter(item => {
-                const content = `${item.title} ${item.description} ${item.id} ${item.categories.join(' ')}`.toLowerCase();
-                return keywords.every(kw => content.includes(kw));
-            });
-            renderTable(filtered);
-        });
+        // Logic search, tags, modal (Sama seperti v3.0)
+        function generateTags(data) {
+            const tags = new Set();
+            data.forEach(item => item.categories.forEach(c => tags.add(c)));
+            document.getElementById('tagCloud').innerHTML = Array.from(tags).map(tag => `
+                <button class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold hover:border-blue-500 transition">#${tag}</button>
+            `).join('');
+        }
 
-        // 4. Modal Logic
-        function openModal(index) {
-            const item = allSnippets[index];
+        function openModal(id) {
+            const item = currentData.find(i => i.id === id);
+            if(!item) return;
+            document.getElementById('modalId').innerText = item.id;
             document.getElementById('modalTitle').innerText = item.title;
             document.getElementById('modalDesc').innerText = item.description;
             document.getElementById('modalCode').innerText = item.code;
             document.getElementById('codeModal').classList.remove('hidden');
-            document.body.classList.add('modal-active');
         }
 
-        function closeModal() {
-            document.getElementById('codeModal').classList.add('hidden');
-            document.body.classList.remove('modal-active');
+        function closeModal() { document.getElementById('codeModal').classList.add('hidden'); }
+
+        function updateStatus(text, color) {
+            const dot = document.getElementById('statusDot');
+            const label = document.getElementById('statusText');
+            label.innerText = text;
+            dot.className = `h-2 w-2 rounded-full bg-${color}-500 shadow-[0_0_10px_${color}-500]`;
         }
 
-        fetchData();
+        loadConfig();
     </script>
 </body>
 </html>
