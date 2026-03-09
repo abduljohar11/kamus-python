@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snippet School | Data Engine v4</title>
+    <title>Snippet School | Dashboard v4.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b1120; color: #94a3b8; }
-        .active-folder { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border-left: 4px solid #3b82f6; font-weight: 700; }
-        .tag-active { background: #3b82f6 !important; color: white !important; border-color: #60a5fa !important; }
+        .active-folder { background: rgba(59, 130, 246, 0.1) !important; color: #60a5fa !important; border-left: 4px solid #3b82f6; font-weight: 700; }
+        .tag-active { background: #3b82f6 !important; color: white !important; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
@@ -19,36 +19,31 @@
     <nav class="border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20 text-white font-bold">🎓</div>
-                <h1 class="text-xl font-black text-white tracking-tighter italic uppercase">Snippet<span class="text-blue-500">School</span></h1>
+                <div class="bg-blue-600 p-2 rounded-lg text-white font-bold">🎓</div>
+                <h1 class="text-xl font-black text-white italic uppercase">Snippet<span class="text-blue-500">School</span></h1>
             </div>
-            <div id="statusIndicator" class="text-[10px] font-bold px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50">
-                SYSTEM READY
-            </div>
+            <div id="statusIndicator" class="text-[10px] font-bold px-3 py-1 rounded-full border border-slate-700 bg-slate-800/50">READY</div>
         </div>
     </nav>
 
     <div class="flex flex-1 max-w-[1600px] mx-auto w-full overflow-hidden">
-        <aside class="w-80 border-r border-slate-800 bg-[#0b1120] hidden lg:flex flex-col py-6 overflow-y-auto">
+        <aside class="w-72 border-r border-slate-800 bg-[#0b1120] hidden lg:flex flex-col py-6 overflow-y-auto">
             <div id="sidebarMenu">
-                <p class="px-8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Loading Folders...</p>
+                <p class="px-8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4 italic">Loading Folders...</p>
             </div>
-            
             <div class="mt-auto px-8 pt-8 border-t border-slate-800">
-                <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-4">Filter By Category</p>
-                <div id="categoryCloud" class="flex flex-wrap gap-2 pb-8">
-                    <span class="text-xs italic text-slate-600">Select a folder first...</span>
-                </div>
+                <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest mb-4">Categories</p>
+                <div id="categoryCloud" class="flex flex-wrap gap-2 pb-8"></div>
             </div>
         </aside>
 
         <main class="flex-1 overflow-y-auto p-6 lg:p-12">
             <div class="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
                 <div>
-                    <p id="breadcrumb" class="text-blue-500 font-mono text-[10px] font-bold uppercase mb-1">Root / ...</p>
-                    <h2 id="currentTitle" class="text-5xl font-black text-white tracking-tight italic uppercase italic">Select Folder</h2>
+                    <p id="breadcrumb" class="text-blue-500 font-mono text-[10px] font-bold uppercase mb-1">ROOT / ...</p>
+                    <h2 id="currentTitle" class="text-5xl font-black text-white tracking-tight italic uppercase">SELECT FOLDER</h2>
                 </div>
-                <input type="text" id="searchInput" placeholder="Search title or logic..." class="w-full xl:w-96 bg-[#161e31] border border-slate-800 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-blue-500 transition">
+                <input type="text" id="searchInput" placeholder="Search logic..." class="w-full xl:w-96 bg-[#161e31] border border-slate-800 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-blue-500 transition">
             </div>
 
             <div class="bg-[#111827] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl">
@@ -61,7 +56,7 @@
                         </tr>
                     </thead>
                     <tbody id="dataTable" class="divide-y divide-slate-800/50">
-                        <tr><td colspan="3" class="p-20 text-center italic text-slate-600">Silahkan pilih folder di sidebar kiri.</td></tr>
+                        <tr><td colspan="3" class="p-20 text-center italic text-slate-600">Pilih folder untuk memuat data.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -71,10 +66,7 @@
     <div id="codeModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
         <div class="bg-[#111827] w-full max-w-5xl rounded-[2.5rem] border border-slate-800 shadow-2xl flex flex-col max-h-[90vh]">
             <div class="p-8 border-b border-slate-800 flex justify-between items-center">
-                <div>
-                    <span id="mId" class="text-blue-500 font-mono text-xs font-bold"></span>
-                    <h3 id="mTitle" class="text-2xl font-black text-white italic uppercase"></h3>
-                </div>
+                <div><span id="mId" class="text-blue-500 font-mono text-xs font-bold"></span><h3 id="mTitle" class="text-2xl font-black text-white italic uppercase"></h3></div>
                 <button onclick="closeModal()" class="text-slate-500 hover:text-white text-4xl">&times;</button>
             </div>
             <div class="p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -82,30 +74,37 @@
                     <p id="mDesc" class="text-slate-400 text-sm leading-relaxed border-l-2 border-blue-500 pl-4 italic"></p>
                     <div id="mTags" class="flex flex-wrap gap-2"></div>
                 </div>
-                <div class="lg:col-span-2 bg-[#050914] p-6 rounded-2xl border border-slate-800">
-                    <pre id="mCode" class="text-blue-400 text-sm font-mono overflow-x-auto"></pre>
-                </div>
+                <div class="lg:col-span-2 bg-[#050914] p-6 rounded-2xl border border-slate-800"><pre id="mCode" class="text-blue-400 text-sm font-mono overflow-x-auto"></pre></div>
             </div>
         </div>
     </div>
 
     <script>
-        let fullData = []; // Menyimpan semua data dari multi-file
+        let fullData = [];
         let activeCategory = null;
 
-        // 1. Ambil Konfigurasi Sidebar
-        async function init() {
-            try {
-                const res = await fetch('./data/config.json');
-                const config = await res.json();
-                renderSidebar(config);
-            } catch (e) {
-                document.getElementById('statusIndicator').innerText = "CONFIG ERROR";
-            }
-        }
+        // KONFIGURASI MANUAL SESUAI STRUKTUR REPO GITHUB KAMU
+        const config = {
+            "languages": [
+                {
+                    "name": "Laravel React",
+                    "slug": "laravel-react",
+                    "folders": [
+                        { "name": "migration", "files": ["data_kode.json"] },
+                        { "name": "model", "files": ["data_kode.json"] },
+                        { "name": "controller", "files": ["data_kode.json"] },
+                        {"name":"service", "files": ["data_kode.json"]},
+                        { "name": "middleware", "files": ["data_kode.json"] },
+                        { "name": "router", "files": ["data_kode.json"] },
+                        { "name": "react", "files": ["data_kode.json"]},
+                        {"name":"seeder","files": ["data_kode.json"]}
 
-        // 2. Render Sidebar
-        function renderSidebar(config) {
+                    ]
+                }
+            ]
+        };
+
+        function renderSidebar() {
             const menu = document.getElementById('sidebarMenu');
             menu.innerHTML = config.languages.map(lang => `
                 <div class="mb-6">
@@ -121,71 +120,53 @@
             `).join('');
         }
 
-        // 3. Load & Merge Multiple JSON Files
         async function loadData(lang, folder, files) {
             activeCategory = null;
             document.querySelectorAll('.folder-btn').forEach(b => b.classList.remove('active-folder'));
             document.getElementById(`btn-${folder}`).classList.add('active-folder');
-            
             document.getElementById('currentTitle').innerText = folder;
             document.getElementById('breadcrumb').innerText = `DATA / ${lang} / ${folder}`;
 
             try {
-                // Fetch semua file secara paralel
-                const promises = files.map(file => fetch(`./data/${lang}/${folder}/${file}`).then(r => r.json()));
+                // PATH PENTING: Menyesuaikan dengan struktur repo GitHub
+                const promises = files.map(file => fetch(`./data/${lang}/${folder}/${file}`).then(r => {
+                    if(!r.ok) throw new Error("File not found");
+                    return r.json();
+                }));
                 const results = await Promise.all(promises);
-                
-                // Gabungkan semua isi file JSON menjadi satu array
                 fullData = results.flat();
                 
                 renderUI(fullData);
                 renderCategories(fullData);
+                document.getElementById('statusIndicator').innerText = "CONNECTED";
             } catch (err) {
-                console.error(err);
-                document.getElementById('dataTable').innerHTML = `<tr><td colspan="3" class="p-20 text-center text-red-500">Error loading data files.</td></tr>`;
+                document.getElementById('dataTable').innerHTML = `<tr><td colspan="3" class="p-20 text-center text-red-500 font-mono">ERROR: Cek path folder data/${lang}/${folder}/</td></tr>`;
             }
         }
 
-        // 4. Render Table
         function renderUI(data) {
             const container = document.getElementById('dataTable');
             container.innerHTML = data.map(item => `
                 <tr class="hover:bg-blue-600/[0.03] cursor-pointer group transition" onclick="openModal('${item.id}')">
                     <td class="p-6 font-mono text-blue-500 text-[10px] font-bold uppercase">${item.id}</td>
-                    <td class="p-6">
-                        <div class="text-white font-bold group-hover:text-blue-400 transition italic uppercase">${item.title}</div>
-                        <div class="text-[11px] text-slate-500 italic mt-1">${item.description}</div>
-                    </td>
-                    <td class="p-6 text-right">
-                        <button class="text-[10px] font-black border border-slate-700 px-4 py-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition uppercase">Read</button>
-                    </td>
+                    <td class="p-6"><div class="text-white font-bold group-hover:text-blue-400 transition italic uppercase">${item.title}</div><div class="text-[11px] text-slate-500 italic mt-1">${item.description}</div></td>
+                    <td class="p-6 text-right"><button class="text-[10px] font-black border border-slate-700 px-4 py-2 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition uppercase">Read</button></td>
                 </tr>
             `).join('');
         }
 
-        // 5. Render Unique Categories (Tags)
         function renderCategories(data) {
             const tags = new Set();
             data.forEach(item => item.categories.forEach(c => tags.add(c)));
-            
-            const cloud = document.getElementById('categoryCloud');
-            cloud.innerHTML = Array.from(tags).map(tag => `
-                <button onclick="filterByCategory('${tag}')" id="tag-${tag}" class="tag-btn px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold hover:border-blue-500 transition">
-                    #${tag}
-                </button>
+            document.getElementById('categoryCloud').innerHTML = Array.from(tags).map(tag => `
+                <button onclick="filterByCategory('${tag}')" id="tag-${tag}" class="tag-btn px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold hover:border-blue-500 transition">#${tag}</button>
             `).join('');
         }
 
-        // 6. Filter Logic (Category + Search)
         function filterByCategory(tag) {
             document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('tag-active'));
-            
-            if(activeCategory === tag) {
-                activeCategory = null;
-            } else {
-                activeCategory = tag;
-                document.getElementById(`tag-${tag}`).classList.add('tag-active');
-            }
+            if(activeCategory === tag) { activeCategory = null; } 
+            else { activeCategory = tag; document.getElementById(`tag-${tag}`).classList.add('tag-active'); }
             applyFilters();
         }
 
@@ -199,9 +180,6 @@
             renderUI(filtered);
         }
 
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-
-        // Modal Functions
         function openModal(id) {
             const item = fullData.find(i => i.id === id);
             document.getElementById('mId').innerText = item.id;
@@ -213,8 +191,10 @@
         }
 
         function closeModal() { document.getElementById('codeModal').classList.add('hidden'); }
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
 
-        init();
+        // Langsung jalankan sidebar
+        renderSidebar();
     </script>
 </body>
 </html>
