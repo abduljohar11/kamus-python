@@ -2,6 +2,11 @@
 
 Snippet Manager adalah asisten digital berbasis CLI yang diibaratkan sebagai **Perpustakaan Digital Sekolah**. Tool ini membantu Anda menyimpan "buku panduan" (kode snippet) agar mudah dicari saat sedang membangun infrastruktur aplikasi (Gedung Sekolah).
 
+### 🌐 Akses Web (Live Dashboard)
+
+Akses versi web yang responsif untuk Android dan PC di sini:
+👉 **[https://abduljohar11.github.io/kamus-python/](https://abduljohar11.github.io/kamus-python/)**
+
 ---
 
 ## 🛠️ Persyaratan Sistem
@@ -10,8 +15,6 @@ Snippet Manager adalah asisten digital berbasis CLI yang diibaratkan sebagai **P
 * **Clipboard Manager:** (Kurir pesan antar ruangan)
 * Linux: `xclip` atau `xsel`
 * Android: `termux-api`
-
-
 
 ---
 
@@ -68,6 +71,7 @@ kamus-python/
 │       └── eloquent/   # 📂 Rak Buku: Manajemen Data (Eloquent)
 ├── src/                # ⚙️ Ruang Guru (Logika Pencarian & Database)
 ├── storage/            # 📝 Buku Saku Siswa (Statistik & Favorit Pribadi)
+├── index.html          # 🌐 Dashboard Web (Mobile Friendly)
 └── main.py             # 🚪 Gerbang Utama (Entry Point)
 
 ```
@@ -115,3 +119,6 @@ Tambahkan data ke file `data_kode.json`. Gunakan deskripsi berbasis analogi seko
 * **Privasi:** Folder `storage/` (Buku Saku) bersifat pribadi dan tidak akan dibagikan ke orang lain melalui Git.
 * **Integritas:** Data di dalam folder `data/` (Perpustakaan) harus dijaga agar tetap valid sesuai standar JSON.
 * **Termux:** Pastikan izin `termux-setup-storage` sudah diberikan agar kurir clipboard bisa bekerja.
+
+---
+
