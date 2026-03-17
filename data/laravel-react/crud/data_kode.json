@@ -1,0 +1,1299 @@
+[
+  {
+    "id": "READ-CTRL-001",
+    "title": "Read: Dynamic Search & Filtering",
+    "categories": ["controller", "read", "logic"],
+    "code": "$data = Model::when($request->search, fn($q, $s) => $q->where('name', 'like', \"%$s%\"))->paginate(10);",
+    "description": "Menyaring data secara dinamis berdasarkan input user agar server tidak overload."
+  },
+  {
+    "id": "READ-CTRL-002",
+    "title": "Read: Scoped User Authorization",
+    "categories": ["security", "controller"],
+    "code": "$data = Auth::user()->items()->latest()->get();",
+    "description": "Memastikan user hanya bisa melihat data miliknya sendiri (Security Scope)."
+  },
+  {
+    "id": "READ-CTRL-003",
+    "title": "Read: Eager Loading (Anti N+1)",
+    "categories": ["database", "performance"],
+    "code": "$data = Model::with(['relation1', 'relation2'])->get();",
+    "description": "Mengambil data relasi sekaligus untuk menghemat query database."
+  },
+  {
+    "id": "READ-CTRL-004",
+    "title": "Read: API Resource Transformation",
+    "categories": ["api", "transformation"],
+    "code": "return ModelResource::collection($data);",
+    "description": "Mengubah data mentah menjadi format JSON yang rapi dan aman."
+  },
+  {
+    "id": "READ-CTRL-005",
+    "title": "Read: Conditional Cache Remembering",
+    "categories": ["caching", "performance"],
+    "code": "Cache::remember('key', 3600, fn() => Model::all());",
+    "description": "Menyimpan data di RAM (Cache) untuk akses super cepat."
+  },
+  {
+    "id": "READ-CTRL-006",
+    "title": "Read: Query Scoping (Local Scope)",
+    "categories": ["clean-code", "laravel"],
+    "code": "$data = Model::active()->published()->get();",
+    "description": "Menggunakan logic filter yang terbungkus di dalam Model."
+  },
+  {
+    "id": "READ-CTRL-007",
+    "title": "Read: Fast Pagination (Large Data)",
+    "categories": ["database", "ux"],
+    "code": "$data = Model::fastPaginate(15);",
+    "description": "Pagination yang lebih cepat untuk tabel dengan jutaan baris data."
+  },
+  {
+    "id": "READ-CTRL-008",
+    "title": "Read: Data Masking (Privacy)",
+    "categories": ["security", "privacy"],
+    "code": "'phone' => substr($this->phone, 0, 4) . '****';",
+    "description": "Menyensor data sensitif sebelum dikirim ke frontend."
+  },
+  {
+    "id": "READ-CTRL-009",
+    "title": "Read: Cursor Pagination (Infinite Scroll)",
+    "categories": ["performance", "mobile"],
+    "code": "$data = Model::orderBy('id')->cursorPaginate(10);",
+    "description": "Metode pagination paling ringan untuk fitur scroll tanpa henti."
+  },
+  {
+    "id": "READ-CTRL-010",
+    "title": "Read: Count & Aggregate Relations",
+    "categories": ["database", "logic"],
+    "code": "$data = Model::withCount('comments')->get();",
+    "description": "Menampilkan jumlah relasi (misal: jumlah komentar) tanpa memuat datanya."
+  },
+  {
+    "id": "READ-RCT-011",
+    "title": "React: Debounced Search Input",
+    "categories": ["react", "performance"],
+    "code": "useEffect(() => { const t = setTimeout(() => router.get('/p', {s}), 500); return () => clearTimeout(t); }, [s]);",
+    "description": "Menunda request agar tidak membebani server saat user mengetik cepat."
+  },
+  {
+    "id": "READ-RCT-012",
+    "title": "React: Preserve State & Scroll",
+    "categories": ["inertia", "ux"],
+    "code": "router.get(url, data, { preserveState: true, preserveScroll: true });",
+    "description": "Menjaga posisi scroll dan isi input saat data di-refresh."
+  },
+  {
+    "id": "READ-RCT-013",
+    "title": "React: Conditional Empty State",
+    "categories": ["react", "ux"],
+    "code": "{items.length === 0 ? <Empty /> : <List /> }",
+    "description": "Menampilkan ilustrasi jika data dari server kosong."
+  },
+  {
+    "id": "READ-RCT-014",
+    "title": "React: Skeleton Preloader",
+    "categories": ["ux", "loading"],
+    "code": "{processing ? <Skeleton /> : <Content />}",
+    "description": "Memberikan indikator loading yang elegan (Shimmer Effect)."
+  },
+  {
+    "id": "READ-RCT-015",
+    "title": "React: Optional Chaining Safety",
+    "categories": ["clean-code", "security"],
+    "code": "const name = item.user?.profile?.full_name ?? 'Guest';",
+    "description": "Mencegah aplikasi crash jika data relasi tidak ada (null)."
+  },
+  {
+    "id": "READ-RCT-016",
+    "title": "React: Partial Reload (Lazy)",
+    "categories": ["inertia", "performance"],
+    "code": "router.reload({ only: ['users'] });",
+    "description": "Hanya memperbarui satu bagian data tanpa reload seluruh halaman."
+  },
+  {
+    "id": "READ-RCT-017",
+    "title": "React: Dynamic Pagination Component",
+    "categories": ["react", "ui"],
+    "code": "links.map(l => <Link href={l.url} dangerouslySetInnerHTML={{__html: l.label}} />);",
+    "description": "Merender tombol navigasi halaman dari metadata Laravel."
+  },
+  {
+    "id": "READ-RCT-018",
+    "title": "React: URL Query String Sync",
+    "categories": ["inertia", "logic"],
+    "code": "const [search, setSearch] = useState(filters.search);",
+    "description": "Sinkronisasi antara input search dengan parameter di URL."
+  },
+  {
+    "id": "READ-RCT-019",
+    "title": "React: Data Polling (Auto Refresh)",
+    "categories": ["react", "logic"],
+    "code": "useEffect(() => { const i = setInterval(() => router.reload(), 5000); return () => clearInterval(i); }, []);",
+    "description": "Mengambil data terbaru secara otomatis setiap beberapa detik."
+  },
+  {
+    "id": "READ-RCT-020",
+    "title": "React: Global Flash Feedback",
+    "categories": ["inertia", "ux"],
+    "code": "{flash.message && <Toast message={flash.message} />}",
+    "description": "Menampilkan notifikasi sukses/error yang dikirim dari Controller."
+  },
+  {
+    "id": "CR-CTRL-021",
+    "title": "Create: Request Validation",
+    "categories": ["security", "laravel"],
+    "code": "$v = $request->validate(['title' => 'required|max:255']);",
+    "description": "Memastikan data yang masuk sesuai aturan sebelum masuk database."
+  },
+  {
+    "id": "CR-CTRL-022",
+    "title": "Create: Mass Assignment Security",
+    "categories": ["database", "security"],
+    "code": "Model::create($request->only(['name', 'price']));",
+    "description": "Mencegah hacker memasukkan data 'role' atau 'id' secara ilegal."
+  },
+  {
+    "id": "CR-CTRL-023",
+    "title": "Create: Transaction Integrity",
+    "categories": ["database", "logic"],
+    "code": "DB::transaction(fn() => Model::create($v));",
+    "description": "Menjamin data aman (Rollback) jika terjadi error di tengah proses."
+  },
+  {
+    "id": "CR-CTRL-024",
+    "title": "Create: File/Image Upload",
+    "categories": ["storage", "laravel"],
+    "code": "$path = $request->file('img')->store('uploads', 'public');",
+    "description": "Menyimpan file kiriman user ke dalam server storage."
+  },
+  {
+    "id": "CR-CTRL-025",
+    "title": "Create: Auto-Assign Auth ID",
+    "categories": ["security", "logic"],
+    "code": "$request->user()->items()->create($v);",
+    "description": "Otomatis menghubungkan data baru dengan ID user yang login."
+  },
+  {
+    "id": "CR-CTRL-026",
+    "title": "Create: Log Audit Trail",
+    "categories": ["security", "audit"],
+    "code": "Log::info('Data Created', ['user_id' => Auth::id()]);",
+    "description": "Mencatat siapa yang membuat data untuk keperluan investigasi."
+  },
+  {
+    "id": "CR-CTRL-027",
+    "title": "Create: Slug Generator",
+    "categories": ["seo", "logic"],
+    "code": "$v['slug'] = Str::slug($request->title);",
+    "description": "Membuat URL cantik (SEO Friendly) dari judul input."
+  },
+  {
+    "id": "CR-CTRL-028",
+    "title": "Create: After-Create Redirect",
+    "categories": ["ux", "controller"],
+    "code": "return redirect()->route('i')->with('success', 'Done!');",
+    "description": "Mengarahkan user kembali ke halaman daftar setelah sukses."
+  },
+  {
+    "id": "CR-CTRL-029",
+    "title": "Create: Resource Return (API)",
+    "categories": ["api", "json"],
+    "code": "return response()->json(new Resource($data), 201);",
+    "description": "Mengirim sinyal '201 Created' untuk aplikasi mobile/API."
+  },
+  {
+    "id": "CR-CTRL-030",
+    "title": "Create: Queue Job Trigger",
+    "categories": ["performance", "async"],
+    "code": "ProcessData::dispatch($data);",
+    "description": "Menjalankan tugas berat (kirim email) di latar belakang."
+  },
+  {
+    "id": "CR-RCT-031",
+    "title": "React: useForm Hook Setup",
+    "categories": ["inertia", "react"],
+    "code": "const { data, setData, post, processing, errors } = useForm({...});",
+    "description": "Hook utama untuk menangani form input di Inertia.js."
+  },
+  {
+    "id": "CR-RCT-032",
+    "title": "React: Submit Handling",
+    "categories": ["react", "inertia"],
+    "code": "const submit = (e) => { e.preventDefault(); post(route('...')); };",
+    "description": "Fungsi untuk mengirim data form ke Controller."
+  },
+  {
+    "id": "CR-RCT-033",
+    "title": "React: Form Validation Errors",
+    "categories": ["ux", "react"],
+    "code": "{errors.name && <p className='error'>{errors.name}</p>}",
+    "description": "Menampilkan pesan error dari server tepat di bawah input."
+  },
+  {
+    "id": "CR-RCT-034",
+    "title": "React: Submit Button Locking",
+    "categories": ["ux", "performance"],
+    "code": "<button disabled={processing}>Submit</button>",
+    "description": "Mencegah user mengklik tombol berkali-kali (spamming)."
+  },
+  {
+    "id": "CR-RCT-035",
+    "title": "React: Form Reset on Success",
+    "categories": ["ux", "logic"],
+    "code": "onSuccess: () => reset('password', 'confirm_password')",
+    "description": "Membersihkan kolom input tertentu setelah data berhasil disimpan."
+  },
+  {
+    "id": "CR-RCT-036",
+    "title": "React: Progress Bar Upload",
+    "categories": ["ux", "storage"],
+    "code": "{progress && <progress value={progress.percentage} max='100' />}",
+    "description": "Menampilkan indikator persen saat sedang mengunggah file."
+  },
+  {
+    "id": "CR-RCT-037",
+    "title": "React: Client-Side Masking",
+    "categories": ["ux", "ui"],
+    "code": "<InputMask mask='999-999' value={data.code} />",
+    "description": "Memandu user menginput data sesuai format (misal: No HP)."
+  },
+  {
+    "id": "CR-RCT-038",
+    "title": "React: Dynamic Field Adder",
+    "categories": ["react", "logic"],
+    "code": "setData('items', [...data.items, {id: Date.now()}])",
+    "description": "Menambah kolom input secara dinamis (Multiple Input)."
+  },
+  {
+    "id": "CR-RCT-039",
+    "title": "React: Navigation Blocking (Dirty)",
+    "categories": ["ux", "security"],
+    "code": "if(isDirty) return confirm('Data belum disimpan, tinggalkan?');",
+    "description": "Mencegah user pindah halaman jika ada data yang belum disimpan."
+  },
+  {
+    "id": "CR-RCT-040",
+    "title": "React: Success Toast Notification",
+    "categories": ["ux", "feedback"],
+    "code": "onSuccess: () => toast.success('Berhasil Dibuat!')",
+    "description": "Memunculkan notifikasi melayang setelah proses selesai."
+  },
+  {
+    "id": "UP-CTRL-041",
+    "title": "Update: Route Model Binding",
+    "categories": ["laravel", "routing"],
+    "code": "public function update(Request $request, Score $score) { ... }",
+    "description": "Otomatis menemukan data berdasarkan ID di URL sebelum proses update."
+  },
+  {
+    "id": "UP-CTRL-042",
+    "title": "Update: Unique Rule Ignoring",
+    "categories": ["security", "validation"],
+    "code": "Rule::unique('users')->ignore($user->id)",
+    "description": "Validasi unik yang cerdas agar tidak bentrok dengan data dirinya sendiri."
+  },
+  {
+    "id": "UP-CTRL-043",
+    "title": "Update: Dirty Attribute Check",
+    "categories": ["logic", "performance"],
+    "code": "if ($model->isDirty('email')) { // proses kirim verifikasi ulang }",
+    "description": "Mengecek kolom mana yang benar-benar berubah sebelum melakukan aksi tambahan."
+  },
+  {
+    "id": "UP-CTRL-044",
+    "title": "Update: Old File Cleanup",
+    "categories": ["storage", "clean-code"],
+    "code": "if($req->hasFile('img')) { Storage::delete($old); $path = $req->store(); }",
+    "description": "Menghapus file lama di server saat user mengunggah file baru (Anti Sampah)."
+  },
+  {
+    "id": "UP-CTRL-045",
+    "title": "Update: Atomic Database Transaction",
+    "categories": ["database", "integrity"],
+    "code": "DB::transaction(fn() => $model->update($v));",
+    "description": "Menjamin perubahan data tidak setengah-setengah jika terjadi error."
+  },
+  {
+    "id": "UP-CTRL-046",
+    "title": "Update: Audit Original Data",
+    "categories": ["security", "audit"],
+    "code": "Log::info('Changed from ' . $model->getOriginal('price') . ' to ' . $model->price);",
+    "description": "Mencatat nilai lama vs nilai baru untuk keperluan audit log."
+  },
+  {
+    "id": "UP-CTRL-047",
+    "title": "Update: Authorization Policy",
+    "categories": ["security", "auth"],
+    "code": "$this->authorize('update', $model);",
+    "description": "Mencegah user mengedit data yang bukan hak miliknya (IdOR Protection)."
+  },
+  {
+    "id": "UP-CTRL-048",
+    "title": "Update: Fillable White-listing",
+    "categories": ["security", "database"],
+    "code": "$model->fill($request->validated())->save();",
+    "description": "Hanya mengupdate kolom yang sudah divalidasi (Mencegah Mass Assignment)."
+  },
+  {
+    "id": "UP-CTRL-049",
+    "title": "Update: Partial Patch Update",
+    "categories": ["api", "performance"],
+    "code": "$model->update($request->only('status'));",
+    "description": "Update hanya satu kolom tertentu tanpa mengganggu kolom lainnya."
+  },
+  {
+    "id": "UP-CTRL-050",
+    "title": "Update: Touch Timestamps",
+    "categories": ["database", "logic"],
+    "code": "$model->touch();",
+    "description": "Memperbarui kolom 'updated_at' secara manual meskipun tidak ada data berubah."
+  },
+  {
+    "id": "UP-RCT-051",
+    "title": "React: Initial Form Population",
+    "categories": ["react", "inertia"],
+    "code": "const { data } = useForm({ name: props.item.name });",
+    "description": "Mengisi form otomatis dengan data yang ditarik dari database."
+  },
+  {
+    "id": "UP-RCT-052",
+    "title": "React: Method Spoofing (PUT/PATCH)",
+    "categories": ["inertia", "routing"],
+    "code": "router.post(route('...'), { _method: 'put', ...data });",
+    "description": "Cara mengirim file dengan metode PUT/PATCH di Laravel/Inertia."
+  },
+  {
+    "id": "UP-RCT-053",
+    "title": "React: Dirty State UI Warning",
+    "categories": ["ux", "react"],
+    "code": "{isDirty && <span className='text-warning'>Ada perubahan belum disimpan</span>}",
+    "description": "Memberikan indikator visual bahwa user telah mengubah isi form."
+  },
+  {
+    "id": "UP-RCT-054",
+    "title": "React: Reset to Original Data",
+    "categories": ["ux", "logic"],
+    "code": "const resetForm = () => reset();",
+    "description": "Tombol 'Batal' yang mengembalikan isi form ke data awal dari database."
+  },
+  {
+    "id": "UP-RCT-055",
+    "title": "React: Inline Editable Field",
+    "categories": ["ux", "react"],
+    "code": "<input onBlur={(e) => patch(route('...'), {field: e.target.value})} />",
+    "description": "Auto-save data saat user selesai mengetik dan pindah fokus."
+  },
+  {
+    "id": "UP-RCT-056",
+    "title": "React: Optimistic UI Update",
+    "categories": ["performance", "ux"],
+    "code": "onBefore: () => { // update state lokal sebelum server merespon }",
+    "description": "Mengubah tampilan secara instan agar terasa sangat cepat bagi user."
+  },
+  {
+    "id": "UP-RCT-057",
+    "title": "React: Form Error Mapping",
+    "categories": ["ux", "react"],
+    "code": "Object.keys(errors).length > 0 && <ErrorList items={errors} />",
+    "description": "Menampilkan ringkasan semua error validasi di bagian atas form."
+  },
+  {
+    "id": "UP-RCT-058",
+    "title": "React: Processing Loading Overlay",
+    "categories": ["ux", "loading"],
+    "code": "{processing && <LoadingOverlay />}",
+    "description": "Menutup layar dengan loading saat proses update database berlangsung."
+  },
+  {
+    "id": "UP-RCT-059",
+    "title": "React: Dynamic Redirect Post-Update",
+    "categories": ["logic", "inertia"],
+    "code": "onSuccess: () => router.visit(route('index'))",
+    "description": "Kembali ke halaman utama secara otomatis setelah update sukses."
+  },
+  {
+    "id": "UP-RCT-060",
+    "title": "React: Feedback Toast (Update)",
+    "categories": ["ux", "feedback"],
+    "code": "onSuccess: () => toast.info('Perubahan disimpan');",
+    "description": "Notifikasi biru (info) untuk membedakan dengan notifikasi 'Create'."
+  },
+  {
+    "id": "DEL-CTRL-061",
+    "title": "Delete: Soft Deletes Implementation",
+    "categories": ["database", "security"],
+    "code": "use SoftDeletes; // Di model",
+    "description": "Data tidak hilang permanen, hanya ditandai 'terhapus' (Safety Net)."
+  },
+  {
+    "id": "DEL-CTRL-062",
+    "title": "Delete: Force Delete (Permanent)",
+    "categories": ["database", "security"],
+    "code": "$model->forceDelete();",
+    "description": "Menghapus data selamanya dari disk (Hanya untuk Admin Super)."
+  },
+  {
+    "id": "DEL-CTRL-063",
+    "title": "Delete: Restore Deleted Data",
+    "categories": ["logic", "laravel"],
+    "code": "Model::withTrashed()->find($id)->restore();",
+    "description": "Mengembalikan data yang sebelumnya telah dihapus (Soft Delete)."
+  },
+  {
+    "id": "DEL-CTRL-064",
+    "title": "Delete: Cascade Delete Prevention",
+    "categories": ["database", "integrity"],
+    "code": "if($model->child()->exists()) return back()->withErrors('Gagal: Masih ada relasi');",
+    "description": "Mencegah penghapusan jika data masih dipakai di tabel lain."
+  },
+  {
+    "id": "DEL-CTRL-065",
+    "title": "Delete: File Unlinking",
+    "categories": ["storage", "clean-code"],
+    "code": "Storage::delete($model->file_path);",
+    "description": "Menghapus file fisik di storage saat baris data di database dihapus."
+  },
+  {
+    "id": "DEL-CTRL-066",
+    "title": "Delete: Ownership Authorization",
+    "categories": ["security", "auth"],
+    "code": "$this->authorize('delete', $model);",
+    "description": "Cek keamanan: 'Boleh tidak user ini memusnahkan data ini?'."
+  },
+  {
+    "id": "DEL-CTRL-067",
+    "title": "Delete: Bulk/Mass Delete",
+    "categories": ["logic", "performance"],
+    "code": "Model::whereIn('id', $request->ids)->delete();",
+    "description": "Menghapus banyak data sekaligus dalam satu request."
+  },
+  {
+    "id": "DEL-CTRL-068",
+    "title": "Delete: Log Destructive Action",
+    "categories": ["security", "audit"],
+    "code": "Log::emergency('Data DELETED by ' . Auth::user()->name);",
+    "description": "Mencatat aksi penghapusan dengan level log yang tinggi (Critical)."
+  },
+  {
+    "id": "DEL-CTRL-069",
+    "title": "Delete: Cleanup Relations",
+    "categories": ["database", "integrity"],
+    "code": "$model->comments()->delete();",
+    "description": "Otomatis menghapus data anak (komentar) saat data induk dihapus."
+  },
+  {
+    "id": "DEL-CTRL-070",
+    "title": "Delete: Success Redirect with Flash",
+    "categories": ["ux", "inertia"],
+    "code": "return to_route('index')->with('danger', 'Data musnah!');",
+    "description": "Mengarahkan user dan memberi peringatan berwarna merah (danger)."
+  },
+  {
+    "id": "DEL-RCT-071",
+    "title": "React: SweetAlert2/Modal Confirm",
+    "categories": ["ux", "ui"],
+    "code": "if(confirm('Data akan hilang!')) router.delete(url);",
+    "description": "Wajib memunculkan dialog konfirmasi sebelum penghapusan."
+  },
+  {
+    "id": "DEL-RCT-072",
+    "title": "React: Delete Processing Status",
+    "categories": ["ux", "loading"],
+    "code": "<button disabled={processing}> {processing ? 'Menghapus...' : 'Hapus'} </button>",
+    "description": "Mengubah teks tombol saat proses penghapusan sedang berjalan."
+  },
+  {
+    "id": "DEL-RCT-073",
+    "title": "React: Preserve Scroll on Delete",
+    "categories": ["inertia", "ux"],
+    "code": "router.delete(url, { preserveScroll: true });",
+    "description": "Menjaga posisi halaman agar tidak melompat ke atas setelah hapus item."
+  },
+  {
+    "id": "DEL-RCT-074",
+    "title": "React: Checkbox for Bulk Delete",
+    "categories": ["react", "logic"],
+    "code": "const [selected, setSelected] = useState([]);",
+    "description": "State untuk menyimpan kumpulan ID yang akan dihapus massal."
+  },
+  {
+    "id": "DEL-RCT-075",
+    "title": "React: Conditional Delete Button",
+    "categories": ["security", "ui"],
+    "code": "{auth.user.can_delete && <DeleteBtn />}",
+    "description": "Hanya menampilkan tombol hapus jika user memiliki izin (Policy)."
+  },
+  {
+    "id": "DEL-RCT-076",
+    "title": "React: Success Notification (Red)",
+    "categories": ["ux", "feedback"],
+    "code": "onSuccess: () => toast.error('Berhasil dihapus');",
+    "description": "Notifikasi warna merah untuk menandakan aksi destruktif sukses."
+  },
+  {
+    "id": "DEL-RCT-077",
+    "title": "React: Redirect After Resource Delete",
+    "categories": ["logic", "inertia"],
+    "code": "onSuccess: () => router.replace('/dashboard')",
+    "description": "Pindah ke halaman aman jika data yang sedang dibuka telah dihapus."
+  },
+  {
+    "id": "DEL-RCT-078",
+    "title": "React: Item Row Animation (Exit)",
+    "categories": ["ux", "animation"],
+    "code": "<AnimatePresence> {items.map(...)} </AnimatePresence>",
+    "description": "Memberikan efek visual halus saat baris tabel menghilang."
+  },
+  {
+    "id": "DEL-RCT-079",
+    "title": "React: Multi-Step Confirmation",
+    "categories": ["security", "ux"],
+    "code": "if(inputConfirm === 'DELETE') { // eksekusi }",
+    "description": "Meminta user mengetik kata 'DELETE' untuk data yang sangat kritikal."
+  },
+  {
+    "id": "DEL-RCT-080",
+    "title": "React: Dynamic Trash Counter",
+    "categories": ["ux", "ui"],
+    "code": "<span>Sampah ({props.trashCount})</span>",
+    "description": "Menampilkan jumlah data yang ada di 'Tong Sampah' (Soft Deleted)."
+  },
+
+  {
+    "id": "ADV-081",
+    "title": "Security: Rate Limiting (Throttle)",
+    "categories": ["security", "middleware"],
+    "code": "Route::middleware('throttle:60,1')->group(...);",
+    "description": "Membatasi user hanya bisa melakukan 60 request per menit untuk mencegah Brute Force/DDoS."
+  },
+  {
+    "id": "ADV-082",
+    "title": "Security: SQL Injection Shield",
+    "categories": ["security", "database"],
+    "code": "Model::whereRaw('name = ?', [$request->name]);",
+    "description": "Selalu gunakan parameter binding, jangan pernah menggabungkan string variabel langsung ke query SQL."
+  },
+  {
+    "id": "ADV-083",
+    "title": "Security: XSS Protection (Sanitizer)",
+    "categories": ["security", "logic"],
+    "code": "$clean = Purifier::clean($request->bio);",
+    "description": "Membersihkan input HTML dari tag <script> jahat sebelum disimpan ke database."
+  },
+  {
+    "id": "ADV-084",
+    "title": "Security: CSRF Token Integrity",
+    "categories": ["security", "web"],
+    "code": "axios.defaults.withCredentials = true;",
+    "description": "Memastikan setiap request POST/PUT/DELETE membawa token valid untuk mencegah Cross-Site Request Forgery."
+  },
+  {
+    "id": "ADV-085",
+    "title": "Security: Bcrypt/Argon2 Hashing",
+    "categories": ["security", "auth"],
+    "code": "Hash::make($request->password);",
+    "description": "Jangan pernah simpan password dalam bentuk teks biasa (Plain Text). Gunakan algoritma hashing modern."
+  },
+  {
+    "id": "ADV-086",
+    "title": "Security: Secure Headers (Helmet)",
+    "categories": ["security", "middleware"],
+    "code": "header('X-Content-Type-Options: nosniff');",
+    "description": "Menambahkan header keamanan untuk mencegah MIME-type sniffing dan Clickjacking."
+  },
+  {
+    "id": "ADV-087",
+    "title": "Security: Session Hijacking Guard",
+    "categories": ["security", "session"],
+    "code": "Session::regenerate();",
+    "description": "Otomatis mengganti ID Session setelah user login untuk mencegah pencurian sesi."
+  },
+  {
+    "id": "ADV-088",
+    "title": "Security: Signed URLs",
+    "categories": ["security", "laravel"],
+    "code": "URL::temporarySignedRoute('unsubscribe', now()->addMinutes(30));",
+    "description": "Membuat link yang akan expired dan tidak bisa dimanipulasi (cocok untuk verifikasi email)."
+  },
+  {
+    "id": "ADV-089",
+    "title": "Security: API Token Scoping (Sanctum)",
+    "categories": ["security", "api"],
+    "code": "$user->createToken('token-name', ['server:update']);",
+    "description": "Membatasi kemampuan token API (misal: token ini hanya boleh baca, tidak boleh hapus)."
+  },
+  {
+    "id": "ADV-090",
+    "title": "Security: Sensitive Data Encryption",
+    "categories": ["security", "database"],
+    "code": "'id_number' => 'encrypted';",
+    "description": "Mengenkripsi data sensitif (NIK/No Rekening) di database agar admin DB pun tidak bisa membacanya."
+  },
+  {
+    "id": "ADV-091",
+    "title": "Security: Force SSL/HTTPS",
+    "categories": ["security", "devops"],
+    "code": "URL::forceScheme('https');",
+    "description": "Memastikan seluruh jalur komunikasi data terenkripsi (End-to-End Encryption)."
+  },
+  {
+    "id": "ADV-092",
+    "title": "Security: Password Complexity Rule",
+    "categories": ["security", "validation"],
+    "code": "Password::min(8)->letters()->numbers()->symbols()->uncompromised();",
+    "description": "Memaksa user membuat password kuat yang belum pernah bocor di internet."
+  },
+  {
+    "id": "ADV-093",
+    "title": "Security: Directory Traversal Shield",
+    "categories": ["security", "storage"],
+    "code": "basename($request->file);",
+    "description": "Mencegah hacker mengakses file sistem di luar folder yang ditentukan lewat input path file."
+  },
+  {
+    "id": "ADV-094",
+    "title": "Security: Database Backup Automator",
+    "categories": ["security", "devops"],
+    "code": "Artisan::call('backup:run');",
+    "description": "Otomasi pencadangan data untuk pemulihan bencana (Disaster Recovery)."
+  },
+  {
+    "id": "ADV-095",
+    "title": "Security: IP Whitelisting (Admin Area)",
+    "categories": ["security", "middleware"],
+    "code": "if (!in_array($request->ip(), $allowed)) abort(403);",
+    "description": "Hanya mengizinkan akses ke dashboard admin dari alamat IP kantor yang terpercaya."
+  },
+  {
+    "id": "ADV-096",
+    "title": "Logic: Role-Based Access Control (RBAC)",
+    "categories": ["logic", "auth"],
+    "code": "Gate::define('access-admin', fn($user) => $user->isAdmin());",
+    "description": "Mengatur hak akses fitur berdasarkan jabatan atau peran user."
+  },
+  {
+    "id": "ADV-097",
+    "title": "Logic: Multi-Tenancy (Scope)",
+    "categories": ["logic", "database"],
+    "code": "static::addGlobalScope('school_id', fn($q) => $q->where('school_id', auth()->user()->school_id));",
+    "description": "Memisahkan data antar sekolah secara otomatis agar tidak saling intip."
+  },
+  {
+    "id": "ADV-098",
+    "title": "Logic: Two-Factor Authentication (2FA)",
+    "categories": ["security", "auth"],
+    "code": "use TwoFactorAuthenticatable; // Laravel Fortify",
+    "description": "Menambahkan lapisan keamanan ekstra (Google Authenticator/SMS) saat login."
+  },
+  {
+    "id": "ADV-099",
+    "title": "Logic: Real-time Notification (Pusher)",
+    "categories": ["logic", "websocket"],
+    "code": "broadcast(new NewScoreAdded($score))->toOthers();",
+    "description": "Mengirim notifikasi instan ke browser user tanpa perlu refresh halaman."
+  },
+  {
+    "id": "ADV-100",
+    "title": "Logic: Excel/CSV Bulk Export",
+    "categories": ["logic", "performance"],
+    "code": "return Excel::download(new StudentsExport, 'data.xlsx');",
+    "description": "Mengunduh ribuan baris data ke format Excel dengan konsumsi RAM rendah."
+  },
+  {
+    "id": "ADV-101",
+    "title": "Logic: PDF Invoice Generator",
+    "categories": ["logic", "reporting"],
+    "code": "$pdf = Pdf::loadView('receipt', $data); return $pdf->stream();",
+    "description": "Membuat laporan resmi atau kuitansi otomatis dalam format PDF."
+  },
+  {
+    "id": "ADV-102",
+    "title": "Logic: Queue Worker (Job)",
+    "categories": ["performance", "async"],
+    "code": "SendEmailJob::dispatch($user)->onQueue('high');",
+    "description": "Menunda proses berat (kirim email) agar user tidak menunggu loading lama."
+  },
+  {
+    "id": "ADV-103",
+    "title": "Logic: Social Media Login (OAuth)",
+    "categories": ["auth", "ux"],
+    "code": "Socialite::driver('google')->redirect();",
+    "description": "Memungkinkan user login menggunakan akun Google, Facebook, atau GitHub."
+  },
+  {
+    "id": "ADV-104",
+    "title": "Logic: Activity Log Scraper",
+    "categories": ["security", "audit"],
+    "code": "activity()->performedOn($model)->log('Updated Score');",
+    "description": "Mencatat setiap klik dan perubahan yang dilakukan user di aplikasi."
+  },
+  {
+    "id": "ADV-105",
+    "title": "Logic: Dynamic Maintenance Mode",
+    "categories": ["devops", "ux"],
+    "code": "php artisan down --secret=\"my-secret-key\"",
+    "description": "Mematikan akses publik saat update sistem, tapi developer tetap bisa masuk."
+  },
+  {
+    "id": "ADV-106",
+    "title": "React: Client-Side Permission Hook",
+    "categories": ["react", "security"],
+    "code": "const { can } = usePage().props.auth; if (!can('edit')) return null;",
+    "description": "Menyembunyikan komponen UI di React berdasarkan izin dari Laravel Gate."
+  },
+  {
+    "id": "ADV-107",
+    "title": "React: Theme Switcher (Dark Mode)",
+    "categories": ["ux", "react"],
+    "code": "document.documentElement.classList.toggle('dark', isDark);",
+    "description": "Mengubah tampilan aplikasi menjadi mode gelap/terang secara instan."
+  },
+  {
+    "id": "ADV-108",
+    "title": "React: Multi-Language (i18n)",
+    "categories": ["ux", "react"],
+    "code": "<h1>{__('Welcome')}</h1>",
+    "description": "Mendukung banyak bahasa (Indonesia/Inggris) dalam satu aplikasi."
+  },
+  {
+    "id": "ADV-109",
+    "title": "React: Custom Hook for API Call",
+    "categories": ["react", "performance"],
+    "code": "const { data, loading } = useApiFetch('/api/stats');",
+    "description": "Abstraksi pengambilan data API agar kode di komponen tetap bersih."
+  },
+  {
+    "id": "ADV-110",
+    "title": "React: Infinite Scroll Intersection Observer",
+    "categories": ["react", "performance"],
+    "code": "const [ref, inView] = useInView(); useEffect(() => loadMore(), [inView]);",
+    "description": "Otomatis memuat data baru saat user men-scroll layar sampai bawah."
+  },
+
+  {
+    "id": "ADV-111",
+    "title": "DB: Database Indexing (B-Tree)",
+    "categories": ["database", "performance"],
+    "code": "$table->index(['user_id', 'created_at']);",
+    "description": "Mempercepat pencarian data hingga 100x lipat dengan membuat 'Daftar Isi' pada kolom yang sering dicari."
+  },
+  {
+    "id": "ADV-112",
+    "title": "DB: Full-Text Search (Scout)",
+    "categories": ["database", "search"],
+    "code": "Model::search($query)->get();",
+    "description": "Pencarian pintar seperti Google (bisa typo sedikit atau urutan kata acak) menggunakan Algolia/Meilisearch."
+  },
+  {
+    "id": "ADV-113",
+    "title": "DB: Database Partitioning",
+    "categories": ["database", "enterprise"],
+    "code": "CREATE TABLE scores_2026 PARTITION BY RANGE...",
+    "description": "Membagi satu tabel raksasa menjadi beberapa bagian berdasarkan tahun agar query tetap ringan."
+  },
+  {
+    "id": "ADV-114",
+    "title": "DB: Read-Write Query Splitting",
+    "categories": ["database", "performance"],
+    "code": "'read' => ['host' => 'slave-db'], 'write' => ['host' => 'master-db']",
+    "description": "Memisahkan server khusus untuk membaca data dan server khusus untuk menulis data (Master-Slave)."
+  },
+  {
+    "id": "ADV-115",
+    "title": "DB: Stored Procedures & Triggers",
+    "categories": ["database", "logic"],
+    "code": "DB::unprepared('CREATE TRIGGER update_stock AFTER INSERT...');",
+    "description": "Menjalankan logika otomatis di dalam database tanpa perlu campur tangan kode PHP."
+  },
+  {
+    "id": "ADV-116",
+    "title": "DB: JSON Column Queries",
+    "categories": ["database", "laravel"],
+    "code": "Model::where('settings->theme', 'dark')->get();",
+    "description": "Menyimpan dan mencari data dinamis di dalam kolom bertipe JSON (NoSQL-style di SQL)."
+  },
+  {
+    "id": "ADV-117",
+    "title": "DB: Soft Delete Pruning",
+    "categories": ["database", "maintenance"],
+    "code": "Model::pruneAll();",
+    "description": "Otomatis menghapus permanen data di tempat sampah yang sudah lebih dari 30 hari."
+  },
+  {
+    "id": "ADV-118",
+    "title": "DB: Upsert (Update or Insert)",
+    "categories": ["database", "performance"],
+    "code": "Model::upsert([$data], ['email'], ['name', 'price']);",
+    "description": "Satu perintah untuk cek: Jika data ada, update; jika tidak ada, buat baru. Hemat query!"
+  },
+  {
+    "id": "ADV-119",
+    "title": "Perf: Redis Data Caching",
+    "categories": ["performance", "caching"],
+    "code": "Cache::store('redis')->put('key', $value);",
+    "description": "Menggunakan Redis (In-memory database) untuk kecepatan akses data milidetik."
+  },
+  {
+    "id": "ADV-120",
+    "title": "Perf: Object Pooling (Singleton)",
+    "categories": ["clean-code", "logic"],
+    "code": "app()->singleton(MyService::class, fn() => new MyService());",
+    "description": "Hanya membuat satu instance object yang dipakai berulang kali untuk menghemat RAM server."
+  },
+  {
+    "id": "ADV-121",
+    "title": "Perf: Lazy Loading Collections",
+    "categories": ["performance", "laravel"],
+    "code": "Model::all()->lazy()->each(fn($row) => ...);",
+    "description": "Memproses data jutaan baris satu per satu tanpa menghabiskan RAM server (Low Memory)."
+  },
+  {
+    "id": "ADV-122",
+    "title": "Perf: Asset Bundling (Vite)",
+    "categories": ["performance", "frontend"],
+    "code": "npm run build; // Vite minification",
+    "description": "Mengecilkan ukuran file JS dan CSS agar website dimuat sangat cepat di HP user."
+  },
+  {
+    "id": "ADV-123",
+    "title": "Perf: Database Connection Pooling",
+    "categories": ["performance", "devops"],
+    "code": "PHP-FPM + PgBouncer (PostgreSQL)",
+    "description": "Menjaga koneksi database tetap terbuka agar tidak boros waktu saat 'handshake' setiap request."
+  },
+  {
+    "id": "ADV-124",
+    "title": "Perf: Image Optimization (WebP)",
+    "categories": ["performance", "storage"],
+    "code": "Image::make($file)->encode('webp', 80);",
+    "description": "Otomatis mengubah foto user ke format WebP agar ukuran file turun hingga 70%."
+  },
+  {
+    "id": "ADV-125",
+    "title": "Perf: CDN Static Assets",
+    "categories": ["performance", "devops"],
+    "code": "ASSET_URL=https://cdn.mywebsite.com",
+    "description": "Menyimpan gambar/CSS di server CDN terdekat dengan lokasi user (Cloudflare/AWS S3)."
+  },
+  {
+    "id": "ADV-126",
+    "title": "DevOps: CI/CD Pipeline (GitHub Actions)",
+    "categories": ["devops", "automation"],
+    "code": "on: [push] jobs: build & test",
+    "description": "Otomatis menjalankan test dan deploy website setiap kali kamu push kode ke GitHub."
+  },
+  {
+    "id": "ADV-127",
+    "title": "DevOps: Docker Containerization",
+    "categories": ["devops", "environment"],
+    "code": "docker-compose up -d; // Multi-container setup",
+    "description": "Membungkus aplikasi agar berjalan sama persis di komputer kamu dan di server produksi."
+  },
+  {
+    "id": "ADV-128",
+    "title": "DevOps: Zero Downtime Deployment",
+    "categories": ["devops", "reliability"],
+    "code": "Deployer: symlink switch",
+    "description": "Cara update website tanpa membuat user melihat halaman error 502 saat proses upload."
+  },
+  {
+    "id": "ADV-129",
+    "title": "DevOps: Server Monitoring (Grafana)",
+    "categories": ["devops", "monitoring"],
+    "code": "Prometheus + Node Exporter",
+    "description": "Memantau grafik penggunaan CPU, RAM, dan Disk server secara real-time."
+  },
+  {
+    "id": "ADV-130",
+    "title": "DevOps: SSL Automator (Certbot)",
+    "categories": ["devops", "security"],
+    "code": "sudo certbot --nginx -d example.com",
+    "description": "Otomasi pembaruan sertifikat SSL (Gembok Hijau) setiap 3 bulan secara gratis."
+  },
+  {
+    "id": "ADV-131",
+    "title": "DevOps: Log Rotation",
+    "categories": ["devops", "maintenance"],
+    "code": "/var/log/nginx/*.log { rotate 7 }",
+    "description": "Menghapus log lama agar harddisk server tidak penuh oleh file catatan teks."
+  },
+  {
+    "id": "ADV-132",
+    "title": "DevOps: Horizontal Scaling",
+    "categories": ["devops", "performance"],
+    "code": "Load Balancer (Nginx/HAProxy)",
+    "description": "Membagi beban trafik ke 3-5 server sekaligus agar website sanggup menampung jutaan user."
+  },
+  {
+    "id": "ADV-133",
+    "title": "DevOps: Cron Job Scheduler",
+    "categories": ["devops", "automation"],
+    "code": "* * * * * php artisan schedule:run",
+    "description": "Menjalankan tugas otomatis setiap menit (misal: kirim laporan harian)."
+  },
+  {
+    "id": "ADV-134",
+    "title": "DevOps: Environment Variable Security",
+    "categories": ["security", "devops"],
+    "code": "php artisan config:cache; // Hidden .env",
+    "description": "Mengunci file .env agar tidak bisa dibaca oleh hacker yang berhasil masuk ke server."
+  },
+  {
+    "id": "ADV-135",
+    "title": "DevOps: Error Tracking (Sentry)",
+    "categories": ["devops", "debugging"],
+    "code": "Sentry::captureException($e);",
+    "description": "Mendapat notifikasi ke HP/Email saat ada user yang mengalami error di website."
+  },
+  {
+    "id": "ADV-136",
+    "title": "DevOps: Database Replication",
+    "categories": ["database", "reliability"],
+    "code": "Master-Slave Replication",
+    "description": "Otomatis menyalin data ke server cadangan jika server utama mati."
+  },
+  {
+    "id": "ADV-137",
+    "title": "DevOps: API Gateway Logic",
+    "categories": ["architecture", "api"],
+    "code": "Kong / KrakenD / Laravel Octane",
+    "description": "Satu gerbang utama untuk mengatur trafik ke berbagai microservices."
+  },
+  {
+    "id": "ADV-138",
+    "title": "DevOps: Auto-Scaling Group",
+    "categories": ["devops", "cloud"],
+    "code": "AWS Auto Scaling / Kubernetes HPA",
+    "description": "Server otomatis nambah sendiri saat trafik naik, dan mati sendiri saat trafik sepi (Hemat biaya)."
+  },
+  {
+    "id": "ADV-139",
+    "title": "DevOps: Firewall Configuration",
+    "categories": ["security", "devops"],
+    "code": "ufw allow 80,443/tcp; // Port locking",
+    "description": "Menutup seluruh pintu (port) server kecuali pintu masuk website."
+  },
+  {
+    "id": "ADV-140",
+    "title": "DevOps: Health Check Endpoint",
+    "categories": ["monitoring", "reliability"],
+    "code": "Route::get('/health', fn() => response('OK', 200));",
+    "description": "Sinyal kecil yang dipantau Load Balancer untuk memastikan server masih hidup."
+  },
+
+  {
+    "id": "ADV-141",
+    "title": "React: High-Order Components (HOC)",
+    "categories": ["react", "architecture"],
+    "code": "const withAuth = (Comp) => (props) => { ... }",
+    "description": "Membungkus komponen agar otomatis memiliki fitur keamanan (auth) tanpa tulis ulang kode."
+  },
+  {
+    "id": "ADV-142",
+    "title": "React: Render Props Pattern",
+    "categories": ["react", "logic"],
+    "code": "<DataProvider render={data => <List data={data} />} />",
+    "description": "Teknik memisahkan logika pengambilan data dengan tampilan UI agar lebih fleksibel."
+  },
+  {
+    "id": "ADV-143",
+    "title": "React: Custom Hooks for Logic Separation",
+    "categories": ["react", "clean-code"],
+    "code": "const { students, fetch } = useStudentManager();",
+    "description": "Memindahkan logika CRUD yang panjang dari file Page ke file Hook tersendiri."
+  },
+  {
+    "id": "ADV-144",
+    "title": "React: Memoization (useMemo & useCallback)",
+    "categories": ["react", "performance"],
+    "code": "const calc = useMemo(() => heavyTask(data), [data]);",
+    "description": "Menyimpan hasil perhitungan berat di memori agar tidak dihitung ulang saat render."
+  },
+  {
+    "id": "ADV-145",
+    "title": "React: Context API for Global State",
+    "categories": ["react", "state-management"],
+    "code": "const UserContext = createContext();",
+    "description": "Mengelola data global (seperti Theme atau User Login) tanpa 'Prop Drilling'."
+  },
+  {
+    "id": "ADV-146",
+    "title": "React: Dynamic Component (Code Splitting)",
+    "categories": ["react", "performance"],
+    "code": "const Chart = lazy(() => import('./Chart'));",
+    "description": "Hanya memuat file komponen saat dibutuhkan (menghemat ukuran awal website)."
+  },
+  {
+    "id": "ADV-147",
+    "title": "React: Compound Components",
+    "categories": ["react", "ui"],
+    "code": "<Tabs> <Tabs.List> <Tabs.Item /> </Tabs.List> </Tabs>",
+    "description": "Membuat komponen kompleks yang sangat modular dan mudah dibaca (seperti HTML asli)."
+  },
+  {
+    "id": "ADV-148",
+    "title": "React: Error Boundary (Global Catch)",
+    "categories": ["react", "security"],
+    "code": "componentDidCatch(error, info) { logToService(error); }",
+    "description": "Menangkap error kodingan di React agar aplikasi tidak blank putih (White Screen of Death)."
+  },
+  {
+    "id": "ADV-149",
+    "title": "React: Portal for Modals",
+    "categories": ["react", "ui"],
+    "code": "createPortal(<Modal />, document.body);",
+    "description": "Merender modal di luar struktur DOM utama agar tidak terpotong oleh CSS parent (z-index)."
+  },
+  {
+    "id": "ADV-150",
+    "title": "React: Ref Forwarding",
+    "categories": ["react", "logic"],
+    "code": "const MyInput = forwardRef((props, ref) => ...);",
+    "description": "Memberikan akses langsung ke elemen DOM di dalam komponen anak dari komponen induk."
+  },
+  {
+    "id": "ADV-151",
+    "title": "React: AbortController for API",
+    "categories": ["react", "performance"],
+    "code": "useEffect(() => { const c = new AbortController(); return () => c.abort(); }, []);",
+    "description": "Membatalkan request API jika user pindah halaman sebelum data selesai dimuat."
+  },
+  {
+    "id": "ADV-152",
+    "title": "React: Optimistic UI with useOptimistic",
+    "categories": ["react", "ux"],
+    "code": "const [optData, addOpt] = useOptimistic(data, ...);",
+    "description": "Menampilkan data baru secara instan sebelum server benar-benar menyimpannya."
+  },
+  {
+    "id": "ADV-153",
+    "title": "React: Server-Side Rendering (SSR) Logic",
+    "categories": ["seo", "performance"],
+    "code": "export async function getServerSideProps() { ... }",
+    "description": "Merender website di server agar Google Bot bisa membaca konten (Bagus untuk SEO)."
+  },
+  {
+    "id": "ADV-154",
+    "title": "React: Intersection Observer (Lazy Loading)",
+    "categories": ["performance", "ui"],
+    "code": "new IntersectionObserver(([entry]) => { if(entry.isIntersecting) ... });",
+    "description": "Hanya memuat gambar atau data saat elemen tersebut muncul di layar user."
+  },
+  {
+    "id": "ADV-155",
+    "title": "React: Web Worker Integration",
+    "categories": ["performance", "async"],
+    "code": "const worker = new Worker('worker.js');",
+    "description": "Menjalankan hitungan matematika super berat di proses terpisah agar browser tidak lag."
+  },
+
+
+  {
+    "id": "ADV-156",
+    "title": "Test: Unit Testing (Pest/PHPUnit)",
+    "categories": ["testing", "quality"],
+    "code": "it('sums correctly', () => { expect(1+1)->toBe(2); });",
+    "description": "Menguji fungsi kecil secara otomatis untuk memastikan tidak ada bug."
+  },
+  {
+    "id": "ADV-157",
+    "title": "Test: Feature Testing (HTTP)",
+    "categories": ["testing", "laravel"],
+    "code": "$this->get('/')->assertStatus(200);",
+    "description": "Mensimulasikan user membuka halaman dan mengecek apakah halamannya jalan."
+  },
+  {
+    "id": "ADV-158",
+    "title": "Test: Database Testing",
+    "categories": ["testing", "database"],
+    "code": "$this->assertDatabaseHas('users', ['email' => 'a@b.com']);",
+    "description": "Memastikan data benar-benar tersimpan di database setelah proses Create."
+  },
+  {
+    "id": "ADV-159",
+    "title": "Test: Mocking API Requests",
+    "categories": ["testing", "api"],
+    "code": "Http::fake(['google.com/*' => Http::response([], 200)]);",
+    "description": "Berpura-pura memanggil API luar saat testing agar tidak boros kuota/biaya."
+  },
+  {
+    "id": "ADV-160",
+    "title": "Test: End-to-End (Cypress/Playwright)",
+    "categories": ["testing", "automation"],
+    "code": "cy.get('button').click().should('have.text', 'Saved');",
+    "description": "Robot yang otomatis membuka browser, mengetik, dan klik tombol seperti user asli."
+  },
+  {
+    "id": "ADV-161",
+    "title": "Test: TDD (Test Driven Development)",
+    "categories": ["methodology", "clean-code"],
+    "code": "Red -> Green -> Refactor",
+    "description": "Metode koding: Tulis tes dulu baru tulis kodenya (Standar Senior Developer)."
+  },
+  {
+    "id": "ADV-162",
+    "title": "Test: Code Coverage Analysis",
+    "categories": ["testing", "devops"],
+    "code": "php artisan test --coverage",
+    "description": "Melihat berapa persen kode kamu yang sudah terlindungi oleh tes otomatis."
+  },
+  {
+    "id": "ADV-163",
+    "title": "Test: Mutation Testing",
+    "categories": ["testing", "advanced"],
+    "code": "Infection / PHPUnit-Mutation",
+    "description": "Tes yang mencoba merusak kode kamu untuk melihat apakah tes kamu cukup kuat menangkapnya."
+  },
+  {
+    "id": "ADV-164",
+    "title": "Test: Security Vulnerability Scan",
+    "categories": ["security", "testing"],
+    "code": "composer audit; npm audit;",
+    "description": "Otomatis mengecek apakah ada package/library yang kamu pakai punya celah keamanan."
+  },
+  {
+    "id": "ADV-165",
+    "title": "Test: Performance Benchmarking",
+    "categories": ["performance", "testing"],
+    "code": "php artisan benchmark:run",
+    "description": "Mengukur berapa milidetik kecepatan kode kamu sebelum di-deploy."
+  },
+  {
+    "id": "ADV-166",
+    "title": "Arch: Repository Pattern",
+    "categories": ["architecture", "clean-code"],
+    "code": "class UserRepository implements UserInterface { ... }",
+    "description": "Memisahkan logika database dari Controller agar mudah diganti (misal: pindah ke MongoDB)."
+  },
+  {
+    "id": "ADV-167",
+    "title": "Arch: Service Pattern",
+    "categories": ["architecture", "logic"],
+    "code": "class PaymentService { public function process() { ... } }",
+    "description": "Tempat menyimpan logika bisnis yang sangat rumit agar Controller tetap bersih dan pendek."
+  },
+  {
+    "id": "ADV-168",
+    "title": "Arch: Microservices Communication",
+    "categories": ["architecture", "enterprise"],
+    "code": "gRPC / RabbitMQ / Apache Kafka",
+    "description": "Cara server satu bicara dengan server lain dalam sistem berskala raksasa."
+  },
+  {
+    "id": "ADV-169",
+    "title": "Arch: Event Sourcing",
+    "categories": ["architecture", "database"],
+    "code": "Store every change as an immutable event.",
+    "description": "Bukan menyimpan data akhir, tapi menyimpan histori setiap perubahan (Cocok untuk sistem Bank)."
+  },
+  {
+    "id": "ADV-170",
+    "title": "Arch: Domain Driven Design (DDD)",
+    "categories": ["architecture", "logic"],
+    "code": "Bounded Contexts & Ubiquitous Language",
+    "description": "Membangun kode berdasarkan struktur bisnis di dunia nyata (Sangat Senior)."
+  },
+  {
+    "id": "ADV-171",
+    "title": "Arch: Polymorphic Relationships",
+    "categories": ["database", "laravel"],
+    "code": "$table->morphs('commentable');",
+    "description": "Satu tabel komentar bisa dipakai untuk Siswa, Guru, maupun Kelas sekaligus."
+  },
+  {
+    "id": "ADV-172",
+    "title": "Arch: API Versioning",
+    "categories": ["api", "maintenance"],
+    "code": "Route::prefix('v1')->group(...);",
+    "description": "Menyediakan jalur API lama dan baru agar aplikasi mobile lama tidak error saat di-update."
+  },
+  {
+    "id": "ADV-173",
+    "title": "Arch: CQRS (Command Query Responsibility Segregation)",
+    "categories": ["architecture", "performance"],
+    "code": "Separate Read and Write models.",
+    "description": "Memisahkan model untuk 'baca data' dan 'tulis data' untuk optimasi ekstrim."
+  },
+  {
+    "id": "ADV-174",
+    "title": "Arch: Dependency Injection (DI)",
+    "categories": ["clean-code", "architecture"],
+    "code": "public function __construct(PaymentInterface $pay) { ... }",
+    "description": "Memasukkan object ke dalam class secara dinamis agar kode mudah dites (Mocking)."
+  },
+  {
+    "id": "ADV-175",
+    "title": "Arch: Single Sign-On (SSO)",
+    "categories": ["security", "enterprise"],
+    "code": "OAuth2 / OpenID Connect / SAML",
+    "description": "Satu akun untuk masuk ke banyak aplikasi berbeda (seperti akun Google)."
+  },
+  {
+    "id": "ADV-176",
+    "title": "Arch: Serverless Functions",
+    "categories": ["cloud", "performance"],
+    "code": "AWS Lambda / Vercel Functions",
+    "description": "Menjalankan potongan kode kecil tanpa perlu menyewa server 24 jam."
+  },
+  {
+    "id": "ADV-177",
+    "title": "Arch: GraphQL Implementation",
+    "categories": ["api", "query"],
+    "code": "query { user { name, posts { title } } }",
+    "description": "Cara baru ambil data di mana Frontend bisa minta data apa saja yang dia mau."
+  },
+  {
+    "id": "ADV-178",
+    "title": "Arch: Webhook Listeners",
+    "categories": ["api", "integration"],
+    "code": "Route::post('/webhooks/stripe', ...);",
+    "description": "Menerima sinyal otomatis dari aplikasi luar (misal: info pembayaran lunas dari Midtrans)."
+  },
+  {
+    "id": "ADV-179",
+    "title": "Arch: Data Migration Safety (Blue-Green)",
+    "categories": ["database", "devops"],
+    "code": "Backward compatible schema changes.",
+    "description": "Cara mengubah struktur database tanpa membuat website mati sedetik pun."
+  },
+  {
+    "id": "ADV-180",
+    "title": "Arch: Scalable Notification System",
+    "categories": ["logic", "performance"],
+    "code": "Notification::send($users, new BulkAnnouncement($msg));",
+    "description": "Mengirim ribuan notifikasi (Email, SMS, Push) secara efisien lewat antrian (Queue)."
+  },
+    {
+    "id": "deskripsi-crud-001",
+    "title": "CRUD Read",
+    "categories": ["crud", "read"],
+    "code": "",
+    "description": "VISUAL PEMETAAN READ: REACT ↔ CONTROLLER (10 PILAR) Visualisasi alur pencarian, penyaringan, dan penampilan data secara real-time.\n\n🔍 TAHAP 1: INPUT SEARCH (DEBOUNCED SEARCH)\nDi React: useEffect dengan setTimeout 500ms.\nDi Controller: $request->search menangkap kata kunci.\nHubungan: Mencegah spam request ke server setiap kali user mengetik satu huruf.\n\n🎭 TAHAP 2: PENYARINGAN DATA (DYNAMIC WHERE)\nDi Controller: Product::when($request->category, fn($q) => $q->where(...))\nDi React: router.get(url, { category: '...' })\nHubungan: Server hanya mengolah data yang diminta user lewat kacamata filter di UI.\n\n🔐 TAHAP 3: PEMBATASAN AKSES (SCOPED AUTH)\nDi Controller: Auth::user()->scores()->get();\nDi React: {auth.user.role === 'guru'}\nHubungan: Sisi Cyber Security memastikan user hanya bisa melihat data miliknya sendiri, bukan data seluruh sekolah.\n\n🚀 TAHAP 4: OPTIMASI KINERJA (EAGER LOADING)\nDi Controller: Score::with(['student', 'subject'])->get();\nDi React: item.student.name (Data relasi langsung muncul).\nHubungan: Mencegah N+1 Query agar database tidak terbebani saat menampilkan ribuan baris data.\n\n🍱 TAHAP 5: PENYAJIAN DATA (RESOURCE TRANSFORMATION)\nDi Controller: return new ScoreResource($score);\nDi React: {item.formatted_date} & {item.masked_phone}\nHubungan: Server membungkus data mentah menjadi format cantik (rupiah/tanggal) dan menyensor data sensitif.\n\n⚡ TAHAP 6: PENYIMPANAN SEMENTARA (CACHING)\nDi Controller: Cache::remember('settings', 3600, ...)\nDi React: localStorage atau const [cache] = useState()\nHubungan: Mengambil data dari memori cepat (RAM) daripada terus-menerus memukul database.\n\n📖 TAHAP 7: NAVIGASI DATA (PAGINATION)\nDi Controller: paginate(15)\nDi React: data.links.map(...)\nHubungan: Membagi data besar menjadi halaman-halaman kecil agar browser user tidak freeze atau hang.\n\n🎯 TAHAP 8: UPDATE SEBAGIAN (PARTIAL RELOAD)\nDi React: router.reload({ only: ['comments'] })\nDi Controller: 'comments' => fn() => $score->comments\nHubungan: Hanya menarik data komentar saja tanpa me-reload data profil atau sidebar yang berat.\n\n🦴 TAHAP 9: PERSEPSI KECEPATAN (SKELETON)\nDi React: {loading ? <Skeleton /> : <Content />}\nHubungan: Memberikan kepastian visual ke user bahwa data sedang dalam perjalanan dari Controller.\n\n🔄 TAHAP 10: SINKRONISASI URL (URL SYNC)\nDi React: preserveState: true\nDi Controller: return Inertia::render(..., ['filters' => $request->all()])"
+  },
+{
+  "id": "deskripsi-crud-002",
+  "title": "CRUD Create",
+  "categories": ["crud", "create"],
+  "code": "",
+  "description": "VISUAL PEMETAAN CREATE: REACT ↔ CONTROLLER\nBerikut adalah visualisasi bagaimana kode di React (Inertia) \"mengobrol\" dengan Controller (Laravel) dalam Skenario Input Nilai Sekolah:\n\n🟢 TAHAP 1: PERSIAPAN & STATE\n * Di React:\n   const { data, setData, post, processing, errors } = useForm({ ... })\n   (Analogi: Menyiapkan formulir digital di meja guru).\n * Hubungan ke Backend:\n   Data dalam objek data di React akan dikirimkan dan diterima oleh $request->all() atau $request->validated() di Controller.\n\n🟡 TAHAP 2: PENGIRIMAN & PROTEKSI\n * Di React:\n   <button disabled={processing}>Simpan</button>\n   (Analogi: Pintu loket ditutup otomatis saat petugas sedang memproses berkas).\n * Di Controller:\n   $lockKey = 'input_' . Auth::id();\n   if (Cache::has($lockKey)) return abort(429);\n   (Analogi: Server memasang gembok (Idempotency) agar data tidak duplikat jika user menekan tombol berkali-kali).\n\n🔴 TAHAP 3: VALIDASI & ERROR\n * Di Controller:\n   $request->validate(['point' => 'required|integer|max:100'])\n   (Analogi: Petugas mengecek: \"Nilainya angka kan? Tidak lebih dari 100?\").\n * Di React:\n   {errors.point && <p className=\"text-red-500\">{errors.point}</p>}\n   (Analogi: Jika server menolak, React menangkap sinyal error dan menyalakan lampu indikator merah tepat di kolom yang salah).\n\n🔵 TAHAP 4: EKSEKUSI & TRANSAKSI\n * Di Controller:\n   DB::transaction(function() { ... })\n   (Analogi: Prinsip \"Semua atau Tidak Sama Sekali\". Jika input 40 siswa dan 1 gagal, maka semua dibatalkan agar database tidak korup/pincang).\n * Di React:\n   {progress && <progress value={progress.percentage} />}\n   (Analogi: Menampilkan loading bar saat file bukti fisik nilai (PDF/JPG) sedang diunggah ke storage).\n\n🟣 TAHAP 5: PENYELESAIAN & FEEDBACK\n * Di Controller:\n   return redirect()->with('success', 'Data Berhasil Disimpan!')\n   Log::info('Audit: Guru '.Auth::user()->name.' menginput nilai.')\n   (Analogi: Server mencatat rekaman CCTV (Audit Trail) dan mengirimkan tanda terima).\n * Di React:\n   onSuccess: () => { reset(); toast.success(flash.success); }\n   (Analogi: React membersihkan meja (reset form) dan memunculkan notifikasi sukses di layar guru).\n\n> 💡 Professional Note:\n> Sebagai Cyber Security, pemetaan ini memastikan tidak ada celah antara apa yang dilihat User (Frontend) dengan apa yang diproses Server (Backend)."
+},
+{
+  "id": "deskripsi-crud-003",
+  "title": "CRUD Update",
+  "categories": ["crud", "update"],
+  "code": "",
+  "description": "VISUAL PEMETAAN UPDATE: REACT ↔ CONTROLLER (10 PILAR)\nVisualisasi aliran data saat melakukan perubahan (renovasi) data yang sudah ada di database.\n\n🟠 TAHAP 1: PENGAMBILAN DATA (MODEL BINDING)\n * Di Controller: public function edit(Score $score) (Otomatis mencari data berdasarkan ID di URL).\n * Di React: const { data } = useForm({ point: score.point }) (Mengisi form otomatis dengan data lama).\n\n🔐 TAHAP 2: VERIFIKASI PEMILIK (AUTHORIZATION)\n * Di Controller: $this->authorize('update', $score); (Cek server: \"Apakah user ini pemilik sah data ini?\").\n * Di React: {auth.user.id === score.teacher_id && <EditButton />} (Proteksi visual tombol edit).\n\n🟡 TAHAP 3: PERUBAHAN PARSIAL (DIRTY CHECK)\n * Di React: patch(route('scores.update', score.id)) (Metode PATCH: Hanya kirim yang diubah).\n * Di Controller: Route::patch('/scores/{score}') (Pintu masuk khusus untuk update data).\n\n🔴 TAHAP 4: VALIDASI KHUSUS (UNIQUE IGNORE)\n * Di Controller: Rule::unique('scores')->ignore($score->id) (Validasi cerdas agar tidak bentrok dengan ID sendiri).\n * Di React: errors.point (Menampilkan error jika input baru tidak valid).\n\n🛡️ TAHAP 5: PEMBERSIHAN DATA (SANITIZATION)\n * Di React: data.comment.trim() (Bersihkan spasi di frontend).\n * Di Controller: strip_tags($request->comment) (Hapus kode jahat/XSS di backend sebelum simpan).\n\n📜 TAHAP 6: RIWAYAT PERUBAHAN (AUDIT TRAIL)\n * Di Controller: Log::info(\"Dari {$score->getOriginal('point')} ke {$request->point}\") (Catat sejarah nilai lama vs baru).\n * Hubungan: Sisi Cyber Security untuk melacak manipulasi data.\n\n🔗 TAHAP 7: PROTEKSI TRANSAKSI (ATOMIC)\n * Di Controller: DB::beginTransaction() (Jika proses update gagal, data lama tidak akan rusak/korup).\n * Di React: processing (Status loading selama transaksi berlangsung).\n\n🚫 TAHAP 8: PENCEGAHAN GANDA (IDEMPOTENCY)\n * Di React: <button disabled={processing}> (Kunci tombol di UI).\n * Di Controller: Cache::lock($id)->get() (Kunci data di database agar tidak diupdate dua orang sekaligus).\n\n🔵 TAHAP 9: PROGRES & INTEGRITAS (FILE HANDLING)\n * Di React: {progress && <progress ... />} (Pantau upload jika ada bukti fisik baru).\n * Di Controller: Storage::delete($oldFile) (Hapus bukti lama jika diganti bukti baru).\n\n🟢 TAHAP 10: KOMITMEN & REFRESH (SYNC)\n * Di Controller: $score->update($validated); return redirect(); (Simpan permanen dan kirim sinyal sukses).\n * Di React: onSuccess: () => toast.success('Data Diperbarui') (UI segar kembali dengan data terbaru).\n\nUpdate adalah tentang PRESISI: Jangan sampai salah ID, jangan sampai salah akses."
+},
+{
+  "id": "deskripsi-crud-004",
+  "title": "CRUD Delete",
+  "categories": ["crud", "delete"],
+  "code": "",
+  "description": "VISUAL PEMETAAN DELETE: REACT ↔ CONTROLLER (10 PILAR)\nVisualisasi aliran data saat melakukan penghapusan data dengan standar keamanan tinggi.\n\n⚠️ TAHAP 1: KONFIRMASI TINDAKAN (UX GUARD)\n * Di React: const [confirming, setConfirming] = useState(false)\n * Hubungan: Menampilkan Modal Pop-up untuk mencegah penghapusan akibat salah klik (misclick).\n\n🔐 TAHAP 2: VERIFIKASI OTORITAS (SECURITY GATE)\n * Di Controller: $this->authorize('delete', $score);\n * Di React: {auth.user.can_delete && <DeleteButton />}\n * Hubungan: Memastikan hanya user dengan role/izin tertentu yang bisa melihat dan mengeksekusi tombol hapus.\n\n🚫 TAHAP 3: EKSEKUSI & LOCKING (DELETE METHOD)\n * Di React: router.delete(route('scores.destroy', id))\n * Di Controller: public function destroy(Score $score)\n * Hubungan: Pengiriman perintah melalui jalur HTTP DELETE yang khusus untuk destruksi data.\n\n📦 TAHAP 4: PENGAMANAN DATA (SOFT DELETE)\n * Di Controller: $score->delete(); (Menggunakan SoftDeletes)\n * Hubungan: Data tidak langsung musnah dari database, hanya ditandai \"terhapus\" agar bisa di-restore jika terjadi kesalahan.\n\n📜 TAHAP 5: PENCATATAN LOG (AUDIT TRAIL)\n * Di Controller: Log::warning(\"Data ID:{$id} dihapus oleh \".Auth::user()->name);\n * Hubungan: Sisi Cyber Security untuk melacak jejak siapa yang menghapus data sensitif sekolah.\n\n🛡️ TAHAP 6: PROTEKSI RELASI (CASCADE INTEGRITY)\n * Di Controller: if($score->relatedData()->exists()) return back();\n * Hubungan: Mencegah sistem error (crash) karena menghapus data yang masih dibutuhkan oleh tabel lain.\n\n🔗 TAHAP 7: PEMBERSIHAN FILE (STORAGE SYNC)\n * Di Controller: Storage::delete($score->file_path);\n * Hubungan: Jika data dihapus, file fisik (PDF/JPG) di server juga harus dibersihkan agar tidak menumpuk jadi sampah.\n\n⏳ TAHAP 8: PROCESSING STATE (UI LOCK)\n * Di React: <button disabled={processing}>\n * Hubungan: Mengunci tombol saat request dikirim agar user tidak mengirim perintah hapus berkali-kali ke server.\n\n🔄 TAHAP 9: OPTIMISTIC REMOVAL (UI SYNC)\n * Di React: onSuccess: () => setConfirming(false)\n * Hubungan: Menutup modal secara instan setelah server mengonfirmasi penghapusan sukses.\n\n🟢 TAHAP 10: FEEDBACK & REDIRECT (USER RELIEF)\n * Di Controller: return redirect()->back()->with('message', 'Data Dihapus');\n * Di React: toast.error('Data telah dibuang ke tempat sampah');\n * Hubungan: Memberi kepastian visual kepada user bahwa data sudah benar-benar hilang dari daftar.\n\nDelete adalah tentang KEWASPADAAN: Sekali hilang tanpa Soft Delete, data tidak akan kembali."
+}
+
+
+
+
+]

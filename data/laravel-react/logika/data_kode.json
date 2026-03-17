@@ -1,0 +1,650 @@
+[
+  {
+    "id": "LOGIKA-001",
+    "title": "Service Layer Pattern",
+    "description": "Analogi: Dapur Kantin. Kasir (Controller) hanya terima pesanan, Dapur (Service) yang memasak resep rumit. Jangan biarkan kasir sibuk memotong bawang.",
+    "categories": ["backend", "architecture"],
+    "code": "class RaportService { public function hitungNilaiAkhir($nilai) { // Logika rumit di sini } }",
+    "logic_rule": "Controller > 10 baris? Segera pindahkan logika bisnis ke Service Class."
+  },
+  {
+    "id": "LOGIKA-002",
+    "title": "Guard Clauses (Early Return)",
+    "description": "Analogi: Razia Atribut. Jika murid tidak pakai dasi, langsung suruh pulang di gerbang. Jangan suruh masuk kelas dulu baru diperiksa.",
+    "categories": ["backend", "clean-code"],
+    "code": "if (!$user->is_paid) return response()->json(['error' => 'Bayar SPP dulu!'], 403); // Proses bawah aman",
+    "logic_rule": "Cek kondisi GAGAL di paling atas, agar tidak ada 'if' bersarang (Nested If)."
+  },
+  {
+    "id": "LOGIKA-003",
+    "title": "Dependency Injection",
+    "description": "Analogi: Guru Pengganti. Kepsek tidak perlu tahu cara mengajar, cukup panggil 'Guru' mana pun yang tersedia untuk masuk kelas.",
+    "categories": ["backend", "architecture"],
+    "code": "public function __construct(LibraryService $library) { $this->library = $library; }",
+    "logic_rule": "Jangan buat objek di dalam fungsi (new Class), tapi 'suntikkan' melalui constructor agar kode fleksibel."
+  },
+  {
+    "id": "LOGIKA-004",
+    "title": "Repository Pattern",
+    "description": "Analogi: Pustakawan. Murid tidak perlu cari buku sendiri di gudang, cukup minta ke Pustakawan (Repository) untuk dicarikan.",
+    "categories": ["backend", "architecture"],
+    "code": "$this->studentRepo->getRankOne();",
+    "logic_rule": "Pisahkan cara mengambil data (Query SQL) dari logika bisnis agar saat ganti database tidak pusing."
+  },
+  {
+    "id": "LOGIKA-005",
+    "title": "Trait Reusability",
+    "description": "Analogi: Stempel Sekolah. Fungsi yang sama (misal: upload foto) bisa ditempelkan ke Model Murid, Guru, atau Staff tanpa tulis ulang.",
+    "categories": ["backend", "clean-code"],
+    "code": "trait UploadImage { public function upload($file) { ... } }",
+    "logic_rule": "Gunakan Trait untuk fungsi yang sering dipakai di banyak Class berbeda."
+  },
+  {
+    "id": "LOGIKA-006",
+    "title": "Singleton Pattern",
+    "description": "Analogi: Kepala Sekolah. Hanya boleh ada SATU Kepala Sekolah dalam satu waktu agar instruksi tidak tabrakan.",
+    "categories": ["backend", "architecture"],
+    "code": "app()->singleton(SchoolConfig::class, function() { return new SchoolConfig(); });",
+    "logic_rule": "Gunakan jika kamu ingin sebuah objek hanya dibuat sekali dan dipakai bersama di seluruh aplikasi."
+  },
+  {
+    "id": "LOGIKA-007",
+    "title": "Global Query Scopes",
+    "description": "Analogi: Filter Murid Aktif. Secara otomatis hanya menampilkan murid yang belum lulus di setiap pencarian, kecuali diminta khusus.",
+    "categories": ["backend", "database"],
+    "code": "static::addGlobalScope('active', function(Builder $builder) { $builder->where('status', 'aktif'); });",
+    "logic_rule": "Gunakan untuk filter data yang bersifat permanen/selalu dipakai (seperti Soft Deletes)."
+  },
+  {
+    "id": "LOGIKA-008",
+    "title": "Dry Principle (Don't Repeat Yourself)",
+    "description": "Analogi: Jadwal Tetap. Jangan buat jadwal baru setiap hari jika isinya sama. Cukup buat satu master jadwal.",
+    "categories": ["backend", "clean-code"],
+    "logic_rule": "Jika kamu copy-paste kode yang sama > 2 kali, segera buatkan fungsi/helper."
+  },
+  {
+    "id": "LOGIKA-009",
+    "title": "Environment Protection",
+    "description": "Analogi: Ruang Ujian. Ada ruang latihan (Staging) dan ruang ujian asli (Production). Jangan coba-coba koding di server asli.",
+    "categories": ["backend", "devops"],
+    "code": "if (app()->environment('production')) { // Matikan fitur debug }",
+    "logic_rule": "Selalu bedakan settingan API Key dan Database antara mode koding dan mode website live."
+  },
+  {
+    "id": "LOGIKA-010",
+    "title": "Interface Abstraction",
+    "description": "Analogi: Kurikulum. Pemerintah menentukan 'Apa' yang harus diajarkan, tapi 'Bagaimana' cara gurunya mengajar bebas asal target tercapai.",
+    "categories": ["backend", "architecture"],
+    "code": "interface PaymentGateway { public function pay(); }",
+    "logic_rule": "Gunakan interface untuk membuat kontrak fungsi agar tim lain bisa membuat implementasi yang berbeda."
+  },
+
+  
+  {
+    "id": "LOGIKA-011",
+    "title": "Eager Loading (with)",
+    "description": "Analogi: Ambil Rapor Sekelas. Panggil satu kelas sekaligus dengan rapornya. Jangan panggil satu murid, balik ambil rapor, panggil murid lain, balik lagi.",
+    "categories": ["backend", "performance"],
+    "code": "Student::with('grades')->get();",
+    "logic_rule": "Gunakan 'with' untuk menghindari masalah N+1 (query database berulang dalam perulangan)."
+  },
+  {
+    "id": "LOGIKA-012",
+    "title": "Database Transaction",
+    "description": "Analogi: Transfer Nilai. Jika nilai murid A dikurangi tapi gagal masuk ke murid B, maka pengurangan nilai A harus dibatalkan.",
+    "categories": ["backend", "database"],
+    "code": "DB::transaction(fn() => { // proses simpan data });",
+    "logic_rule": "Wajib gunakan untuk proses yang mengubah > 1 tabel agar data tidak korup jika terjadi error."
+  },
+  {
+    "id": "LOGIKA-013",
+    "title": "Soft Deletes",
+    "description": "Analogi: Tong Sampah. Murid yang keluar tidak langsung dihapus dari sejarah, tapi dipindah ke folder 'Alumni/Keluar' (masih bisa ditarik balik).",
+    "categories": ["backend", "database"],
+    "code": "use SoftDeletes; // $table->softDeletes();",
+    "logic_rule": "Jangan hapus data permanen jika data tersebut memiliki sejarah/audit trail yang penting."
+  },
+  {
+    "id": "LOGIKA-014",
+    "title": "Eloquent API Resources",
+    "description": "Analogi: Seragam Sekolah. Data database (mentah) dipakaikan seragam yang rapi sebelum tampil di depan publik (React).",
+    "categories": ["backend", "security"],
+    "code": "return ['nama_siswa' => $this->full_name];",
+    "logic_rule": "Gunakan Resource untuk mengubah nama kolom atau menyembunyikan data sensitif dari API."
+  },
+  {
+    "id": "LOGIKA-015",
+    "title": "Many-to-Many Logic",
+    "description": "Analogi: Ekstrakurikuler. Satu murid bisa ikut banyak ekskul, dan satu ekskul diikuti banyak murid.",
+    "categories": ["backend", "database"],
+    "code": "return $this->belongsToMany(Extracurricular::class);",
+    "logic_rule": "Gunakan tabel perantara (pivot table) untuk hubungan data yang saling memiliki banyak."
+  },
+  {
+    "id": "LOGIKA-016",
+    "title": "Mass Assignment Protection",
+    "description": "Analogi: Form Pendaftaran. Murid hanya boleh isi Nama & Alamat. Jangan biarkan mereka isi sendiri kolom 'Nilai Akhir'.",
+    "categories": ["backend", "security"],
+    "code": "protected $fillable = ['name', 'address'];",
+    "logic_rule": "Hanya daftarkan kolom yang boleh diisi user secara masal di model Laravel."
+  },
+  {
+    "id": "LOGIKA-017",
+    "title": "Observer Automation",
+    "description": "Analogi: Bel Otomatis. Setiap kali waktu menunjukkan jam 07.00, bel otomatis berbunyi tanpa harus dipencet manual.",
+    "categories": ["backend", "automation"],
+    "code": "public function created(Student $student) { // Kirim email selamat datang }",
+    "logic_rule": "Gunakan Observer untuk menjalankan tugas otomatis setiap kali ada data yang Disimpan/Diupdate/Dihapus."
+  },
+  {
+    "id": "LOGIKA-018",
+    "title": "Collection Mapping",
+    "description": "Analogi: Pengelompokan Kelas. Mengambil daftar murid lalu mengubah format namanya jadi HURUF KAPITAL semua dengan cepat.",
+    "categories": ["backend", "logic"],
+    "code": "$students->map(fn($s) => strtoupper($s->name));",
+    "logic_rule": "Gunakan Collection Method (map, filter, reduce) daripada foreach manual agar kode lebih elegan."
+  },
+  {
+    "id": "LOGIKA-019",
+    "title": "Database Indexing",
+    "description": "Analogi: Daftar Isi Buku. Mencari nama murid jadi cepat karena kita sudah punya index huruf A-Z, tidak perlu cari halaman per halaman.",
+    "categories": ["backend", "performance"],
+    "code": "$table->index('student_code');",
+    "logic_rule": "Berikan Index pada kolom yang paling sering digunakan di bagian 'WHERE' atau 'ORDER BY' di query."
+  },
+  {
+    "id": "LOGIKA-020",
+    "title": "Polymorphic Relations",
+    "description": "Analogi: Kolom Komentar. Tabel komentar yang sama bisa dipakai untuk mengomentari tugas murid atau mengomentari pengumuman guru.",
+    "categories": ["backend", "database"],
+    "code": "return $this->morphTo();",
+    "logic_rule": "Gunakan jika satu tabel (seperti Foto/Komentar) bisa dimiliki oleh banyak jenis Model yang berbeda."
+  },
+
+  
+  {
+    "id": "LOGIKA-021",
+    "title": "Form Request Validation Pro",
+    "description": "Analogi: Syarat Masuk Sekolah. Harus punya KK, Akta, dan Ijazah. Jika satu saja tidak ada, pendaftaran ditolak otomatis.",
+    "categories": ["backend", "security"],
+    "code": "public function rules() { return ['email' => 'required|email|unique:users']; }",
+    "logic_rule": "Jangan biarkan Controller mengolah data sebelum divalidasi oleh FormRequest."
+  },
+  {
+    "id": "LOGIKA-022",
+    "title": "Policy-Based Authorization",
+    "description": "Analogi: Hak Akses Nilai. Murid boleh lihat nilainya sendiri, tapi tidak boleh edit. Hanya Guru yang boleh edit.",
+    "categories": ["backend", "security"],
+    "code": "Gate::define('edit-grade', fn($user, $student) => $user->id === $student->teacher_id);",
+    "logic_rule": "Selalu cek hak akses sebelum menjalankan fungsi CRUD, jangan hanya sembunyikan tombol di UI."
+  },
+  {
+    "id": "LOGIKA-023",
+    "title": "Rate Limiting (Throttle)",
+    "description": "Analogi: Jatah Jajan. Satu murid hanya boleh beli 3 roti per hari agar murid lain kebagian (Anti-Spam).",
+    "categories": ["backend", "security"],
+    "code": "Route::middleware('throttle:login');",
+    "logic_rule": "Lindungi route login dan API dari serangan Brute Force menggunakan Rate Limiter."
+  },
+  {
+    "id": "LOGIKA-024",
+    "title": "Data Sanitization (XSS Protection)",
+    "description": "Analogi: Cuci Tangan. Sebelum makan, murid harus cuci tangan agar tidak membawa kuman (Script Jahat) ke dalam mulut (Database).",
+    "categories": ["backend", "security"],
+    "code": "strip_tags($request->input('comment'));",
+    "logic_rule": "Selalu bersihkan input user dari tag HTML/Script sebelum disimpan untuk mencegah serangan XSS."
+  },
+  {
+    "id": "LOGIKA-025",
+    "title": "IDOR Prevention",
+    "description": "Analogi: Nomor Bangku. Murid tidak boleh duduk di bangku murid lain hanya dengan mengganti nomor di mejanya.",
+    "categories": ["backend", "security"],
+    "code": "Student::where('id', $id)->where('user_id', auth()->id())->firstOrFail();",
+    "logic_rule": "Jangan tarik data hanya berdasarkan ID, pastikan ID tersebut memang milik user yang sedang login."
+  },
+  {
+    "id": "LOGIKA-026",
+    "title": "Hashing & Encryption",
+    "description": "Analogi: Bahasa Isyarat. Hanya guru dan murid tertentu yang tahu arti kodenya. Jika surat dicuri, pencuri tidak paham isinya.",
+    "categories": ["backend", "security"],
+    "code": "Hash::make($password);",
+    "logic_rule": "Jangan pernah simpan password dalam bentuk teks biasa. Gunakan Hashing (Bcrypt)."
+  },
+  {
+    "id": "LOGIKA-027",
+    "title": "CSRF Protection",
+    "description": "Analogi: Stempel Basah. Surat izin keluar kelas hanya sah jika ada stempel asli dari sekolah, bukan surat buatan sendiri.",
+    "categories": ["backend", "security"],
+    "code": "@csrf // Blade",
+    "logic_rule": "Pastikan setiap request POST memiliki token CSRF untuk mencegah serangan dari website lain."
+  },
+  {
+    "id": "LOGIKA-028",
+    "title": "SQL Injection Prevention",
+    "description": "Analogi: Kotak Saran Terkunci. User hanya bisa masukkan kertas saran melalui lubang kecil, tidak bisa bongkar seluruh kotaknya.",
+    "categories": ["backend", "security"],
+    "code": "DB::table('users')->where('name', $name)->get(); // Eloquent otomatis aman",
+    "logic_rule": "Gunakan Query Builder atau Eloquent (Parameter Binding). Hindari menulis query manual mentah (raw sql)."
+  },
+  {
+    "id": "LOGIKA-029",
+    "title": "File Validation (Mime Types)",
+    "description": "Analogi: Jenis Seragam. Hari Senin harus pakai Batik. Jika murid pakai baju renang, dilarang masuk sekolah.",
+    "categories": ["backend", "security"],
+    "code": "'photo' => 'required|image|mimes:jpg,png|max:2048'",
+    "logic_rule": "Selalu batasi jenis file dan ukuran maksimal saat user mengunggah sesuatu ke server."
+  },
+  {
+    "id": "LOGIKA-030",
+    "title": "Environment Variable Security",
+    "description": "Analogi: Brankas Sekolah. Kunci brankas tidak boleh ditaruh di papan pengumuman, tapi harus dibawa oleh Kepsek.",
+    "categories": ["backend", "security"],
+    "code": "env('DB_PASSWORD');",
+    "logic_rule": "Jangan pernah menulis password database atau API Key langsung di dalam kode (Hardcoded). Gunakan file .env."
+  },
+
+ 
+  {
+    "id": "LOGIKA-031",
+    "title": "Debouncing Search",
+    "description": "Analogi: Guru Menunggu Murid Selesai Bicara. Jangan jawab setiap murid baru bersuara satu huruf, tunggu mereka selesai satu kata.",
+    "categories": ["frontend", "ux"],
+    "code": "setTimeout(() => { search(); }, 500);",
+    "logic_rule": "Tunda pengiriman request ke server saat user mengetik sampai ada jeda waktu tertentu (hemat server)."
+  },
+  {
+    "id": "LOGIKA-032",
+    "title": "Optimistic UI Update",
+    "description": "Analogi: Centang Absen. Murid merasa sudah absen saat mencentang kertas, meskipun belum diserahkan ke guru.",
+    "categories": ["frontend", "ux"],
+    "code": "setItems([...items, newItem]);",
+    "logic_rule": "Ubah tampilan UI seolah-olah berhasil sebelum server memberikan respon sukses (efek instan)."
+  },
+  {
+    "id": "LOGIKA-033",
+    "title": "Skeleton Loading State",
+    "description": "Analogi: Garis Bantu Papan Tulis. Guru menggambar kotak-kotak kosong sebelum mulai mengisi angka di dalamnya.",
+    "categories": ["frontend", "ux"],
+    "code": "if (loading) return <Skeleton />;",
+    "logic_rule": "Tampilkan struktur halaman bayangan saat data sedang diambil agar user tidak melihat layar kosong."
+  },
+  {
+    "id": "LOGIKA-034",
+    "title": "Conditional Rendering",
+    "description": "Analogi: Pintu Ruang BK. Hanya murid yang bermasalah yang bisa melihat tombol 'Masuk Ruang BK'.",
+    "categories": ["frontend", "logic"],
+    "code": "{user.isAdmin && <AdminPanel />}",
+    "logic_rule": "Tampilkan atau sembunyikan elemen UI berdasarkan kondisi atau hak akses user."
+  },
+  {
+    "id": "LOGIKA-035",
+    "title": "State Synchronization (React)",
+    "description": "Analogi: Buku Induk & Buku Kelas. Jika nama murid berubah di Buku Induk, otomatis di Buku Kelas juga harus berubah.",
+    "categories": ["frontend", "logic"],
+    "code": "useEffect(() => { setStatus(data); }, [data]);",
+    "logic_rule": "Pastikan state lokal di React selalu sinkron dengan data yang datang dari backend."
+  },
+  {
+    "id": "LOGIKA-036",
+    "title": "Persistent Layout (Inertia)",
+    "description": "Analogi: Gedung Sekolah Tetap. Murid pindah-pindah kelas, tapi koridor dan gerbang sekolahnya tidak ikut hancur dan dibangun ulang.",
+    "categories": ["frontend", "performance"],
+    "code": "Page.layout = page => <Layout children={page} />",
+    "logic_rule": "Gunakan Persistent Layout agar Sidebar/Navbar tidak reload saat pindah halaman di React."
+  },
+  {
+    "id": "LOGIKA-037",
+    "title": "Partial Reload (Only)",
+    "description": "Analogi: Ganti Spidol. Guru hanya mengganti spidol yang habis, tidak perlu ganti seluruh papan tulis dan mejanya.",
+    "categories": ["bridge", "performance"],
+    "code": "router.reload({ only: ['grades'] });",
+    "logic_rule": "Hanya tarik data tertentu yang dibutuhkan saja dari server tanpa me-refresh seluruh data halaman."
+  },
+  {
+    "id": "LOGIKA-038",
+    "title": "Error Bags (Validation Mapping)",
+    "description": "Analogi: Koreksi Ujian. Guru memberi tanda merah tepat di soal yang salah, bukan memberi tahu 'Ada yang salah' secara umum.",
+    "categories": ["bridge", "ux"],
+    "code": "{errors.name && <span className='text-red-500'>{errors.name}</span>}",
+    "logic_rule": "Petakan setiap error dari Laravel langsung ke input field yang bersangkutan di React."
+  },
+  {
+    "id": "LOGIKA-039",
+    "title": "Preserve Scroll",
+    "description": "Analogi: Penanda Buku. Saat murid menutup buku sebentar, ada pembatas buku agar saat dibuka lagi tetap di halaman yang sama.",
+    "categories": ["bridge", "ux"],
+    "code": "router.post('/edit', data, { preserveScroll: true });",
+    "logic_rule": "Jaga posisi scroll user agar tidak kembali ke paling atas setelah melakukan aksi Simpan/Update."
+  },
+  {
+    "id": "LOGIKA-040",
+    "title": "Shared Props (Global State)",
+    "description": "Analogi: Pengumuman Speaker. Satu pengumuman dari Kepsek didengar oleh seluruh kelas di waktu yang sama.",
+    "categories": ["bridge", "logic"],
+    "code": "HandleInertiaRequests.php -> share(['user' => auth()->user()]);",
+    "logic_rule": "Gunakan Shared Props untuk mengirim data yang dibutuhkan di semua halaman (seperti Data User Login)."
+  },
+
+  {
+    "id": "LOGIKA-041",
+    "title": "Queue / Background Job",
+    "description": "Analogi: Petugas Foto Copy. Guru tidak perlu menunggu mesin fotokopi selesai untuk lanjut mengajar. Serahkan dokumen ke petugas (Queue), Guru bisa balik ke kelas.",
+    "categories": ["backend", "performance"],
+    "code": "SendReportEmail::dispatch($student);",
+    "logic_rule": "Gunakan Queue untuk proses yang memakan waktu > 2 detik (Kirim Email, Resize Gambar, Generate PDF)."
+  },
+  {
+    "id": "LOGIKA-042",
+    "title": "Task Scheduling (Cron Jobs)",
+    "description": "Analogi: Bel Masuk Otomatis. Sistem yang melakukan sesuatu tanpa disuruh, seperti otomatis 'Mengunci Form Nilai' setiap jam 12 malam di akhir semester.",
+    "categories": ["backend", "automation"],
+    "code": "$schedule->command('grades:lock')->endOfMonth();",
+    "logic_rule": "Gunakan Scheduler untuk tugas rutin harian, mingguan, atau bulanan."
+  },
+  {
+    "id": "LOGIKA-043",
+    "title": "Event & Listeners",
+    "description": "Analogi: Alarm Kebakaran. Satu kejadian (Api) memicu banyak aksi otomatis (Sirene bunyi, Air menyala, Panggil Damkar) tanpa harus diinstruksikan satu per satu.",
+    "categories": ["backend", "architecture"],
+    "code": "Event::dispatch(new StudentGraduated($student));",
+    "logic_rule": "Gunakan Event jika satu aksi di controller butuh memicu banyak proses di tempat lain."
+  },
+  {
+    "id": "LOGIKA-044",
+    "title": "Batching Jobs",
+    "description": "Analogi: Kirim Surat Undangan Sekampung. Daripada kirim satu-satu ke kantor pos, kumpulkan semua dalam satu karung (Batch) agar pengiriman lebih terorganisir.",
+    "categories": ["backend", "performance"],
+    "code": "Bus::batch([ new ExportGrade($classA), new ExportGrade($classB) ])->dispatch();",
+    "logic_rule": "Gunakan Job Batching jika kamu harus memproses ribuan data sekaligus dalam kelompok besar."
+  },
+  {
+    "id": "LOGIKA-045",
+    "title": "Long Polling / WebSockets",
+    "description": "Analogi: Walkie-Talkie Guru Piket. Guru bisa langsung bicara dan didengar detik itu juga tanpa harus kirim surat manual. Real-time!",
+    "categories": ["backend", "realtime"],
+    "code": "broadcast(new NewAnnouncement($msg));",
+    "logic_rule": "Gunakan Pusher atau Laravel Reverb untuk fitur Chat, Notifikasi Langsung, atau Live Update skor ujian."
+  },
+  {
+    "id": "LOGIKA-046",
+    "title": "Database Cleanup (Pruning)",
+    "description": "Analogi: Bersihkan Gudang. Membuang kertas-kertas coretan ujian tahun lalu yang sudah tidak dipakai agar gudang tidak penuh sesak.",
+    "categories": ["backend", "maintenance"],
+    "code": "use Prunable; public function prunable() { return $this->where('created_at', '<', now()->subYear()); }",
+    "logic_rule": "Otomatis hapus data sampah (log lama, file temp) agar database tidak membengkak."
+  },
+  {
+    "id": "LOGIKA-047",
+    "title": "Retry Logic",
+    "description": "Analogi: Mencoba Telepon Wali Murid. Jika telepon pertama tidak diangkat, sistem otomatis menunggu 5 menit lalu mencoba menelpon lagi.",
+    "categories": ["backend", "reliability"],
+    "code": "public $tries = 3; public $backoff = 300;",
+    "logic_rule": "Selalu pasang fitur 'Retry' pada proses yang mengandalkan internet pihak ketiga (seperti kirim SMS/WhatsApp)."
+  },
+  {
+    "id": "LOGIKA-048",
+    "title": "Webhook Logic",
+    "description": "Analogi: Laporan Bank ke Sekolah. Bank mengirim pesan ke sekolah: 'Uang SPP Murid A sudah masuk', lalu sistem sekolah otomatis update status lunas.",
+    "categories": ["backend", "integration"],
+    "code": "public function handleWebhook(Request $request) { // Update status payment }",
+    "logic_rule": "Gunakan Webhook untuk menerima data 'balasan' dari aplikasi luar secara otomatis."
+  },
+  {
+    "id": "LOGIKA-049",
+    "title": "Custom Artisan Commands",
+    "description": "Analogi: Alat Khusus Guru. Membuat tombol rahasia yang kalau ditekan langsung bisa mereset semua password murid jadi '12345' dalam sekali klik.",
+    "categories": ["backend", "maintenance"],
+    "code": "php artisan school:reset-passwords",
+    "logic_rule": "Buat perintah CLI kustom untuk tugas-tugas teknis yang sering dilakukan oleh developer."
+  },
+  {
+    "id": "LOGIKA-050",
+    "title": "Maintenance Mode Logic",
+    "description": "Analogi: Sekolah Sedang Dicat. Pintu gerbang ditutup sementara, murid dilarang masuk agar tidak terkena cat, tapi tukang bangunan (Admin) tetap bisa masuk.",
+    "categories": ["backend", "devops"],
+    "code": "php artisan down --secret=\"kunci-rahasia\"",
+    "logic_rule": "Gunakan mode Maintenance saat update besar agar user tidak melihat error saat proses migrasi database."
+  },
+  {
+    "id": "LOGIKA-051",
+    "title": "Full-Text Search Logic",
+    "description": "Analogi: Cari Kata di Perpustakaan. Mencari istilah tidak hanya berdasarkan judul, tapi mencari ke seluruh isi buku sekaligus dengan sangat cepat.",
+    "categories": ["backend", "database"],
+    "code": "Student::whereFullText('bio', 'pintar matematika')->get();",
+    "logic_rule": "Gunakan Full-Text Search untuk fitur pencarian yang mencakup paragraf panjang."
+  },
+  {
+    "id": "LOGIKA-052",
+    "title": "Subquery Selects",
+    "description": "Analogi: Label Murid Terajin. Saat memanggil daftar murid, sistem otomatis 'melabeli' siapa yang terakhir meminjam buku tanpa harus buka buku perpustakaan satu per satu.",
+    "categories": ["backend", "performance"],
+    "code": "$students->addSelect(['last_book' => Book::select('title')...]);",
+    "logic_rule": "Gunakan Subquery di dalam Select untuk menarik data tambahan tanpa menambah jumlah baris hasil query."
+  },
+  {
+    "id": "LOGIKA-053",
+    "title": "Fuzzy Matching Logic",
+    "description": "Analogi: Absensi Nama Mirip. Jika guru panggil 'Andi', tapi di buku tertulis 'Andyy', sistem tetap tahu itu orang yang sama.",
+    "categories": ["backend", "logic"],
+    "code": "where('name', 'LIKE', '%' . $query . '%')",
+    "logic_rule": "Gunakan pencarian fleksibel agar user tetap menemukan data meskipun ada sedikit salah ketik (Typo)."
+  },
+  {
+    "id": "LOGIKA-054",
+    "title": "Data Aggregation (Sum/Avg)",
+    "description": "Analogi: Kalkulator Rata-Rata Kelas. Menghitung total nilai seluruh kelas langsung di mesin (Database), bukan dihitung manual satu per satu di kertas (PHP).",
+    "categories": ["backend", "performance"],
+    "code": "Grade::where('class_id', 1)->avg('score');",
+    "logic_rule": "Selalu lakukan perhitungan matematika (SUM, AVG, COUNT) di level database, jangan tarik datanya lalu dihitung di PHP."
+  },
+  {
+    "id": "LOGIKA-055",
+    "title": "Pagination (Lazy Loading UI)",
+    "description": "Analogi: Daftar Siswa Per Halaman. Jika ada 1000 siswa, jangan tampilkan semua dalam satu kertas panjang. Bagi jadi 20 siswa per lembar agar mudah dibaca.",
+    "categories": ["backend", "performance"],
+    "code": "Student::paginate(20);",
+    "logic_rule": "Wajib gunakan pagination jika data yang ditarik berpotensi lebih dari 50 item."
+  },
+  {
+    "id": "LOGIKA-056",
+    "title": "Cursor Pagination",
+    "description": "Analogi: Papan Pengumuman Berputar. Saat kamu scroll ke bawah, data baru muncul terus menerus (seperti media sosial). Sangat cepat untuk data jutaan.",
+    "categories": ["backend", "performance"],
+    "code": "Student::cursorPaginate(15);",
+    "logic_rule": "Gunakan Cursor Pagination untuk fitur 'Infinite Scroll' agar performa tetap stabil meskipun data sangat banyak."
+  },
+  {
+    "id": "LOGIKA-057",
+    "title": "Conditional Clauses (when)",
+    "description": "Analogi: Filter Guru Fleksibel. 'Tampilkan murid hanya jika saya memilih kelas tertentu'. Jika saya tidak pilih, tampilkan semua.",
+    "categories": ["backend", "logic"],
+    "code": "$query->when($classId, fn($q) => $q->where('class_id', $classId));",
+    "logic_rule": "Gunakan fungsi 'when()' untuk membuat filter yang opsional tanpa banyak if-else."
+  },
+  {
+    "id": "LOGIKA-058",
+    "title": "Pivot Table Extra Attributes",
+    "description": "Analogi: Keterangan Ekskul. Di tabel hubungan Murid dan Ekskul, ada catatan tambahan seperti 'Jabatan' (Ketua/Anggota).",
+    "categories": ["backend", "database"],
+    "code": "$student->extracurriculars()->withPivot('role');",
+    "logic_rule": "Simpan data tambahan yang hanya relevan pada 'hubungan' dua tabel di kolom pivot."
+  },
+  {
+    "id": "LOGIKA-059",
+    "title": "Database Views",
+    "description": "Analogi: Laporan Rangkuman Jadi. Guru membuat 'Tabel Bayangan' yang isinya sudah gabungan dari nilai, absen, dan sikap, sehingga tinggal baca saja.",
+    "categories": ["backend", "database"],
+    "code": "DB::table('v_student_summary')->get();",
+    "logic_rule": "Gunakan Database View untuk query yang sangat kompleks dan sering dipanggil agar kodingan tetap bersih."
+  },
+  {
+    "id": "LOGIKA-060",
+    "title": "Slug Generation Logic",
+    "description": "Analogi: Nama Panggilan Unik. Nama asli 'Andi Saputra', tapi di URL (alamat rumah) dia dipanggil 'andi-saputra' agar mudah ditemukan mesin pencari.",
+    "categories": ["backend", "seo"],
+    "code": "Str::slug($student->name);",
+    "logic_rule": "Selalu gunakan Slug sebagai pengganti ID di URL untuk alasan SEO dan keamanan (menyembunyikan jumlah data asli)."
+  },
+
+  {
+    "id": "LOGIKA-061",
+    "title": "Interface Injection",
+    "description": "Analogi: Soket Listrik Standar. Tidak peduli merk lampunya (Lampu A/Lampu B), asal colokannya sama (Interface), lampu pasti menyala.",
+    "categories": ["backend", "architecture"],
+    "code": "public function __construct(SmsGatewayInterface $sms)",
+    "logic_rule": "Gunakan interface di constructor agar kamu bisa ganti-ganti penyedia layanan (Vendor) tanpa merubah kode utama."
+  },
+  {
+    "id": "LOGIKA-062",
+    "title": "Factory Pattern",
+    "description": "Analogi: Cetakan Kue. Kamu punya satu alat yang bisa bikin 100 donat yang bentuknya sama persis dalam sekejap untuk keperluan testing.",
+    "categories": ["backend", "testing"],
+    "code": "Student::factory()->count(100)->create();",
+    "logic_rule": "Gunakan Factory untuk membuat data dummy (palsu) saat tahap pengembangan atau testing."
+  },
+  {
+    "id": "LOGIKA-063",
+    "title": "Strategy Pattern",
+    "description": "Analogi: Cara Bayar Sekolah. Ada murid bayar pakai Cash, Transfer, atau Beasiswa. Sistem pilih 'Strategi' yang cocok sesuai pilihan murid.",
+    "categories": ["backend", "architecture"],
+    "logic_rule": "Gunakan ini jika kamu punya satu aksi (Bayar) tapi punya banyak cara berbeda untuk melakukannya."
+  },
+  {
+    "id": "LOGIKA-064",
+    "title": "Value Objects",
+    "description": "Analogi: Format Nilai. Nilai bukan cuma angka, tapi punya aturan: tidak boleh minus dan maksimal 100. Kita buat 'Benda' khusus yang menjaga aturan itu.",
+    "categories": ["backend", "architecture"],
+    "code": "class FinalGrade { private $score; ... }",
+    "logic_rule": "Gunakan Value Object untuk data yang punya logika validasi melekat pada dirinya sendiri."
+  },
+  {
+    "id": "LOGIKA-065",
+    "title": "Pipeline Pattern",
+    "description": "Analogi: Jalur Perakitan Mobil. Data masuk, lalu melewati tahap: Cek Mesin -> Pasang Ban -> Cat -> Jadi. Tiap tahap terpisah rapi.",
+    "categories": ["backend", "architecture"],
+    "code": "Pipeline::send($data)->through([Step1::class, Step2::class])",
+    "logic_rule": "Gunakan Pipeline untuk memproses data yang harus melewati banyak tahap penyaringan/perubahan."
+  },
+  {
+    "id": "LOGIKA-066",
+    "title": "Action Classes",
+    "description": "Analogi: Petugas Khusus. Ada satu orang yang tugasnya 'HANYA' mendaftarkan siswa baru. Dia tidak melakukan hal lain agar tidak bingung.",
+    "categories": ["backend", "architecture"],
+    "code": "class RegisterStudentAction { public function execute($data) { ... } }",
+    "logic_rule": "Pisahkan satu fitur spesifik menjadi satu Class Action agar sangat mudah dites dan dibaca."
+  },
+  {
+    "id": "LOGIKA-067",
+    "title": "Data Transfer Objects (DTO)",
+    "description": "Analogi: Amplop Tertutup. Data dari form tidak dilempar mentah-mentah, tapi dimasukkan ke amplop rapi agar isinya tidak tercecer dan jelas tujuannya.",
+    "categories": ["backend", "architecture"],
+    "code": "public function store(StudentDTO $data)",
+    "logic_rule": "Gunakan DTO untuk mengirim data antar class agar tipe data (string/int) tetap konsisten."
+  },
+  {
+    "id": "LOGIKA-068",
+    "title": "Single Responsibility (Solid-S)",
+    "description": "Analogi: Tugas Guru vs Tugas Satpam. Guru jangan disuruh jaga gerbang, Satpam jangan disuruh ngajar. Satu orang, satu tanggung jawab.",
+    "categories": ["backend", "clean-code"],
+    "logic_rule": "Pastikan satu Class atau Fungsi hanya melakukan satu tugas saja."
+  },
+  {
+    "id": "LOGIKA-069",
+    "title": "Open/Closed Principle (Solid-O)",
+    "description": "Analogi: Menambah Menu Kantin. Kita bisa tambah menu baru tanpa harus membongkar dapur yang sudah ada. Cukup tambah resep baru.",
+    "categories": ["backend", "clean-code"],
+    "logic_rule": "Kodingan harus mudah ditambah fitur baru (Open), tapi tidak perlu mengubah kodingan lama yang sudah stabil (Closed)."
+  },
+  {
+    "id": "LOGIKA-070",
+    "title": "Dependency Inversion (Solid-D)",
+    "description": "Analogi: Stopkontak. Lampu tidak bergantung pada kabel di dalam tembok, tapi bergantung pada 'Lubang Colokan'. Kabel bisa diganti tanpa merusak lampu.",
+    "categories": ["backend", "architecture"],
+    "logic_rule": "Class level tinggi jangan bergantung pada class level rendah, keduanya harus bergantung pada abstraksi (Interface)."
+  },
+
+
+  {
+    "id": "LOGIKA-071",
+    "title": "Audit Trail / Activity Log",
+    "description": "Analogi: Buku Kasus Siswa. Setiap kali ada nilai yang diubah, sistem mencatat: 'Siapa yang ubah?', 'Kapan?', dan 'Nilai aslinya berapa?'.",
+    "categories": ["backend", "security"],
+    "code": "activity()->log('Mengubah nilai murid id:5');",
+    "logic_rule": "Selalu catat aksi CRUD yang sensitif ke dalam tabel log untuk keperluan investigasi keamanan."
+  },
+  {
+    "id": "LOGIKA-072",
+    "title": "Secure Password Reset Logic",
+    "description": "Analogi: Surat Rahasia Bertempo. Kode reset password hanya berlaku 1 jam. Jika lewat, surat itu hangus dan tidak bisa dipakai lagi.",
+    "categories": ["backend", "security"],
+    "code": "Password::broker()->sendResetLink($credentials);",
+    "logic_rule": "Gunakan token bertempo dan link unik yang dikirim ke email untuk proses reset password."
+  },
+  {
+    "id": "LOGIKA-073",
+    "title": "Session Hijacking Prevention",
+    "description": "Analogi: Kartu Pelajar Berfoto. Satpam mengecek apakah wajah yang bawa kartu sama dengan foto di kartu. Jika beda, akses ditolak.",
+    "categories": ["backend", "security"],
+    "code": "Session::regenerate();",
+    "logic_rule": "Otomatis ganti ID Session setiap kali user login untuk mencegah pencurian sesi oleh hacker."
+  },
+  {
+    "id": "LOGIKA-074",
+    "title": "Sensitive Data Masking",
+    "description": "Analogi: Sensor Nomor HP. Di papan pengumuman, nomor HP orang tua ditulis 0812****99 agar tidak disalahgunakan orang asing.",
+    "categories": ["backend", "security"],
+    "code": "Str::mask($phone, '*', 4, 8);",
+    "logic_rule": "Sembunyikan sebagian data pribadi user (HP, Email, NIK) saat ditampilkan di layar publik."
+  },
+  {
+    "id": "LOGIKA-075",
+    "title": "Force HTTPS / SSL",
+    "description": "Analogi: Jalur Pipa Tertutup. Data yang lewat tidak bisa dilihat dari luar karena berada di dalam pipa baja yang terkunci rapat.",
+    "categories": ["backend", "security"],
+    "code": "URL::forceScheme('https');",
+    "logic_rule": "Wajibkan semua trafik data menggunakan protokol HTTPS agar tidak bisa disadap (Man-in-the-Middle attack)."
+  },
+  {
+    "id": "LOGIKA-076",
+    "title": "Brute Force Protection (Lockout)",
+    "description": "Analogi: Gembok Otomatis. Jika ada orang coba buka pintu pakai kunci palsu 5 kali, pintu otomatis terkunci total selama 15 menit.",
+    "categories": ["backend", "security"],
+    "code": "RateLimiter::hit($key);",
+    "logic_rule": "Kunci akun user sementara jika terdeteksi kegagalan login berkali-kali dalam waktu singkat."
+  },
+  {
+    "id": "LOGIKA-077",
+    "title": "SQL Blind Injection Prevention",
+    "description": "Analogi: Jawaban Guru Ya/Tidak. Hacker mencoba bertanya: 'Apakah murid ID 1 namanya Andi?', Guru tidak memberikan detail, hanya diam.",
+    "categories": ["backend", "security"],
+    "logic_rule": "Jangan pernah memberikan detail error database ke layar user, cukup tampilkan pesan 'Terjadi Kesalahan'."
+  },
+  {
+    "id": "LOGIKA-078",
+    "title": "Two-Factor Auth (2FA)",
+    "description": "Analogi: Kunci Ganda. Untuk masuk ruang ujian, harus bawa Kartu Ujian DAN Sidik Jari. Satu saja tidak cukup.",
+    "categories": ["backend", "security"],
+    "code": "use TwoFactorAuthenticatable;",
+    "logic_rule": "Gunakan 2FA untuk akun level Admin agar meskipun password bocor, akun tetap aman."
+  },
+  {
+    "id": "LOGIKA-079",
+    "title": "Input Type Strictness",
+    "description": "Analogi: Lubang Kotak Suara. Hanya kertas lipat yang bisa masuk. Jika dimasukkan batu atau kayu, lubang akan menolak otomatis.",
+    "categories": ["backend", "security"],
+    "code": "$request->validate(['age' => 'integer|min:5']);",
+    "logic_rule": "Pastikan tipe data input benar-benar sesuai (angka ya angka, huruf ya huruf) untuk mencegah serangan manipulasi tipe data."
+  },
+  {
+    "id": "LOGIKA-080",
+    "title": "API Key Scoping",
+    "description": "Analogi: Kartu Akses Terbatas. Tamu hanya boleh ke kantin, tidak boleh ke perpustakaan. Kartu akses membatasi ruang gerak mereka.",
+    "categories": ["backend", "security"],
+    "code": "$user->createToken('token-name', ['view-grades']);",
+    "logic_rule": "Jika memberikan akses API ke aplikasi lain, batasi hanya pada fungsi tertentu saja (Read-only atau Write-only)."
+  }
+
+
+]
+
+
